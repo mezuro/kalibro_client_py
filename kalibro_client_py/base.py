@@ -1,4 +1,4 @@
-import requests as req
+import requests
 from collections import namedtuple
 
 
@@ -30,9 +30,14 @@ class Base(object):
         raise NotImplementedError
 
     def request(self, action, params, method='post', prefix=''):
-        url = "/%s/%s" % (self.endpoint())
-        response = getattr(req, method)(url, params=params)
-        return response.text
+        if prefix:
+            url = "/" + prefix
+        else:
+            url = ""
+        url += "/{}/{}".format(self.endpoint(), action)
+
+        response = requests.request(method, url, params=params)
+        return response.json()
 
     @staticmethod
     def entity_name_decorator():
