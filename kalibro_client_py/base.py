@@ -2,6 +2,16 @@ import requests as req
 from collections import namedtuple
 
 
+class Configuration(namedtuple('Configuration', 'host port')):
+    @property
+    def service_address(self):
+        return "{}:{}".format(self.host, self.port)
+
+    @classmethod
+    def from_options(cls, options):
+        return cls(**options)
+
+
 class Base(object):
     configuration = Configuration(None, None)
 
@@ -17,13 +27,3 @@ class Base(object):
         url = "/%s/%s" % (endpoint)
         response = getattr(req, method)(url, params=params)
         response.text
-
-        
-class Configuration(namedtuple('Configuration', 'host port')):
-    @property
-    def service_address(self):
-        return "{}:{}".format(self.host, self.port)
-
-    @classmethod
-    def from_options(cls, options):
-        return cls(**options)

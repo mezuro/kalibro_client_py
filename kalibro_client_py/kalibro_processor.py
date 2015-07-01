@@ -1,11 +1,9 @@
-from kalibro_client_py.base import Base
+from kalibro_client_py.base import Base, Configuration
 
 class KalibroProcessorBase(Base):
-    self.host = 'localhost'
-    self.port = '8082'
+    configuration = Configuration('localhost', '8082')
 
     def __init__(self, attributes={}):
-
         super(KalibroProcessorBase, self).__init__(attributes)
 
 class Project(KalibroProcessorBase):
@@ -13,7 +11,5 @@ class Project(KalibroProcessorBase):
         self.id = ""
         self.name = ""
         self.description = ""
-
-        print self.__endpoint
 
         super(Project, self).__init__(attributes)
