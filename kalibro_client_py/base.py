@@ -1,10 +1,11 @@
 import requests as req
+from collections import namedtuple
+
 
 class Base(object):
     configuration = Configuration(None, None)
 
     def __init__(self, attributes={}):
-
         for name in attributes:
                 try:
                     getattr(self, name) # Checks if the attribute is valid
@@ -14,25 +15,15 @@ class Base(object):
 
     def request(action, params, method='post', prefix=''):
         url = "/%s/%s" % (endpoint)
-
         response = getattr(req, method)(url, params=params)
-
         response.text
 
-class Configuration(object):
-    def __init__(self, attributes):
-        self.host = ""
-        self.port = ""
-
-        self.configure(attributes)
-
+        
+class Configuration(namedtuple('Configuration', 'host port')):
+    @property
     def service_address(self):
-        return "%s:%s" % (self.host, self.port)
+        return "{}:{}".format(self.host, self.port)
 
-    def configure(self, attributes={}):
-        for name in attributes:
-                try:
-                    getattr(self, name) # Checks if the attribute is valid
-                    setattr(self, name, attributes[name])
-                except AttributeError:
-                    pass # Just ignore an invalid attribute
+    @classmethod
+    def from_options(cls, options):
+        return cls(**options)
