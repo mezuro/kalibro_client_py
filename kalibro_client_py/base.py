@@ -13,13 +13,8 @@ class Configuration(namedtuple('Configuration', 'host port')):
 
 
 class Base(object):
-    def __init__(self, attributes={}):
-        for name in attributes:
-            try:
-                getattr(self, name) # Checks if the attribute is valid
-                setattr(self, name, attributes[name])
-            except AttributeError:
-                pass # Just ignore an invalid attribute
+    def __init__(self, attributes):
+        self.attributes = dict(attributes)
 
     @classmethod
     def endpoint(cls):
@@ -29,7 +24,7 @@ class Base(object):
     def entity_name(cls):
         raise NotImplementedError
 
-    def request(self, action, params, method='post', prefix=''):
+    def request(self, action, params=None, method='post', prefix=None):
         if prefix:
             url = "/" + prefix
         else:
@@ -41,13 +36,16 @@ class Base(object):
 
     @staticmethod
     def entity_name_decorator():
-        """ Assign an entity name based on the class immediately inhering from Base.
+        """
+        Assign an entity name based on the class immediately inhering from Base.
 
         This is needed because we don't want
-        entity names to come from any class that simply inherits our classes, just the ones in our module.
+        entity names to come from any class that simply inherits our classes,
+        just the ones in our module.
 
-        For example, if you create a class Project2 that exists outside of kalibro_client and inherits from Project,
-        it's entity name should still be Project.
+        For example, if you create a class Project2 that exists outside of
+        kalibro_client and inherits from Project, it's entity name should still
+        be Project.
         """
 
         def class_rebuilder(cls):
@@ -61,3 +59,17 @@ class Base(object):
             return NewClass
 
         return class_rebuilder
+
+    def __getattr__(self, attr):
+        try:
+            return self.attributes[attr]
+        except KeyError:
+            raise AttributeError('Kalibro Base object has no attribute ' + attr)
+
+    def __setattr__(self, attr, value):
+        # Must check if attributes actually exists, or we'll do an infinite loop
+        # in the constructor while initializing it.
+        if hasattr(self, 'attributes') and attr in self.attributes:
+            self.attributes[attr] = value
+        else:
+            super(Base, self).__setattr__(attr, value)

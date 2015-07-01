@@ -1,5 +1,7 @@
-from kalibro_client_py.base import Configuration
-from nose.tools import assert_equal
+from mock import Mock, patch
+from nose.tools import assert_equal, raises
+
+from kalibro_client_py.base import Configuration, Base
 
 class TestConfiguration(object):
     def setUp(self):
@@ -20,3 +22,35 @@ class TestConfiguration(object):
         assert_equal(Configuration.from_options({'host': self.host,
                                                  'port': self.port}),
                      self.configuration)
+
+class TestBase(object):
+    def setUp(self):
+        self.attributes = {'id': 1, 'name': 'A random Project',
+                           'description': 'A real example Project'}
+        self.base = Base(self.attributes)
+
+    def test_init(self):
+        assert_equal(self.base.id, 1)
+        assert_equal(self.base.name, 'A random Project')
+        assert_equal(self.base.description, 'A real example Project')
+
+    @raises(NotImplementedError)
+    def test_endpoint(self):
+        self.base.endpoint()
+
+    @raises(NotImplementedError)
+    def test_entity_name(self):
+        self.base.entity_name()
+
+    @patch('requests.request')
+    def test_request(self, requests_request):
+        self.base.endpoint = Mock(return_value="base")
+
+        response_mock = Mock()
+        response_mock.json = Mock(return_value=self.attributes)
+        requests_request.return_value = response_mock
+
+        assert_equal(self.base.request("find", method='get'), self.attributes)
+        requests_request.assert_called_once_with('get', "/base/find",
+                                                 params=None)
+        response_mock.json.assert_called_with()
