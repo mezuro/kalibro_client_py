@@ -50,6 +50,34 @@ class TestBase(object):
         requests_request.assert_called_once_with('get', "/base/find",
                                                  params=None)
         response_mock.json.assert_called_with()
+
+    @patch('requests.request')
+    def test_request_with_prefix(self, requests_request):
+        self.base.endpoint = Mock(return_value="base")
+
+        response_mock = Mock()
+        response_mock.json = Mock(return_value=self.attributes)
+        requests_request.return_value = response_mock
+
+        assert_equal(self.base.request("find", method='get', prefix='prefix'),
+                     self.attributes)
+        requests_request.assert_called_once_with('get', "/prefix/base/find",
+                                                 params=None)
+        response_mock.json.assert_called_with()
+
+    @patch('requests.request')
+    def test_request_with_default_method(self, requests_request):
+        self.base.endpoint = Mock(return_value="base")
+
+        response_mock = Mock()
+        response_mock.json = Mock(return_value=self.attributes)
+        requests_request.return_value = response_mock
+
+        assert_equal(self.base.request("create"), self.attributes)
+        requests_request.assert_called_once_with('post', "/base/create",
+                                                 params=None)
+        response_mock.json.assert_called_with()
+
     @raises(NotImplementedError)
     def test_endpoint_base(self):
         self.base.endpoint()
