@@ -35,10 +35,6 @@ class TestBase(object):
         assert_equal(self.base.description, 'A real example Project')
 
     @raises(NotImplementedError)
-    def test_endpoint(self):
-        self.base.endpoint()
-
-    @raises(NotImplementedError)
     def test_entity_name(self):
         self.base.entity_name()
 
@@ -54,3 +50,22 @@ class TestBase(object):
         requests_request.assert_called_once_with('get', "/base/find",
                                                  params=None)
         response_mock.json.assert_called_with()
+    @raises(NotImplementedError)
+    def test_endpoint_base(self):
+        self.base.endpoint()
+
+    def test_endpoint(self):
+        cases = {
+            'repository': 'repositories',
+            'project': 'projects',
+            'processing': 'processings',
+            'process_time': 'process_times'
+        }
+
+        for (singular, plural) in cases.items():
+            with patch.object(self.base.__class__, 'entity_name',
+                              return_value=singular):
+                assert_equal(self.base.endpoint(), plural)
+
+        assert_equal(self.CompositeEntity(dict()).endpoint(),
+                     "composite_entities")

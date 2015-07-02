@@ -1,6 +1,7 @@
 import requests
 from collections import namedtuple
 
+import inflection
 
 class Configuration(namedtuple('Configuration', 'host port')):
     @property
@@ -18,7 +19,7 @@ class Base(object):
 
     @classmethod
     def endpoint(cls):
-        return cls.entity_name() + "s"
+        return inflection.pluralize(cls.entity_name())
 
     @classmethod
     def entity_name(cls):
@@ -54,7 +55,7 @@ class Base(object):
             class NewClass(cls):
                 @classmethod
                 def entity_name(cls):
-                    return class_name
+                    return inflection.underscore(class_name).lower()
 
             return NewClass
 
