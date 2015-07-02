@@ -78,6 +78,36 @@ class TestBase(object):
                                                  params=None)
         response_mock.json.assert_called_with()
 
+    @Base.entity_name_decorator()
+    class Entity(Base):
+        pass
+
+    class EntitySubclass(Entity):
+        pass
+
+    @Base.entity_name_decorator()
+    class CompositeEntity(Base):
+        pass
+
+    def test_entity_name_decorator(self):
+        entity = self.Entity(dict())
+        assert_equal(
+            entity.entity_name(), "entity",
+            "Deriving classes with the decorator should be automatically named")
+
+    def test_entity_name_decorator_subclass(self):
+        entity_sub = self.EntitySubclass(dict())
+        assert_equal(
+            entity_sub.entity_name(), "entity",
+            "Deriving classes without the decorator should keep the name of "
+            "their superclass")
+
+    def test_entity_name_decorator_composite(self):
+        composite_entity = self.CompositeEntity(dict())
+        assert_equal(
+            composite_entity.entity_name(), "composite_entity",
+            "Entity name should be underscored and lowercased")
+
     @raises(NotImplementedError)
     def test_endpoint_base(self):
         self.base.endpoint()
