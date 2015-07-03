@@ -1,17 +1,9 @@
-import requests
 from collections import namedtuple
 
+import requests
 import inflection
 
-class Configuration(namedtuple('Configuration', 'host port')):
-    @property
-    def service_address(self):
-        return "{}:{}".format(self.host, self.port)
-
-    @classmethod
-    def from_options(cls, options):
-        return cls(**options)
-
+import kalibro_client
 
 class Base(object):
     def __init__(self, attributes):
@@ -25,11 +17,17 @@ class Base(object):
     def entity_name(cls):
         raise NotImplementedError
 
+    @classmethod
+    def service_address(cls):
+        raise NotImplementedError
+
     def request(self, action, params=None, method='post', prefix=None):
+        url = self.service_address()
+
         if prefix:
-            url = "/" + prefix
+            url += "/" + prefix
         else:
-            url = ""
+            url += ""
         url += "/{}/{}".format(self.endpoint(), action)
 
         response = requests.request(method, url, params=params)

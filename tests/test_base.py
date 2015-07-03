@@ -1,27 +1,7 @@
 from mock import Mock, patch
 from nose.tools import assert_equal, raises
 
-from kalibro_client.base import Configuration, Base
-
-class TestConfiguration(object):
-    def setUp(self):
-        self.host = 'localhost'
-        self.port = '8000'
-        self.configuration = Configuration(self.host, self.port)
-
-    def test_init(self):
-        assert_equal(self.configuration.host, self.host)
-        assert_equal(self.configuration.port, self.port)
-
-    def test_service_address(self):
-        assert_equal(self.configuration.service_address,
-                     "{}:{}".format(self.host, self.port))
-
-    def test_from_options(self):
-        # This kind of assert works just because configuration is a namedtuple
-        assert_equal(Configuration.from_options({'host': self.host,
-                                                 'port': self.port}),
-                     self.configuration)
+from kalibro_client.base import Base
 
 class TestBase(object):
     def setUp(self):
@@ -38,22 +18,28 @@ class TestBase(object):
     def test_entity_name(self):
         self.base.entity_name()
 
+    @raises(NotImplementedError)
+    def test_service_address(self):
+        self.base.service_address()
+
     @patch('requests.request')
     def test_request(self, requests_request):
         self.base.endpoint = Mock(return_value="base")
+        self.base.service_address = Mock(return_value="http://base:8000")
 
         response_mock = Mock()
         response_mock.json = Mock(return_value=self.attributes)
         requests_request.return_value = response_mock
 
         assert_equal(self.base.request("find", method='get'), self.attributes)
-        requests_request.assert_called_once_with('get', "/base/find",
+        requests_request.assert_called_once_with('get', "http://base:8000/base/find",
                                                  params=None)
         response_mock.json.assert_called_with()
 
     @patch('requests.request')
     def test_request_with_prefix(self, requests_request):
         self.base.endpoint = Mock(return_value="base")
+        self.base.service_address = Mock(return_value="http://base:8000")
 
         response_mock = Mock()
         response_mock.json = Mock(return_value=self.attributes)
@@ -61,20 +47,21 @@ class TestBase(object):
 
         assert_equal(self.base.request("find", method='get', prefix='prefix'),
                      self.attributes)
-        requests_request.assert_called_once_with('get', "/prefix/base/find",
+        requests_request.assert_called_once_with('get', "http://base:8000/prefix/base/find",
                                                  params=None)
         response_mock.json.assert_called_with()
 
     @patch('requests.request')
     def test_request_with_default_method(self, requests_request):
         self.base.endpoint = Mock(return_value="base")
+        self.base.service_address = Mock(return_value="http://base:8000")
 
         response_mock = Mock()
         response_mock.json = Mock(return_value=self.attributes)
         requests_request.return_value = response_mock
 
         assert_equal(self.base.request("create"), self.attributes)
-        requests_request.assert_called_once_with('post', "/base/create",
+        requests_request.assert_called_once_with('post', "http://base:8000/base/create",
                                                  params=None)
         response_mock.json.assert_called_with()
 

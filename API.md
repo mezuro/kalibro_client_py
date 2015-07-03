@@ -5,3 +5,4 @@ Describes the general workings of the API, including differences between the Rub
 ## Differences to Ruby
 
 * There is no `persisted` attribute
+* There is no logger specification

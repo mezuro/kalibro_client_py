@@ -1,10 +1,13 @@
-from kalibro_client.base import Base, Configuration
+import kalibro_client
+from kalibro_client.base import Base
 
 class KalibroProcessorBase(Base):
-    configuration = Configuration('localhost', '8082')
-
     def __init__(self, attributes={}):
         super(KalibroProcessorBase, self).__init__(attributes)
+
+    @classmethod
+    def service_address(cls):
+        return kalibro_client.config()['kalibro_processor']
 
 class Project(KalibroProcessorBase):
     def __init__(self, attributes={}):
