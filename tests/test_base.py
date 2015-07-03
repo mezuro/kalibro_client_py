@@ -1,7 +1,7 @@
 from mock import Mock, patch
 from nose.tools import assert_equal, raises
 
-from kalibro_client_py.base import Configuration, Base
+from kalibro_client.base import Configuration, Base
 
 class TestConfiguration(object):
     def setUp(self):

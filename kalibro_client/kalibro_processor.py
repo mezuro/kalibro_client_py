@@ -1,4 +1,4 @@
-from kalibro_client_py.base import Base, Configuration
+from kalibro_client.base import Base, Configuration
 
 class KalibroProcessorBase(Base):
     configuration = Configuration('localhost', '8082')
