@@ -1,5 +1,4 @@
-from mock import Mock, patch
-from nose.tools import assert_equal, raises
+from nose.tools import assert_equal
 
 import kalibro_client
 
