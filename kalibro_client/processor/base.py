@@ -1,9 +1,8 @@
 import kalibro_client
-from kalibro_client.base import Base
+from kalibro_client.base import IdentityMixin, Base as ClientBase
 
-class Base(Base):
-    def __init__(self, attributes={}):
-        super(Base, self).__init__(attributes)
+class Base(IdentityMixin, ClientBase):
+    __slots__ = ()
 
     @classmethod
     def service_address(cls):

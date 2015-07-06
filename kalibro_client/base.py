@@ -1,12 +1,13 @@
 from datetime import datetime
+import inspect
 
 import requests
 import inflection
 import dateutil.parser
+import recordtype
 
 class Base(object):
-    def __init__(self, attributes):
-        self.attributes = dict(attributes)
+    __slots__ = ()
 
     @classmethod
     def endpoint(cls):
@@ -58,47 +59,71 @@ class Base(object):
 
         return class_rebuilder
 
-    def __getattr__(self, attr):
-        try:
-            return self.attributes[attr]
-        except KeyError:
-            raise AttributeError('Kalibro Base object has no attribute ' + attr)
+    @classmethod
+    def all_fields(cls):
+        visited = set()
+        for base in inspect.getmro(cls):
+            fields = getattr(base, 'fields', None)
+            if not fields or fields in visited:
+                continue
 
-    def __setattr__(self, attr, value):
-        # Must check if attributes actually exists, or we'll do an infinite loop
-        # in the constructor while initializing it.
-        if hasattr(self, 'attributes') and attr in self.attributes:
-            self.attributes[attr] = value
+            visited.add(fields)
+            for field in fields:
+                yield field
+
+    @classmethod
+    def recordtype(cls, name, fields, *args, **kwargs):
+        all_fields = list(cls.all_fields())
+        all_fields.extend(fields)
+
+        class NewClass(recordtype.recordtype(name, all_fields, *args, **kwargs),
+                       cls):
+            pass
+
+        NewClass.__name__ = name
+        return NewClass
+
+def slots_from_fields(fields):
+    slots = []
+    for field in fields:
+        if isinstance(field, (tuple, list)):
+            slots.append(field[0])
         else:
-            super(Base, self).__setattr__(attr, value)
+            slots.append(field)
+
+    return tuple(slots)
+
 class IdentityMixin(object):
+    fields = (('id', None), ('created_at', None), ('updated_at', None))
+    __slots__ = slots_from_fields(fields)
+
     @property
     def id(self):
-        return self.id_
+        return super(IdentityMixin, self).id
 
     @id.setter
     def id(self, value):
         value = int(value)
-        self.id_ = value
+        super(IdentityMixin, self).id = value
 
     @property
     def created_at(self):
-        return self.created_at_
+        return super(IdentityMixin, self).created_at
 
     @created_at.setter
     def created_at(self, value):
         if not isinstance(value, datetime):
             value = dateutil.parser.parse(value)
 
-        self.created_at_ = value
+        super(IdentityMixin, self).created_at = value
 
     @property
     def updated_at(self):
-        return self.created_at_
+        return super(IdentityMixin, self).updated_at
 
     @updated_at.setter
     def updated_at(self, value):
-        if not isinstance(value, datetime):
+        if value is not None and not isinstance(value, datetime):
             value = dateutil.parser.parse(value)
 
-        self.updated_at_ = value
+        super(IdentityMixin, self).updated_at = value
