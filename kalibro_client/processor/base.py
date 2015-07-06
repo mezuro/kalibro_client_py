@@ -7,11 +7,3 @@ class Base(IdentityMixin, ClientBase):
     @classmethod
     def service_address(cls):
         return kalibro_client.config()['kalibro_processor']
-
-class Project(Base):
-    def __init__(self, attributes={}):
-        self.id = ""
-        self.name = ""
-        self.description = ""
-
-        super(Project, self).__init__(attributes)
