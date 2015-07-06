@@ -1,5 +1,8 @@
+from datetime import datetime
+
 import requests
 import inflection
+import dateutil.parser
 
 class Base(object):
     def __init__(self, attributes):
@@ -68,3 +71,34 @@ class Base(object):
             self.attributes[attr] = value
         else:
             super(Base, self).__setattr__(attr, value)
+class IdentityMixin(object):
+    @property
+    def id(self):
+        return self.id_
+
+    @id.setter
+    def id(self, value):
+        value = int(value)
+        self.id_ = value
+
+    @property
+    def created_at(self):
+        return self.created_at_
+
+    @created_at.setter
+    def created_at(self, value):
+        if not isinstance(value, datetime):
+            value = dateutil.parser.parse(value)
+
+        self.created_at_ = value
+
+    @property
+    def updated_at(self):
+        return self.created_at_
+
+    @updated_at.setter
+    def updated_at(self, value):
+        if not isinstance(value, datetime):
+            value = dateutil.parser.parse(value)
+
+        self.updated_at_ = value
