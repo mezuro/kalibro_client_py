@@ -1,9 +1,5 @@
-from collections import namedtuple
-
 import requests
 import inflection
-
-import kalibro_client
 
 class Base(object):
     def __init__(self, attributes):
