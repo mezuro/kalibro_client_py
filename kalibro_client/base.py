@@ -57,71 +57,53 @@ class Base(object):
 
         return class_rebuilder
 
-    @classmethod
-    def all_fields(cls):
-        visited = set()
-        result = []
-        for base in inspect.getmro(cls):
-            fields = getattr(base, 'fields', None)
-            if not fields or fields in visited:
-                continue
 
-            visited.add(fields)
-            result.extend(fields)
+def attributes_class_constructor(name, fields, identity, *args, **kwargs):
 
-        return result
+    if not identity:
+        return recordtype.recordtype(name, fields, *args, **kwargs)
 
-    @classmethod
-    def recordtype(cls, name, fields, *args, **kwargs):
-        all_fields = list(cls.all_fields())
-        all_fields.extend(fields)
-        # Place fields with defaults last
-        all_fields.sort(key=lambda v: isinstance(v, tuple))
+    # Create the new class, inheriting from the record type and from this
+    # class
+    class IdentityClass(recordtype.recordtype(name, fields, *args,
+                                              **kwargs)):
+        def __init__(self, id=None, created_at=None, updated_at=None, *remaining_attributes):
+            super(IdentityClass, self).__init__(*remaining_attributes)
+            self.id = id
+            self.created_at = created_at
+            self.updated_at = updated_at
 
-        # Don't disable slots unless explicitly requested
-        kwargs.setdefault('use_slots', False)
+        @property
+        def id(self):
+            return self._id
 
-        # Create the new class, inheriting from the record type and from this
-        # class
-        class NewClass(cls, recordtype.recordtype(name, all_fields, *args,
-                                                  **kwargs)):
-            pass
+        @id.setter
+        def id(self, value):
+            if value is not None:
+                value = int(value)
 
-        NewClass.__name__ = name
-        NewClass.fields = fields
-        return NewClass
+            self._id = value
 
+        @property
+        def created_at(self):
+            return self._created_at
 
-class IdentityMixin(object):
-    fields = (('id', None), ('created_at', None), ('updated_at', None))
+        @created_at.setter
+        def created_at(self, value):
+            if value is not None and not isinstance(value, datetime):
+                value = dateutil.parser.parse(value)
 
-    @property
-    def id(self):
-        return super(IdentityMixin, self).id
+            self._created_at = value
 
-    @id.setter
-    def id(self, value):
-        value = int(value)
-        super(IdentityMixin, self).id = value
+        @property
+        def updated_at(self):
+            return self._updated_at
 
-    @property
-    def created_at(self):
-        return super(IdentityMixin, self).created_at
+        @updated_at.setter
+        def updated_at(self, value):
+            if value is not None and not isinstance(value, datetime):
+                value = dateutil.parser.parse(value)
 
-    @created_at.setter
-    def created_at(self, value):
-        if not isinstance(value, datetime):
-            value = dateutil.parser.parse(value)
+            self._updated_at = value
 
-        super(IdentityMixin, self).created_at = value
-
-    @property
-    def updated_at(self):
-        return super(IdentityMixin, self).updated_at
-
-    @updated_at.setter
-    def updated_at(self, value):
-        if value is not None and not isinstance(value, datetime):
-            value = dateutil.parser.parse(value)
-
-        super(IdentityMixin, self).updated_at = value
+    return IdentityClass

@@ -1,19 +1,19 @@
 from mock import Mock, patch
-from nose.tools import assert_equal, raises
+from nose.tools import assert_equal, raises, assert_true
 
-from kalibro_client.base import Base
+from kalibro_client.base import Base, attributes_class_constructor
 
-class Derived(Base.recordtype('Derived', ('id', 'name', 'description'))):
+#@Base.entity_name_decorator()
+class Derived(attributes_class_constructor('DerivedAttr', ('name', 'description'), False), Base):
     pass
 
 class TestBase(object):
     def setUp(self):
-        self.attributes = {'id': 1, 'name': 'A random Project',
+        self.attributes = {'name': 'A random Project',
                            'description': 'A real example Project'}
         self.base = Derived(**self.attributes)
 
     def test_init(self):
-        assert_equal(self.base.id, 1)
         assert_equal(self.base.name, 'A random Project')
         assert_equal(self.base.description, 'A real example Project')
 
@@ -118,3 +118,17 @@ class TestBase(object):
 
         assert_equal(self.CompositeEntity().endpoint(),
                      "composite_entities")
+
+    class Identified(attributes_class_constructor('IdentifiedAttr', (), True)):
+        pass
+
+    def test_identity_mixin_attributes(self):
+        identified = self.Identified()
+
+        assert_true(hasattr(identified, 'id'))
+        assert_true(hasattr(identified, 'created_at'))
+        assert_true(hasattr(identified, 'updated_at'))
+
+        #assert_true(hasattr(identified, 'id='))
+        #assert_true(hasattr(identified, 'created_at='))
+        #assert_true(hasattr(identified, 'updated_at='))
