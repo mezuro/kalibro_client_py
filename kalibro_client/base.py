@@ -7,8 +7,6 @@ import dateutil.parser
 import recordtype
 
 class Base(object):
-    __slots__ = ()
-
     @classmethod
     def endpoint(cls):
         return inflection.pluralize(cls.entity_name())
@@ -62,40 +60,40 @@ class Base(object):
     @classmethod
     def all_fields(cls):
         visited = set()
+        result = []
         for base in inspect.getmro(cls):
             fields = getattr(base, 'fields', None)
             if not fields or fields in visited:
                 continue
 
             visited.add(fields)
-            for field in fields:
-                yield field
+            result.extend(fields)
+
+        return result
 
     @classmethod
     def recordtype(cls, name, fields, *args, **kwargs):
         all_fields = list(cls.all_fields())
         all_fields.extend(fields)
+        # Place fields with defaults last
+        all_fields.sort(key=lambda v: isinstance(v, tuple))
 
-        class NewClass(recordtype.recordtype(name, all_fields, *args, **kwargs),
-                       cls):
+        # Don't disable slots unless explicitly requested
+        kwargs.setdefault('use_slots', False)
+
+        # Create the new class, inheriting from the record type and from this
+        # class
+        class NewClass(cls, recordtype.recordtype(name, all_fields, *args,
+                                                  **kwargs)):
             pass
 
         NewClass.__name__ = name
+        NewClass.fields = fields
         return NewClass
 
-def slots_from_fields(fields):
-    slots = []
-    for field in fields:
-        if isinstance(field, (tuple, list)):
-            slots.append(field[0])
-        else:
-            slots.append(field)
-
-    return tuple(slots)
 
 class IdentityMixin(object):
     fields = (('id', None), ('created_at', None), ('updated_at', None))
-    __slots__ = slots_from_fields(fields)
 
     @property
     def id(self):

@@ -3,11 +3,14 @@ from nose.tools import assert_equal, raises
 
 from kalibro_client.base import Base
 
+class Derived(Base.recordtype('Derived', ('id', 'name', 'description'))):
+    pass
+
 class TestBase(object):
     def setUp(self):
         self.attributes = {'id': 1, 'name': 'A random Project',
                            'description': 'A real example Project'}
-        self.base = Base(self.attributes)
+        self.base = Derived(**self.attributes)
 
     def test_init(self):
         assert_equal(self.base.id, 1)
@@ -67,7 +70,8 @@ class TestBase(object):
 
     @Base.entity_name_decorator()
     class Entity(Base):
-        pass
+        def __init__(self):
+            pass
 
     class EntitySubclass(Entity):
         pass
@@ -77,20 +81,20 @@ class TestBase(object):
         pass
 
     def test_entity_name_decorator(self):
-        entity = self.Entity(dict())
+        entity = self.Entity()
         assert_equal(
             entity.entity_name(), "entity",
             "Deriving classes with the decorator should be automatically named")
 
     def test_entity_name_decorator_subclass(self):
-        entity_sub = self.EntitySubclass(dict())
+        entity_sub = self.EntitySubclass()
         assert_equal(
             entity_sub.entity_name(), "entity",
             "Deriving classes without the decorator should keep the name of "
             "their superclass")
 
     def test_entity_name_decorator_composite(self):
-        composite_entity = self.CompositeEntity(dict())
+        composite_entity = self.CompositeEntity()
         assert_equal(
             composite_entity.entity_name(), "composite_entity",
             "Entity name should be underscored and lowercased")
@@ -112,5 +116,5 @@ class TestBase(object):
                               return_value=singular):
                 assert_equal(self.base.endpoint(), plural)
 
-        assert_equal(self.CompositeEntity(dict()).endpoint(),
+        assert_equal(self.CompositeEntity().endpoint(),
                      "composite_entities")
