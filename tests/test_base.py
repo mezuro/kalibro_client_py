@@ -9,7 +9,7 @@ from kalibro_client.base import Base, attributes_class_constructor
 from .helpers import not_raises
 
 #@Base.entity_name_decorator()
-class Derived(attributes_class_constructor('DerivedAttr', ('name', 'description'), False), Base):
+class Derived(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), Base):
     pass
 
 class TestBase(TestCase):
@@ -125,7 +125,7 @@ class TestBase(TestCase):
                      "composite_entities")
 
 class TestAttributesClassConstructor(TestCase):
-    class Identified(attributes_class_constructor('IdentifiedAttr', (), True)):
+    class Identified(attributes_class_constructor('IdentifiedAttr', ())):
         pass
 
     def setUp(self):

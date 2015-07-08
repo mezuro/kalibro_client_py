@@ -58,7 +58,7 @@ class Base(object):
         return class_rebuilder
 
 
-def attributes_class_constructor(name, fields, identity, *args, **kwargs):
+def attributes_class_constructor(name, fields, identity=True, *args, **kwargs):
     if not identity:
         return recordtype.recordtype(name, fields, *args, **kwargs)
 
