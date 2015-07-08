@@ -31,31 +31,30 @@ class Base(object):
         response = requests.request(method, url, params=params)
         return response.json()
 
-    @staticmethod
-    def entity_name_decorator():
-        """
-        Assign an entity name based on the class immediately inhering from Base.
+def entity_name_decorator():
+    """
+    Assign an entity name based on the class immediately inhering from Base.
 
-        This is needed because we don't want
-        entity names to come from any class that simply inherits our classes,
-        just the ones in our module.
+    This is needed because we don't want
+    entity names to come from any class that simply inherits our classes,
+    just the ones in our module.
 
-        For example, if you create a class Project2 that exists outside of
-        kalibro_client and inherits from Project, it's entity name should still
-        be Project.
-        """
+    For example, if you create a class Project2 that exists outside of
+    kalibro_client and inherits from Project, it's entity name should still
+    be Project.
+    """
 
-        def class_rebuilder(cls):
-            class_name = cls.__name__
+    def class_rebuilder(cls):
+        class_name = cls.__name__
 
-            class NewClass(cls):
-                @classmethod
-                def entity_name(cls):
-                    return inflection.underscore(class_name).lower()
+        class NewClass(cls):
+            @classmethod
+            def entity_name(cls):
+                return inflection.underscore(class_name).lower()
 
-            return NewClass
+        return NewClass
 
-        return class_rebuilder
+    return class_rebuilder
 
 
 def attributes_class_constructor(name, fields, identity=True, *args, **kwargs):

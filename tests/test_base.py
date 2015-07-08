@@ -4,12 +4,17 @@ from mock import Mock, patch
 from nose.tools import assert_equal, raises, assert_true
 import dateutil.parser
 
-from kalibro_client.base import Base, attributes_class_constructor
+from kalibro_client.base import Base, attributes_class_constructor, entity_name_decorator
 
 from .helpers import not_raises
 
 #@Base.entity_name_decorator()
 class Derived(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), Base):
+    pass
+
+
+@entity_name_decorator()
+class CompositeEntity(Base):
     pass
 
 class TestBase(TestCase):
@@ -73,37 +78,6 @@ class TestBase(TestCase):
                                                  params=None)
         response_mock.json.assert_called_with()
 
-    @Base.entity_name_decorator()
-    class Entity(Base):
-        def __init__(self):
-            pass
-
-    class EntitySubclass(Entity):
-        pass
-
-    @Base.entity_name_decorator()
-    class CompositeEntity(Base):
-        pass
-
-    def test_entity_name_decorator(self):
-        entity = self.Entity()
-        assert_equal(
-            entity.entity_name(), "entity",
-            "Deriving classes with the decorator should be automatically named")
-
-    def test_entity_name_decorator_subclass(self):
-        entity_sub = self.EntitySubclass()
-        assert_equal(
-            entity_sub.entity_name(), "entity",
-            "Deriving classes without the decorator should keep the name of "
-            "their superclass")
-
-    def test_entity_name_decorator_composite(self):
-        composite_entity = self.CompositeEntity()
-        assert_equal(
-            composite_entity.entity_name(), "composite_entity",
-            "Entity name should be underscored and lowercased")
-
     @raises(NotImplementedError)
     def test_endpoint_base(self):
         self.base.endpoint()
@@ -121,8 +95,38 @@ class TestBase(TestCase):
                               return_value=singular):
                 assert_equal(self.base.endpoint(), plural)
 
-        assert_equal(self.CompositeEntity().endpoint(),
+        assert_equal(CompositeEntity().endpoint(),
                      "composite_entities")
+
+
+class TestsEntityNameDecorator(TestCase):
+    @entity_name_decorator()
+    class Entity(Base):
+        def __init__(self):
+            pass
+
+    class EntitySubclass(Entity):
+        pass
+
+
+    def test_decorator(self):
+        entity = self.Entity()
+        assert_equal(
+            entity.entity_name(), "entity",
+            "Deriving classes with the decorator should be automatically named")
+
+    def test_decorator_with_subclass(self):
+        entity_sub = self.EntitySubclass()
+        assert_equal(
+            entity_sub.entity_name(), "entity",
+            "Deriving classes without the decorator should keep the name of "
+            "their superclass")
+
+    def test_decorator_with_composite_name(self):
+        composite_entity = CompositeEntity()
+        assert_equal(
+            composite_entity.entity_name(), "composite_entity",
+            "Entity name should be underscored and lowercased")
 
 class TestAttributesClassConstructor(TestCase):
     class Identified(attributes_class_constructor('IdentifiedAttr', ())):
