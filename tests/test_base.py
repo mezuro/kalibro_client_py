@@ -1,10 +1,11 @@
 from unittest import TestCase
 
-from mock import Mock, patch
+from mock import Mock, patch, create_autospec
 from nose.tools import assert_equal, raises, assert_true
 import dateutil.parser
 
 from kalibro_client.base import Base, attributes_class_constructor, entity_name_decorator
+from kalibro_client.errors import KalibroClientSaveError
 
 from .helpers import not_raises
 
@@ -97,6 +98,29 @@ class TestBase(TestCase):
 
         assert_equal(CompositeEntity().endpoint(),
                      "composite_entities")
+
+    @entity_name_decorator
+    class IdentifiedBase(attributes_class_constructor('Identified', ('attribute')), Base):
+        pass
+
+    @not_raises(KalibroClientSaveError)
+    def test_successful_save(self):
+        subject = self.IdentifiedBase(attribute='test')
+
+        id = 42
+        date = dateutil.parser.parse("2015-07-05T22:16:18+00:00")
+
+        successful_response = {'identified_base': {'id': str(id),
+                                                   'created_at': date.isoformat(),
+                                                   'updated_at': date.isoformat()}}
+        subject.request = create_autospec(subject.request, return_value=successful_response)
+
+        subject.save()
+
+        subject.request.assert_called_with('', {'attribute': 'test'})
+        assert_equal(subject.id, id)
+        assert_equal(subject.created_at, date)
+        assert_equal(subject.updated_at, date)
 
 
 class TestsEntityNameDecorator(TestCase):

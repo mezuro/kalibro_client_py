@@ -6,6 +6,8 @@ import inflection
 import dateutil.parser
 import recordtype
 
+from kalibro_client.errors import KalibroClientSaveError
+
 class Base(object):
     @classmethod
     def endpoint(cls):
@@ -30,6 +32,18 @@ class Base(object):
 
         response = requests.request(method, url, params=params)
         return response.json()
+
+    def save(self):
+        response = self.request('', self._asdict())
+
+        if 'errors' not in response:
+            response_body = response[self.entity_name()]
+
+            self.id = response_body['id']
+            self.created_at = response_body['created_at']
+            self.updated_at = response_body['updated_at']
+        else:
+            raise KalibroClientSaveError(response['errors'])
 
 
 def entity_name_decorator(top_cls):
