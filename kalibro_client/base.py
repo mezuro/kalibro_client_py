@@ -31,7 +31,8 @@ class Base(object):
         response = requests.request(method, url, params=params)
         return response.json()
 
-def entity_name_decorator():
+
+def entity_name_decorator(top_cls):
     """
     Assign an entity name based on the class immediately inhering from Base.
 
@@ -43,18 +44,14 @@ def entity_name_decorator():
     kalibro_client and inherits from Project, it's entity name should still
     be Project.
     """
+    class_name = top_cls.__name__
 
-    def class_rebuilder(cls):
-        class_name = cls.__name__
+    class NewClass(top_cls):
+        @classmethod
+        def entity_name(cls):
+            return inflection.underscore(class_name).lower()
 
-        class NewClass(cls):
-            @classmethod
-            def entity_name(cls):
-                return inflection.underscore(class_name).lower()
-
-        return NewClass
-
-    return class_rebuilder
+    return NewClass
 
 
 def attributes_class_constructor(name, fields, identity=True, *args, **kwargs):

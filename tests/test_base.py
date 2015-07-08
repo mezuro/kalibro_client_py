@@ -13,7 +13,7 @@ class Derived(attributes_class_constructor('DerivedAttr', ('name', 'description'
     pass
 
 
-@entity_name_decorator()
+@entity_name_decorator
 class CompositeEntity(Base):
     pass
 
@@ -100,7 +100,7 @@ class TestBase(TestCase):
 
 
 class TestsEntityNameDecorator(TestCase):
-    @entity_name_decorator()
+    @entity_name_decorator
     class Entity(Base):
         def __init__(self):
             pass
