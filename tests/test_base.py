@@ -1,13 +1,18 @@
+from unittest import TestCase
+
 from mock import Mock, patch
 from nose.tools import assert_equal, raises, assert_true
+import dateutil.parser
 
 from kalibro_client.base import Base, attributes_class_constructor
+
+from .helpers import not_raises
 
 #@Base.entity_name_decorator()
 class Derived(attributes_class_constructor('DerivedAttr', ('name', 'description'), False), Base):
     pass
 
-class TestBase(object):
+class TestBase(TestCase):
     def setUp(self):
         self.attributes = {'name': 'A random Project',
                            'description': 'A real example Project'}
@@ -119,16 +124,55 @@ class TestBase(object):
         assert_equal(self.CompositeEntity().endpoint(),
                      "composite_entities")
 
+class TestAttributesClassConstructor(TestCase):
     class Identified(attributes_class_constructor('IdentifiedAttr', (), True)):
         pass
 
-    def test_identity_mixin_attributes(self):
-        identified = self.Identified()
+    def setUp(self):
+        self.identified = self.Identified()
 
-        assert_true(hasattr(identified, 'id'))
-        assert_true(hasattr(identified, 'created_at'))
-        assert_true(hasattr(identified, 'updated_at'))
+    def test_properties_getters(self):
+        assert_true(hasattr(self.identified, 'id'))
+        assert_true(hasattr(self.identified, 'created_at'))
+        assert_true(hasattr(self.identified, 'updated_at'))
 
-        #assert_true(hasattr(identified, 'id='))
-        #assert_true(hasattr(identified, 'created_at='))
-        #assert_true(hasattr(identified, 'updated_at='))
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.identified.id = None
+        self.identified.created_at = None
+        self.identified.updated_at = None
+
+    @not_raises(ValueError)
+    def test_id_setter(self):
+        self.identified.id = 10
+        self.identified.id = "10"
+
+    @raises(ValueError)
+    def test_id_setter_invalid(self):
+        self.identified.id = "wrong"
+
+    @not_raises(ValueError)
+    def test_created_at_setter(self):
+        # ISO8601 format
+        date_str = "2015-07-05T22:16:18+00:00"
+        self.identified.created_at = date_str
+
+        date_obj = dateutil.parser.parse(date_str)
+        self.identified.created_at = date_obj
+
+    @raises(ValueError)
+    def test_created_at_setter_invalid(self):
+        self.identified.created_at = "wrong"
+
+    @not_raises(ValueError)
+    def test_updated_at_setter(self):
+        # ISO8601 format
+        date_str = "2015-07-05T22:16:18+00:00"
+        self.identified.updated_at = date_str
+
+        date_obj = dateutil.parser.parse(date_str)
+        self.identified.updated_at = date_obj
+
+    @raises(ValueError)
+    def test_updated_at_setter_invalid(self):
+        self.identified.updated_at = "wrong"
