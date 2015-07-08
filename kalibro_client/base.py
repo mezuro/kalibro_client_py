@@ -59,16 +59,15 @@ class Base(object):
 
 
 def attributes_class_constructor(name, fields, identity, *args, **kwargs):
-
     if not identity:
         return recordtype.recordtype(name, fields, *args, **kwargs)
 
     # Create the new class, inheriting from the record type and from this
     # class
-    class IdentityClass(recordtype.recordtype(name, fields, *args,
-                                              **kwargs)):
-        def __init__(self, id=None, created_at=None, updated_at=None, *remaining_attributes):
-            super(IdentityClass, self).__init__(*remaining_attributes)
+    class IdentityClass(recordtype.recordtype(name, fields, *args, **kwargs)):
+        def __init__(self, id=None, created_at=None, updated_at=None,
+                     *init_args, **init_kwargs):
+            super(IdentityClass, self).__init__(*init_args, **init_kwargs)
             self.id = id
             self.created_at = created_at
             self.updated_at = updated_at
