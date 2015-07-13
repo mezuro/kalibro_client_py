@@ -3,6 +3,7 @@ from unittest import TestCase
 from mock import Mock, patch, create_autospec
 from nose.tools import assert_equal, raises, assert_true
 import dateutil.parser
+import json
 
 from kalibro_client.base import Base, attributes_class_constructor, entity_name_decorator
 from kalibro_client.errors import KalibroClientSaveError
@@ -23,6 +24,9 @@ class TestBase(TestCase):
         self.attributes = {'name': 'A random Project',
                            'description': 'A real example Project'}
         self.base = Derived(**self.attributes)
+        self.headers = {'Content-Type': 'application/json'}
+        self.nulldata = json.dumps(None)  # request method always calls json.dumps
+        self.json_dumps_attributes = json.dumps(self.attributes)
 
     def test_init(self):
         assert_equal(self.base.name, 'A random Project')
@@ -47,7 +51,7 @@ class TestBase(TestCase):
 
         assert_equal(self.base.request("find", method='get'), self.attributes)
         requests_request.assert_called_once_with('get', "http://base:8000/base/find",
-                                                 params=None)
+                                                 data=self.nulldata, headers=self.headers)
         response_mock.json.assert_called_with()
 
     @patch('requests.request')
@@ -62,7 +66,7 @@ class TestBase(TestCase):
         assert_equal(self.base.request("find", method='get', prefix='prefix'),
                      self.attributes)
         requests_request.assert_called_once_with('get', "http://base:8000/prefix/base/find",
-                                                 params=None)
+                                                 data=self.nulldata, headers=self.headers)
         response_mock.json.assert_called_with()
 
     @patch('requests.request')
@@ -76,7 +80,24 @@ class TestBase(TestCase):
 
         assert_equal(self.base.request("create"), self.attributes)
         requests_request.assert_called_once_with('post', "http://base:8000/base/create",
-                                                 params=None)
+                                                 data=self.nulldata, headers=self.headers)
+        response_mock.json.assert_called_with()
+
+    @patch('json.dumps')
+    @patch('requests.request')
+    def test_request_with_parameters(self, requests_request, json_dumps):
+        self.base.endpoint = Mock(return_value="base")
+        self.base.service_address = Mock(return_value="http://base:8000")
+
+        response_mock = Mock()
+        response_mock.json = Mock(return_value=self.attributes)
+        requests_request.return_value = response_mock
+        json_dumps.return_value = self.json_dumps_attributes
+
+        assert_equal(self.base.request("create", params=self.attributes), self.attributes)
+        json_dumps.assert_called_once_with(self.attributes)
+        requests_request.assert_called_once_with('post', "http://base:8000/base/create",
+                                                 data=self.json_dumps_attributes, headers=self.headers)
         response_mock.json.assert_called_with()
 
     @raises(NotImplementedError)
@@ -117,7 +138,7 @@ class TestBase(TestCase):
 
         subject.save()
 
-        subject.request.assert_called_with('', {'attribute': 'test'})
+        subject.request.assert_called_with('', {subject.entity_name() : subject._asdict()})
         assert_equal(subject.id, id)
         assert_equal(subject.created_at, date)
         assert_equal(subject.updated_at, date)

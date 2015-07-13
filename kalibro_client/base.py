@@ -1,6 +1,7 @@
 from datetime import datetime
 import inspect
 
+import json
 import requests
 import inflection
 import dateutil.parser
@@ -30,11 +31,11 @@ class Base(object):
             url += ""
         url += "/{}/{}".format(self.endpoint(), action)
 
-        response = requests.request(method, url, params=params)
+        response = requests.request(method, url, data=json.dumps(params), headers={'Content-Type': 'application/json'})
         return response.json()
 
     def save(self):
-        response = self.request('', self._asdict())
+        response = self.request('', {self.entity_name(): self._asdict()})
 
         if 'errors' not in response:
             response_body = response[self.entity_name()]
