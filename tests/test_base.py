@@ -143,6 +143,17 @@ class TestBase(TestCase):
         assert_equal(subject.created_at, date)
         assert_equal(subject.updated_at, date)
 
+    @raises(KalibroClientSaveError)
+    def test_unsuccessful_save(self):
+        subject = self.IdentifiedBase(attribute='test')
+
+        unsuccessful_response = {'errors': ['A string with an error']}
+        subject.request = create_autospec(subject.request, return_value=unsuccessful_response)
+
+        subject.save()
+
+        subject.request.assert_called_with('', {subject.entity_name() : subject._asdict()})
+
 
 class TestsEntityNameDecorator(TestCase):
     @entity_name_decorator
