@@ -45,6 +45,28 @@ class Base(object):
         else:
             raise KalibroClientSaveError(response['errors'])
 
+    @classmethod
+    def _is_valid_field(cls, name):
+        return name in cls._fields
+
+    def update(self, **kwargs):
+        if not self.id:
+            raise KalibroClientSaveError()
+
+        for attr, value in kwargs.items():
+            if self._is_valid_field(attr):
+                setattr(self, attr, value)
+
+        response = self.request(str(self.id),
+            {self.entity_name(): self._asdict(), 'id': str(self.id)},
+            method='put')
+
+        if 'errors' in response:
+            raise KalibroClientSaveError(response['errors'])
+
+        response_body = response[self.entity_name()]
+        self.updated_at = response_body['updated_at']
+
 
 def entity_name_decorator(top_cls):
     """
