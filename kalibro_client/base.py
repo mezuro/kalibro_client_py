@@ -27,11 +27,10 @@ class Base(object):
 
         if prefix:
             url += "/" + prefix
-        else:
-            url += ""
         url += "/{}/{}".format(self.endpoint(), action)
 
-        response = requests.request(method, url, data=json.dumps(params), headers={'Content-Type': 'application/json'})
+        response = requests.request(method, url, data=json.dumps(params),
+                                    headers={'Content-Type': 'application/json'})
         return response.json()
 
     def save(self):
