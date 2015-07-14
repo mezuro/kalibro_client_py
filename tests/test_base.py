@@ -10,10 +10,8 @@ from kalibro_client.errors import KalibroClientSaveError
 
 from .helpers import not_raises
 
-#@Base.entity_name_decorator()
 class Derived(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), Base):
     pass
-
 
 @entity_name_decorator
 class CompositeEntity(Base):
