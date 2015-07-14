@@ -19,6 +19,10 @@ class Derived(attributes_class_constructor('DerivedAttr',
 
 
 @entity_name_decorator
+class DerivedWithEntityName(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), Base):
+    pass
+
+@entity_name_decorator
 class CompositeEntity(Base):
     pass
 
@@ -185,6 +189,23 @@ class TestBase(TestCase):
         assert_true(not IdentifiedBase._is_valid_field('invalid'))
         assert_true(not IdentifiedBase._is_valid_field('errors'))
 
+
+    def test_response_to_objects_array(self):
+        array = [DerivedWithEntityName('fizz', 'buzz'), DerivedWithEntityName('zzif', 'zzub')]
+        with patch.object(DerivedWithEntityName, 'array_to_objects_array', return_value=array) as mock:
+            hash_array = [{'name': 'fizz', 'description': 'buzz'},
+                          {'name': 'zzif', 'description': 'zzub'}]
+            response = {'derived_with_entity_names': hash_array}
+            objects_array = DerivedWithEntityName.response_to_objects_array(response)
+            mock.assert_called_once_with(hash_array)
+
+
+    def test_array_to_objects_array(self):
+        array = [{'name': 'fizz', 'description': 'buzz'},
+                 {'name': 'zzif', 'description': 'zzub'}]
+        self.assertEqual(DerivedWithEntityName.array_to_objects_array(array),
+                         [DerivedWithEntityName('fizz', 'buzz'),
+                          DerivedWithEntityName('zzif', 'zzub')])
 
 class TestsEntityNameDecorator(TestCase):
     @entity_name_decorator
