@@ -2,7 +2,7 @@ import json
 from unittest import TestCase
 
 from mock import Mock, patch, create_autospec
-from nose.tools import assert_equal, raises, assert_true
+from nose.tools import assert_equal, assert_true, assert_raises_regexp, raises
 import dateutil.parser
 
 from kalibro_client.base import Base, attributes_class_constructor, entity_name_decorator
@@ -182,13 +182,14 @@ class TestBase(TestCase):
         assert_equal(subject.updated_at, updated_date)
         assert_equal(subject.attribute, new_attribute_value)
 
-    @raises(KalibroClientSaveError)
     def test_unsuccessful_update_without_id(self):
         subject = self.IdentifiedBase(id=None, attribute='test')
         subject.request = create_autospec(subject.request,
             side_effect=AssertionError("Request should not be called for update without id"))
 
-        subject.update(attribute='new value')
+        with assert_raises_regexp(KalibroClientSaveError,
+                                  "Cannot update a record that is not saved."):
+            subject.update(attribute='new value')
 
     @raises(KalibroClientSaveError)
     def test_unsuccessful_update(self):

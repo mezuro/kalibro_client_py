@@ -51,7 +51,7 @@ class Base(object):
 
     def update(self, **kwargs):
         if not self.id:
-            raise KalibroClientSaveError()
+            raise KalibroClientSaveError("Cannot update a record that is not saved.")
 
         for attr, value in kwargs.items():
             if self._is_valid_field(attr):
