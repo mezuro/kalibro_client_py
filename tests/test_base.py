@@ -1,9 +1,9 @@
+import json
 from unittest import TestCase
 
 from mock import Mock, patch, create_autospec
-from nose.tools import assert_equal, raises, assert_true
+from nose.tools import assert_equal, assert_true, assert_raises_regexp, raises
 import dateutil.parser
-import json
 
 from kalibro_client.base import Base, attributes_class_constructor, entity_name_decorator
 from kalibro_client.errors import KalibroClientSaveError
@@ -18,6 +18,7 @@ class Derived(attributes_class_constructor('DerivedAttr', ('name', 'description'
 @entity_name_decorator
 class CompositeEntity(Base):
     pass
+
 
 class TestBase(TestCase):
     def setUp(self):
@@ -153,6 +154,56 @@ class TestBase(TestCase):
         subject.save()
 
         subject.request.assert_called_with('', {subject.entity_name() : subject._asdict()})
+
+    @not_raises(KalibroClientSaveError)
+    def test_successful_update(self):
+        date = dateutil.parser.parse("2015-07-05T22:16:18+00:00")
+        updated_date = dateutil.parser.parse("2020-07-05T22:16:18+00:00")
+        new_attribute_value = 'new_value'
+
+        subject = self.IdentifiedBase(id=42, created_at=date, updated_at=date, attribute='test')
+
+        request_params = {subject.entity_name(): subject._asdict()}
+        request_params['id'] = str(subject.id)
+        request_params[subject.entity_name()]['attribute'] = new_attribute_value
+
+        successful_response = {'identified_base': {'id': str(subject.id),
+                                                   'created_at': date.isoformat(),
+                                                   'updated_at': updated_date.isoformat(),
+                                                   'attribute': new_attribute_value}}
+        subject.request = create_autospec(subject.request, return_value=successful_response)
+
+        subject.update(attribute=new_attribute_value)
+
+        subject.request.assert_called_with(str(subject.id), request_params, method='put')
+
+        assert_equal(subject.id, 42)
+        assert_equal(subject.created_at, date)
+        assert_equal(subject.updated_at, updated_date)
+        assert_equal(subject.attribute, new_attribute_value)
+
+    def test_unsuccessful_update_without_id(self):
+        subject = self.IdentifiedBase(id=None, attribute='test')
+        subject.request = create_autospec(subject.request,
+            side_effect=AssertionError("Request should not be called for update without id"))
+
+        with assert_raises_regexp(KalibroClientSaveError,
+                                  "Cannot update a record that is not saved."):
+            subject.update(attribute='new value')
+
+    @raises(KalibroClientSaveError)
+    def test_unsuccessful_update(self):
+        subject = self.IdentifiedBase(id=42, attribute='test')
+        unsuccessful_response = {'errors': ['A string with an error']}
+
+        subject.request = create_autospec(subject.request, return_value=unsuccessful_response)
+
+        subject.update(attribute='new_value')
+
+    def test_is_valid_field(self):
+        assert_true(self.IdentifiedBase._is_valid_field('attribute'))
+        assert_true(not self.IdentifiedBase._is_valid_field('invalid'))
+        assert_true(not self.IdentifiedBase._is_valid_field('errors'))
 
 
 class TestsEntityNameDecorator(TestCase):
