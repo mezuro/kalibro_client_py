@@ -142,6 +142,33 @@ class TestBase(TestCase):
         assert_equal(subject.created_at, date)
         assert_equal(subject.updated_at, date)
 
+    @not_raises(KalibroClientSaveError)
+    def test_successful_save_with_update(self):
+        date = dateutil.parser.parse("2015-07-05T22:16:18+00:00")
+        updated_date = dateutil.parser.parse("2020-07-05T22:16:18+00:00")
+        new_attribute_value = 'new_value'
+
+        subject = self.IdentifiedBase(id=42, created_at=date, updated_at=date, attribute='test')
+
+        request_params = {subject.entity_name(): subject._asdict()}
+        request_params['id'] = str(subject.id)
+        request_params[subject.entity_name()]['attribute'] = new_attribute_value
+
+        successful_response = {'identified_base': {'id': str(subject.id),
+                                                   'created_at': date.isoformat(),
+                                                   'updated_at': updated_date.isoformat(),
+                                                   'attribute': new_attribute_value}}
+        subject.request = create_autospec(subject.request, return_value=successful_response)
+        subject.attribute = new_attribute_value
+        subject.save()
+
+        subject.request.assert_called_with(str(subject.id), request_params, method='put')
+
+        assert_equal(subject.id, 42)
+        assert_equal(subject.created_at, date)
+        assert_equal(subject.updated_at, updated_date)
+        assert_equal(subject.attribute, new_attribute_value)
+
     @raises(KalibroClientSaveError)
     def test_unsuccessful_save(self):
         subject = self.IdentifiedBase(attribute='test')
