@@ -224,6 +224,23 @@ class TestBase(TestCase):
                      [DerivedWithEntityName('fizz', 'buzz'),
                      DerivedWithEntityName('zzif', 'zzub')])
 
+    def test_when_record_exists(self):
+        self.IdentifiedBase.request = create_autospec(self.IdentifiedBase.request,
+                                                      return_value={'exists': True})
+        exists = self.IdentifiedBase.exists(42)
+        self.IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
+                                                       method='get')
+        assert_true(exists)
+
+    def test_when_record_does_not_exist(self):
+        self.IdentifiedBase.request = create_autospec(self.IdentifiedBase.request,
+                                          return_value={'exists': False})
+        exists = self.IdentifiedBase.exists(42)
+        self.IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
+                                                       method='get')
+        assert_true(not exists)
+
+
 class TestsEntityNameDecorator(TestCase):
     @entity_name_decorator
     class Entity(Base):

@@ -86,6 +86,10 @@ class Base(object):
     def array_to_objects_array(cls, array):
         return [cls(**attributes) for attributes in array]
 
+    @classmethod
+    def exists(cls, id):
+        return cls.request('{}/exists'.format(id), method='get')['exists']
+
 
 def entity_name_decorator(top_cls):
     """
