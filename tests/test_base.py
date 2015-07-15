@@ -52,12 +52,12 @@ class TestBase(TestCase):
 
     @raises(NotImplementedError)
     def test_service_address(self):
-        self.base.service_address()
+        Base.service_address()
 
     @patch('requests.request')
     def test_request(self, requests_request):
-        self.base.endpoint = Mock(return_value="base")
-        self.base.service_address = Mock(return_value="http://base:8000")
+        self.base.__class__.endpoint = Mock(return_value="base")
+        self.base.__class__.service_address = Mock(return_value="http://base:8000")
 
         response_mock = Mock()
         response_mock.json = Mock(return_value=self.attributes)

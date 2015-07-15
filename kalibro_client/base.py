@@ -21,12 +21,13 @@ class Base(object):
     def service_address(cls):
         raise NotImplementedError
 
-    def request(self, action, params=None, method='post', prefix=None):
-        url = self.service_address()
+    @classmethod
+    def request(cls, action, params=None, method='post', prefix=None):
+        url = cls.service_address()
 
         if prefix:
             url += "/" + prefix
-        url += "/{}/{}".format(self.endpoint(), action)
+        url += "/{}/{}".format(cls.endpoint(), action)
 
         response = requests.request(method, url, data=json.dumps(params),
                                     headers={'Content-Type': 'application/json'})
