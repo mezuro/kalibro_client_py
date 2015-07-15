@@ -225,20 +225,20 @@ class TestBase(TestCase):
                      DerivedWithEntityName('zzif', 'zzub')])
 
     def test_when_record_exists(self):
-        self.IdentifiedBase.request = create_autospec(self.IdentifiedBase.request,
-                                                      return_value={'exists': True})
-        exists = self.IdentifiedBase.exists(42)
-        self.IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
-                                                       method='get')
-        assert_true(exists)
+        with patch.object(IdentifiedBase, 'request', return_value={'exists': True}) as mock_request:
+            exists = IdentifiedBase.exists(42)
+            IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
+                                                      method='get')
+            mock_request.assert_called_once()
+            assert_true(exists)
 
     def test_when_record_does_not_exist(self):
-        self.IdentifiedBase.request = create_autospec(self.IdentifiedBase.request,
-                                          return_value={'exists': False})
-        exists = self.IdentifiedBase.exists(42)
-        self.IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
-                                                       method='get')
-        assert_true(not exists)
+        with patch.object(IdentifiedBase, 'request', return_value={'exists': False}) as mock_request:
+            exists = IdentifiedBase.exists(42)
+            IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
+                                                      method='get')
+            mock_request.assert_called_once()
+            assert_true(not exists)
 
 
 class TestsEntityNameDecorator(TestCase):
