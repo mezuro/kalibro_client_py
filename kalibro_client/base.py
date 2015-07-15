@@ -6,7 +6,9 @@ import inflection
 import dateutil.parser
 import recordtype
 
-from kalibro_client.errors import KalibroClientSaveError
+from kalibro_client.errors import KalibroClientSaveError, \
+    KalibroClientNotFoundError
+
 
 class Base(object):
     @classmethod
@@ -72,6 +74,14 @@ class Base(object):
 
         response_body = response[self.entity_name()]
         self.updated_at = response_body['updated_at']
+
+    @classmethod
+    def find(cls, id):
+        response = cls.request('{}'.format(id), method='get')
+        if 'errors' in response:
+            raise KalibroClientNotFoundError(response['errors'])
+        return cls(**response[cls.entity_name()])
+
 
     @classmethod
     def all(cls):

@@ -7,7 +7,8 @@ import dateutil.parser
 
 from kalibro_client.base import Base, attributes_class_constructor, \
     entity_name_decorator
-from kalibro_client.errors import KalibroClientSaveError
+from kalibro_client.errors import KalibroClientSaveError, \
+    KalibroClientNotFoundError
 
 from .helpers import not_raises
 
@@ -239,6 +240,29 @@ class TestBase(TestCase):
                                                       method='get')
             mock_request.assert_called_once()
             assert_true(not exists)
+
+    def test_find_when_it_finds_something(self):
+        date_str = dateutil.parser.parse("2015-07-05T22:16:18+00:00")
+        subject = IdentifiedBase(id=1, attribute="attributes",
+                                 created_at=date_str, updated_at=date_str)
+        with patch.object(IdentifiedBase, 'request',
+                          return_value={'identified_base': {'id': subject.id,
+                                                            'attribute': subject.attribute,
+                                                            'created_at': subject.created_at,
+                                                            'updated_at': subject.updated_at}}) as mock:
+            found_object = IdentifiedBase.find(subject.id)
+            assert_equal(subject, found_object)
+            mock.assert_called_once_with("{}".format(subject.id), method='get')
+
+    @raises(KalibroClientNotFoundError)
+    def test_find_when_it_does_not_find_anything(self):
+        date_str = dateutil.parser.parse("2015-07-05T22:16:18+00:00")
+        subject = IdentifiedBase(id=1, attribute="attributes",
+                                 created_at=date_str, updated_at=date_str)
+        with patch.object(IdentifiedBase, 'request',
+                          return_value={'errors': ["Couldn't find object"]}) as mock:
+            IdentifiedBase.find(subject.id)
+            mock.assert_called_once_with("{}".format(subject.id), method='get')
 
 
 class TestsEntityNameDecorator(TestCase):
