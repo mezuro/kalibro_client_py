@@ -19,6 +19,10 @@ class Derived(attributes_class_constructor('DerivedAttr',
 
 
 @entity_name_decorator
+class DerivedWithEntityName(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), Base):
+    pass
+
+@entity_name_decorator
 class CompositeEntity(Base):
     pass
 
@@ -185,6 +189,35 @@ class TestBase(TestCase):
         assert_true(not IdentifiedBase._is_valid_field('invalid'))
         assert_true(not IdentifiedBase._is_valid_field('errors'))
 
+    def test_all(self):
+        hash_array = [{'name': 'fizz', 'description': 'buzz'},
+                      {'name': 'zzif', 'description': 'zzub'}]
+        response = {'derived': hash_array}
+        objects = [Derived('fizz', 'buzz'),
+                   Derived('zzif', 'zzub')]
+        with patch.object(Derived, 'request', return_value=response) as request_mock, \
+             patch.object(Derived, 'response_to_objects_array', return_value=objects) as mock:
+            Derived.all()
+            request_mock.assert_called_once_with('', method='get')
+            mock.assert_called_once_with(response)
+
+
+    def test_response_to_objects_array(self):
+        array = [DerivedWithEntityName('fizz', 'buzz'), DerivedWithEntityName('zzif', 'zzub')]
+        with patch.object(DerivedWithEntityName, 'array_to_objects_array', return_value=array) as mock:
+            hash_array = [{'name': 'fizz', 'description': 'buzz'},
+                          {'name': 'zzif', 'description': 'zzub'}]
+            response = {'derived_with_entity_names': hash_array}
+            DerivedWithEntityName.response_to_objects_array(response)
+            mock.assert_called_once_with(hash_array)
+
+
+    def test_array_to_objects_array(self):
+        array = [{'name': 'fizz', 'description': 'buzz'},
+                 {'name': 'zzif', 'description': 'zzub'}]
+        assert_equal(DerivedWithEntityName.array_to_objects_array(array),
+                     [DerivedWithEntityName('fizz', 'buzz'),
+                     DerivedWithEntityName('zzif', 'zzub')])
 
 class TestsEntityNameDecorator(TestCase):
     @entity_name_decorator

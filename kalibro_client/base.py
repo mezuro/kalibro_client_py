@@ -1,5 +1,4 @@
 from datetime import datetime
-import inspect
 
 import json
 import requests
@@ -72,6 +71,19 @@ class Base(object):
 
         response_body = response[self.entity_name()]
         self.updated_at = response_body['updated_at']
+
+    @classmethod
+    def all(cls):
+        return cls.response_to_objects_array(cls.request('', method='get'))
+
+    @classmethod
+    def response_to_objects_array(cls, response):
+        array = response[inflection.pluralize(cls.entity_name())]
+        return cls.array_to_objects_array(array)
+
+    @classmethod
+    def array_to_objects_array(cls, array):
+        return [cls(**attributes) for attributes in array]
 
 
 def entity_name_decorator(top_cls):
