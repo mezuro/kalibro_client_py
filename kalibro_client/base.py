@@ -33,8 +33,16 @@ class Base(object):
                                     headers={'Content-Type': 'application/json'})
         return response.json()
 
+    def _update_request(self):
+        return self.request(str(self.id),
+                        {self.entity_name(): self._asdict(), 'id': str(self.id)},
+                        method='put')
+
     def save(self):
-        response = self.request('', {self.entity_name(): self._asdict()})
+        if not self.id:
+            response = self.request('', {self.entity_name(): self._asdict()})
+        else:
+            response = self._update_request()
 
         if 'errors' not in response:
             response_body = response[self.entity_name()]
@@ -57,9 +65,7 @@ class Base(object):
             if self._is_valid_field(attr):
                 setattr(self, attr, value)
 
-        response = self.request(str(self.id),
-            {self.entity_name(): self._asdict(), 'id': str(self.id)},
-            method='put')
+        response = self._update_request()
 
         if 'errors' in response:
             raise KalibroClientSaveError(response['errors'])
