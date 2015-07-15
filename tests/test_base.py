@@ -56,63 +56,68 @@ class TestBase(TestCase):
 
     @patch('requests.request')
     def test_request(self, requests_request):
-        self.base.__class__.endpoint = Mock(return_value="base")
-        self.base.__class__.service_address = Mock(return_value="http://base:8000")
+        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
+            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
+            response_mock = Mock()
+            response_mock.json = Mock(return_value=self.attributes)
+            requests_request.return_value = response_mock
 
-        response_mock = Mock()
-        response_mock.json = Mock(return_value=self.attributes)
-        requests_request.return_value = response_mock
-
-        assert_equal(self.base.request("find", method='get'), self.attributes)
-        requests_request.assert_called_once_with('get', "http://base:8000/base/find",
-                                                 data=self.nulldata, headers=self.headers)
-        response_mock.json.assert_called_with()
+            assert_equal(self.base.request("find", method='get'), self.attributes)
+            requests_request.assert_called_once_with('get', "http://base:8000/base/find",
+                                                     data=self.nulldata, headers=self.headers)
+            mock_endpoint.assert_called_once()
+            mock_service_address.assert_called_once()
+            response_mock.json.assert_called_with()
 
     @patch('requests.request')
     def test_request_with_prefix(self, requests_request):
-        self.base.endpoint = Mock(return_value="base")
-        self.base.service_address = Mock(return_value="http://base:8000")
+        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
+            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
+            response_mock = Mock()
+            response_mock.json = Mock(return_value=self.attributes)
+            requests_request.return_value = response_mock
 
-        response_mock = Mock()
-        response_mock.json = Mock(return_value=self.attributes)
-        requests_request.return_value = response_mock
-
-        assert_equal(self.base.request("find", method='get', prefix='prefix'),
-                     self.attributes)
-        requests_request.assert_called_once_with('get', "http://base:8000/prefix/base/find",
-                                                 data=self.nulldata, headers=self.headers)
-        response_mock.json.assert_called_with()
+            assert_equal(self.base.request("find", method='get', prefix='prefix'),
+                         self.attributes)
+            requests_request.assert_called_once_with('get', "http://base:8000/prefix/base/find",
+                                                     data=self.nulldata, headers=self.headers)
+            response_mock.json.assert_called_with()
+            mock_endpoint.assert_called_once()
+            mock_service_address.assert_called_once()
 
     @patch('requests.request')
     def test_request_with_default_method(self, requests_request):
-        self.base.endpoint = Mock(return_value="base")
-        self.base.service_address = Mock(return_value="http://base:8000")
+        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
+            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
 
-        response_mock = Mock()
-        response_mock.json = Mock(return_value=self.attributes)
-        requests_request.return_value = response_mock
+            response_mock = Mock()
+            response_mock.json = Mock(return_value=self.attributes)
+            requests_request.return_value = response_mock
 
-        assert_equal(self.base.request("create"), self.attributes)
-        requests_request.assert_called_once_with('post', "http://base:8000/base/create",
-                                                 data=self.nulldata, headers=self.headers)
-        response_mock.json.assert_called_with()
+            assert_equal(self.base.request("create"), self.attributes)
+            requests_request.assert_called_once_with('post', "http://base:8000/base/create",
+                                                     data=self.nulldata, headers=self.headers)
+            response_mock.json.assert_called_with()
+            mock_endpoint.assert_called_once()
+            mock_service_address.assert_called_once()
 
     @patch('json.dumps')
     @patch('requests.request')
     def test_request_with_parameters(self, requests_request, json_dumps):
-        self.base.endpoint = Mock(return_value="base")
-        self.base.service_address = Mock(return_value="http://base:8000")
+        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
+            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
+            response_mock = Mock()
+            response_mock.json = Mock(return_value=self.attributes)
+            requests_request.return_value = response_mock
+            json_dumps.return_value = self.json_dumps_attributes
 
-        response_mock = Mock()
-        response_mock.json = Mock(return_value=self.attributes)
-        requests_request.return_value = response_mock
-        json_dumps.return_value = self.json_dumps_attributes
-
-        assert_equal(self.base.request("create", params=self.attributes), self.attributes)
-        json_dumps.assert_called_once_with(self.attributes)
-        requests_request.assert_called_once_with('post', "http://base:8000/base/create",
-                                                 data=self.json_dumps_attributes, headers=self.headers)
-        response_mock.json.assert_called_with()
+            assert_equal(self.base.request("create", params=self.attributes), self.attributes)
+            json_dumps.assert_called_once_with(self.attributes)
+            requests_request.assert_called_once_with('post', "http://base:8000/base/create",
+                                                     data=self.json_dumps_attributes, headers=self.headers)
+            response_mock.json.assert_called_with()
+            mock_endpoint.assert_called_once()
+            mock_service_address.assert_called_once()
 
     @raises(NotImplementedError)
     def test_endpoint_base(self):
