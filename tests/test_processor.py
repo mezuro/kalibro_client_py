@@ -1,14 +1,15 @@
 from unittest import TestCase
-from kalibro_client.processor import Project, Repository, KalibroModule
+from kalibro_client.processor import Project, Repository
 from kalibro_client.processor.base import Base
 import kalibro_client
 
 from nose.tools import assert_equal, assert_true
 
-from mock import Mock, patch
+from mock import patch
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory
 
 from .helpers import not_raises
+
 
 class TestProcessorBase(TestCase):
     @patch('kalibro_client.config')
@@ -18,8 +19,8 @@ class TestProcessorBase(TestCase):
         assert_equal(Base.service_address(), kalibro_client.DEFAULT_CONFIG['processor_address'])
         kalibro_client_config.assert_called_once()
 
-class TestProcessor(TestCase):
 
+class TestProject(TestCase):
     def setUp(self):
         self.project = ProjectFactory.build()
         self.project.id = 1
@@ -33,6 +34,7 @@ class TestProcessor(TestCase):
             self.project.repositories()
             request_mock.assert_called_once_with("1/repositories", method='get')
             mock.assert_called_once_with(repositories_hash)
+
 
 class TestKalibroModule(TestCase):
     def setUp(self):
@@ -62,3 +64,19 @@ class TestKalibroModule(TestCase):
 
     def test_granularity(self):
         assert_equal(self.subject.granularity, self.subject.granlrty)
+
+
+class TestRepository(TestCase):
+    def setUp(self):
+        self.subject = RepositoryFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'period'))
+        assert_true(hasattr(self.subject, 'project_id'))
+        assert_true(hasattr(self.subject, 'kalibro_configuration_id'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.period = None
+        self.subject.project_id = None
+        self.subject.kalibro_configuration_id = None
