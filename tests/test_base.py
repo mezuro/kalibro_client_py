@@ -224,6 +224,23 @@ class TestBase(TestCase):
                      [DerivedWithEntityName('fizz', 'buzz'),
                      DerivedWithEntityName('zzif', 'zzub')])
 
+    def test_when_record_exists(self):
+        with patch.object(IdentifiedBase, 'request', return_value={'exists': True}) as mock_request:
+            exists = IdentifiedBase.exists(42)
+            IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
+                                                      method='get')
+            mock_request.assert_called_once()
+            assert_true(exists)
+
+    def test_when_record_does_not_exist(self):
+        with patch.object(IdentifiedBase, 'request', return_value={'exists': False}) as mock_request:
+            exists = IdentifiedBase.exists(42)
+            IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
+                                                      method='get')
+            mock_request.assert_called_once()
+            assert_true(not exists)
+
+
 class TestsEntityNameDecorator(TestCase):
     @entity_name_decorator
     class Entity(Base):
