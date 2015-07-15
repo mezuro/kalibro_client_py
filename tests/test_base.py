@@ -215,9 +215,9 @@ class TestBase(TestCase):
     def test_array_to_objects_array(self):
         array = [{'name': 'fizz', 'description': 'buzz'},
                  {'name': 'zzif', 'description': 'zzub'}]
-        self.assertEqual(DerivedWithEntityName.array_to_objects_array(array),
-                         [DerivedWithEntityName('fizz', 'buzz'),
-                          DerivedWithEntityName('zzif', 'zzub')])
+        assert_equal(DerivedWithEntityName.array_to_objects_array(array),
+                     [DerivedWithEntityName('fizz', 'buzz'),
+                     DerivedWithEntityName('zzif', 'zzub')])
 
 class TestsEntityNameDecorator(TestCase):
     @entity_name_decorator
