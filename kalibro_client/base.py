@@ -98,14 +98,14 @@ def entity_name_decorator(top_cls):
     kalibro_client and inherits from Project, it's entity name should still
     be Project.
     """
-    class_name = top_cls.__name__
+    class_name = inflection.underscore(top_cls.__name__).lower()
 
-    class NewClass(top_cls):
-        @classmethod
-        def entity_name(cls):
-            return inflection.underscore(class_name).lower()
+    def entity_name(cls):
+        return class_name
 
-    return NewClass
+    top_cls.entity_name = classmethod(entity_name)
+
+    return top_cls
 
 
 def attributes_class_constructor(name, fields, identity=True, *args, **kwargs):
