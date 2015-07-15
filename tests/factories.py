@@ -23,6 +23,5 @@ class RepositoryFactory(factory.Factory):
     address = "svn://svn.code.sf.net/p/qt-calculator/code/trunk"
     kalibro_configuration_id = 1
     project_id = 1
-    send_email = "test@test.com"
     code_directory = ""
     branch = "master"
