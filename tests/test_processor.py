@@ -80,3 +80,8 @@ class TestRepository(TestCase):
         self.subject.period = None
         self.subject.project_id = None
         self.subject.kalibro_configuration_id = None
+
+    def test_process(self):
+        with patch.object(Repository, 'request') as repository_request:
+            self.subject.process()
+            repository_request.assert_called_once_with(action='/process', params={'id': self.subject.id}, method='get')

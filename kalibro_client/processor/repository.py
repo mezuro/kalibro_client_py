@@ -42,3 +42,6 @@ class Repository(attributes_class_constructor('RepositoryAttr', (('name', None),
             value = int(value)
 
         self._kalibro_configuration_id = value
+
+    def process(self):
+        return self.request(action = '/process', params = {'id': self.id}, method='get')
