@@ -72,6 +72,7 @@ class Base(object):
         response_body = response[self.entity_name()]
         self.updated_at = response_body['updated_at']
 
+    @classmethod
     def all(cls):
         return cls.response_to_objects_array(cls.request('', method='get'))
 

@@ -2,5 +2,5 @@ from kalibro_client.base import attributes_class_constructor, entity_name_decora
 from kalibro_client.processor.base import Base
 
 @entity_name_decorator
-class Repository(attributes_class_constructor('Repository', ('name', 'description', 'license', 'period', 'scm_type', 'address', 'kalibro_configuration_id', 'project_id', 'send_email', 'code_directory', 'branch')), Base):
+class Repository(attributes_class_constructor('Repository', (('name', None), ('description', None), ('license', None), ('period', None), ('scm_type', None), ('address', None), ('kalibro_configuration_id', None), ('project_id', None), ('send_email', None), ('code_directory', None), ('branch', None))), Base):
     pass

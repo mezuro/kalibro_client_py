@@ -193,8 +193,8 @@ class TestBase(TestCase):
         hash_array = [{'name': 'fizz', 'description': 'buzz'},
                       {'name': 'zzif', 'description': 'zzub'}]
         response = {'derived': hash_array}
-        objects = [DerivedWithEntityName('fizz', 'buzz'),
-                   DerivedWithEntityName('zzif', 'zzub')]
+        objects = [Derived('fizz', 'buzz'),
+                   Derived('zzif', 'zzub')]
         with patch.object(Derived, 'request', return_value=response) as request_mock, \
              patch.object(Derived, 'response_to_objects_array', return_value=objects) as mock:
             Derived.all()
