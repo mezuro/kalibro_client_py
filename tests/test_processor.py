@@ -6,7 +6,8 @@ import kalibro_client
 from nose.tools import assert_equal, assert_true
 
 from mock import patch
-from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory
+from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
+    ProcessingFactory
 
 import dateutil
 
@@ -144,7 +145,13 @@ class TestRepository(TestCase):
 
     @skip
     def test_last_ready_processing(self):
-        pass
+        processing = ProcessingFactory.build()
+        processing_hash = {'last_ready_processing': processing._asdict()}
+        with patch.object(Repository, 'request',
+                          return_value=processing_hash) as repository_request:
+            response = self.subject.last_ready_processing()
+            repository_request.assert_called_once_with(':id/last_ready_processing', params={'id': self.subject.id}, method='get')
+            assert_equal(response, processing)
 
     @skip
     def test_first_processing(self):
