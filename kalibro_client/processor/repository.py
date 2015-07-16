@@ -45,3 +45,8 @@ class Repository(attributes_class_constructor('RepositoryAttr', (('name', None),
 
     def process(self):
         return self.request(action = '/process', params = {'id': self.id}, method='get')
+
+    def cancel_processing_of_a_repository(self):
+        return self.request(action=':id/cancel_process',
+                            params={'id': self.id},
+                            method='get')
