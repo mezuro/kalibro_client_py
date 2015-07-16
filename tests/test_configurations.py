@@ -12,6 +12,8 @@ from factories import KalibroConfigurationFactory, MetricConfigurationFactory, \
 
 from .helpers import not_raises
 
+from .helpers import not_raises
+
 class TestConfigurationsBase(TestCase):
     @patch('kalibro_client.config')
     def test_service_address(self, kalibro_client_config):
@@ -77,3 +79,12 @@ class TestReading(TestCase):
 
     def test_delete_prefix(self):
         assert_equal(self.subject.delete_prefix(), "reading_groups/{}".format(self.subject.reading_group_id))
+
+class TestMetricConfiguration(TestCase):
+    def setUp(self):
+        self.subject = MetricConfigurationFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'reading_group_id'))
+        assert_true(hasattr(self.subject, 'kalibro_configuration_id'))
+        self.subject.kalibro_configuration_id = None
