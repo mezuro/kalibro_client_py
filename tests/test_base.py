@@ -120,6 +120,23 @@ class TestBase(TestCase):
             mock_endpoint.assert_called_once()
             mock_service_address.assert_called_once()
 
+    @patch('json.dumps')
+    @patch('requests.request')
+    def test_request_with_id_parameter(self, requests_request, json_dumps):
+        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
+            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
+            response_mock = Mock()
+            response_mock.json = Mock(return_value=self.attributes)
+            requests_request.return_value = response_mock
+
+            attributes = {'id': 42}
+            self.base.request(":id/something", params=attributes)
+            json_dumps.assert_called_once_with({})
+            requests_request.assert_called_once_with('post', "http://base:8000/base/42/something",
+                                                     data=json.dumps({}), headers=self.headers)
+            response_mock.json.assert_called_with()
+            mock_endpoint.assert_called_once()
+
     @raises(NotImplementedError)
     def test_endpoint_base(self):
         self.base.endpoint()
@@ -228,7 +245,8 @@ class TestBase(TestCase):
     def test_when_record_exists(self):
         with patch.object(IdentifiedBase, 'request', return_value={'exists': True}) as mock_request:
             exists = IdentifiedBase.exists(42)
-            IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
+            IdentifiedBase.request.assert_called_with(':id/exists',
+                                                      params={'id': 42},
                                                       method='get')
             mock_request.assert_called_once()
             assert_true(exists)
@@ -236,7 +254,8 @@ class TestBase(TestCase):
     def test_when_record_does_not_exist(self):
         with patch.object(IdentifiedBase, 'request', return_value={'exists': False}) as mock_request:
             exists = IdentifiedBase.exists(42)
-            IdentifiedBase.request.assert_called_with('{}/exists'.format(42),
+            IdentifiedBase.request.assert_called_with(':id/exists',
+                                                      params={'id': 42},
                                                       method='get')
             mock_request.assert_called_once()
             assert_true(not exists)
@@ -252,7 +271,7 @@ class TestBase(TestCase):
                                                             'updated_at': subject.updated_at}}) as mock:
             found_object = IdentifiedBase.find(subject.id)
             assert_equal(subject, found_object)
-            mock.assert_called_once_with("{}".format(subject.id), method='get')
+            mock.assert_called_once_with(":id", params={'id': (subject.id)}, method='get')
 
     @raises(KalibroClientNotFoundError)
     def test_find_when_it_does_not_find_anything(self):
@@ -262,7 +281,7 @@ class TestBase(TestCase):
         with patch.object(IdentifiedBase, 'request',
                           return_value={'errors': ["Couldn't find object"]}) as mock:
             IdentifiedBase.find(subject.id)
-            mock.assert_called_once_with("{}".format(subject.id), method='get')
+            mock.assert_called_once_with(":id", params={'id': (subject.id)}, method='get')
 
 
 class TestsEntityNameDecorator(TestCase):

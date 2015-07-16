@@ -31,6 +31,9 @@ class Base(object):
             url += "/" + prefix
         url += "/{}/{}".format(cls.endpoint(), action)
 
+        if params is not None and 'id' in params:
+            url = url.replace(':id', str(params.pop('id')))
+
         response = requests.request(method, url, data=json.dumps(params),
                                     headers={'Content-Type': 'application/json'})
         return response.json()
@@ -77,7 +80,7 @@ class Base(object):
 
     @classmethod
     def find(cls, id):
-        response = cls.request('{}'.format(id), method='get')
+        response = cls.request(':id', params={'id': id}, method='get')
         if 'errors' in response:
             raise KalibroClientNotFoundError(response['errors'])
         return cls(**response[cls.entity_name()])
@@ -98,7 +101,7 @@ class Base(object):
 
     @classmethod
     def exists(cls, id):
-        return cls.request('{}/exists'.format(id), method='get')['exists']
+        return cls.request(':id/exists', params={'id': id}, method='get')['exists']
 
 
 def entity_name_decorator(top_cls):
