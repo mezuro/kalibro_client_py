@@ -3,3 +3,6 @@ class KalibroClientError(RuntimeError):
 
 class KalibroClientSaveError(KalibroClientError):
     pass
+
+class KalibroClientNotFoundError(KalibroClientError):
+    pass
