@@ -4,5 +4,8 @@ class KalibroClientError(RuntimeError):
 class KalibroClientSaveError(KalibroClientError):
     pass
 
+class KalibroClientDeleteError(KalibroClientError):
+    pass
+
 class KalibroClientNotFoundError(KalibroClientError):
     pass
