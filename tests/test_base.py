@@ -7,7 +7,7 @@ import dateutil.parser
 
 from kalibro_client.base import Base, attributes_class_constructor, \
     entity_name_decorator
-from kalibro_client.errors import KalibroClientSaveError, \
+from kalibro_client.errors import KalibroClientSaveError, KalibroClientDeleteError, \
     KalibroClientNotFoundError
 
 from .helpers import not_raises
@@ -224,6 +224,23 @@ class TestBase(TestCase):
             request_mock.assert_called_once_with('', method='get')
             mock.assert_called_once_with(response)
 
+    def test_successful_delete(self):
+        subject = IdentifiedBase(id=1, attribute='test')
+        with patch.object(subject, 'request', return_value={}) as request_mock:
+            subject.delete()
+            request_mock.assert_called_once_with(action=':id', params={'id':subject.id}, method='delete')
+
+    @raises (KalibroClientDeleteError)
+    def test_unsuccessful_delete(self):
+        subject = IdentifiedBase(id=1, attribute='test')
+        with patch.object(subject, 'request', return_value={'errors':'Resource not found'}) as request_mock:
+            subject.delete()
+            request_mock.assert_called_once_with(action=':id', params={'id':subject.id}, method='delete')
+
+    @raises (KalibroClientDeleteError)
+    def test_unsuccessful_delete_without_id(self):
+        subject = IdentifiedBase(id=None, attribute='test')
+        subject.delete()
 
     def test_response_to_objects_array(self):
         array = [DerivedWithEntityName('fizz', 'buzz'), DerivedWithEntityName('zzif', 'zzub')]

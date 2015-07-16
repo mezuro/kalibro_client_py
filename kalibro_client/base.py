@@ -6,7 +6,7 @@ import inflection
 import dateutil.parser
 import recordtype
 
-from kalibro_client.errors import KalibroClientSaveError, \
+from kalibro_client.errors import KalibroClientSaveError, KalibroClientDeleteError, \
     KalibroClientNotFoundError
 
 
@@ -102,6 +102,15 @@ class Base(object):
     @classmethod
     def exists(cls, id):
         return cls.request(':id/exists', params={'id': id}, method='get')['exists']
+
+    def delete(self):
+        if not isinstance(self.id, (int, long)):
+            raise KalibroClientDeleteError('Can not delete object without id')
+
+        response = self.request(action=':id', params={'id': self.id}, method='delete')
+
+        if 'errors' in response:
+            raise KalibroClientDeleteError(response['errors'])
 
 
 def entity_name_decorator(top_cls):
