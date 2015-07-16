@@ -104,7 +104,7 @@ class Base(object):
         return cls.request(':id/exists', params={'id': id}, method='get')['exists']
 
     def delete(self):
-        if not isinstance( self.id, ( int, long ) ):
+        if not isinstance(self.id, (int, long)):
             raise KalibroClientDeleteError('Can not delete object without id')
 
         response = self.request(action=':id', params={'id': self.id}, method='delete')
