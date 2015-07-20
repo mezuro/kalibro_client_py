@@ -169,6 +169,12 @@ class TestRepository(TestCase):
     def test_last_processing_before(self):
         pass
 
-    @skip
     def test_branches(self):
-        pass
+        branches = {'branches': ['master', 'stable']}
+        url = 'https://github.com/mezuro/kalibro_client_py.git'
+        scm_type = 'GIT'
+
+        with patch.object(Repository, 'request',
+                          return_value=branches) as repository_request:
+            Repository.branches(url, scm_type)
+            repository_request.assert_called_once_with("/branches", {'url': url, 'scm_type': scm_type})
