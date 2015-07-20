@@ -152,9 +152,15 @@ class TestRepository(TestCase):
             repository_request.assert_called_once_with(':id/last_ready_processing', params={'id': self.subject.id}, method='get')
             assert_equal(response, processing)
 
-    @skip
     def test_first_processing(self):
-        pass
+        processing = ProcessingFactory.build()
+        processing_hash = {'processing': processing._asdict()}
+
+        with patch.object(Repository, 'request',
+                          return_value=processing_hash) as repository_request:
+            response = self.subject.first_processing()
+            repository_request.assert_called_once_with(':id/first_processing', params={'id': self.subject.id})
+            assert_equal(response, processing)
 
     def test_last_processing(self):
         processing = ProcessingFactory.build()
