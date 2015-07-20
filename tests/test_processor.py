@@ -95,10 +95,21 @@ class TestRepository(TestCase):
             self.subject.cancel_processing_of_a_repository()
             repository_request.assert_called_once_with(action=':id/cancel_process', params={'id': self.subject.id}, method='get')
 
-    @skip
-    def test_processing(self):
-        pass
+    def test_processing_with_ready_processing(self):
+        processing = ProcessingFactory.build()
+        with patch.object(Repository, 'has_ready_processing', return_value=True) as has_ready_processing_request, \
+             patch.object(Repository, 'last_ready_processing', return_value=processing) as last_ready_processing_request:
+            self.subject.processing()
+            has_ready_processing_request.assert_called_once()
+            last_ready_processing_request.assert_called_once()
 
+    def test_processing_without_ready_processing(self):
+        processing = ProcessingFactory.build()
+        with patch.object(Repository, 'has_ready_processing', return_value=False) as has_ready_processing_request, \
+             patch.object(Repository, 'last_processing', return_value=processing) as last_processing_request:
+            self.subject.processing()
+            has_ready_processing_request.assert_called_once()
+            last_processing_request.assert_called_once()
     @skip
     def test_processing_with_date(self):
         pass
