@@ -9,7 +9,6 @@ import dateutil
 @entity_name_decorator
 class Repository(attributes_class_constructor('RepositoryAttr', (('name', None), ('description', None), ('license', None), ('scm_type', None), ('address', None), ('code_directory', None), ('branch', None))), Base):
     def __init__(self, period=None, project_id=None, kalibro_configuration_id=None, *init_args, **init_kwargs):
-        print(super(Repository, self))
         super(Repository, self).__init__(*init_args, **init_kwargs)
         self.period = period
         self.project_id = project_id
