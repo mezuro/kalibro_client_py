@@ -1,9 +1,11 @@
 language: python
 python:
   - "2.7"
+
 cache:
   directories:
     - $HOME/.cache/pip
+    - $HOME/.rvm
     - cache/kalibro_configurations
     - cache/kalibro_processor
 
