@@ -27,6 +27,10 @@ script:
 
 after_success: coveralls
 
+before_cache:
+  - rm -rf $HOME/.cache/pip/log
+  - rm -rf $HOME/.rvm/log
+
 notifications:
   email:
     recipients:
