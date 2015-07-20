@@ -1,8 +1,8 @@
 import factory
 
-from kalibro_client.processor import Project, Repository, Processing,\
-    KalibroModule
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric
+from kalibro_client.processor import Project, Repository, Processing,\
+    KalibroModule, ProcessTime
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading
 
@@ -32,6 +32,16 @@ class RepositoryFactory(factory.Factory):
     project_id = 1
     code_directory = ""
     branch = "master"
+
+class ProcessTimeFactory(factory.Factory):
+    class Meta:
+        model = ProcessTime
+
+    created_at = None
+    updated_at = None
+    state = "READY"
+    processing_id = 1
+    time = 1
 
 
 class ProcessingFactory(factory.Factory):
