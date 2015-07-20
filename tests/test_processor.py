@@ -143,7 +143,6 @@ class TestRepository(TestCase):
             repository_request.assert_called_once_with(':id/last_processing_state', params={'id': self.subject.id}, method='get')
             assert_equal(response, 'READY')
 
-    @skip
     def test_last_ready_processing(self):
         processing = ProcessingFactory.build()
         processing_hash = {'last_ready_processing': processing._asdict()}
@@ -165,9 +164,15 @@ class TestRepository(TestCase):
     def test_first_processing_after(self):
         pass
 
-    @skip
     def test_last_processing_before(self):
-        pass
+        processing = ProcessingFactory.build()
+        processing_hash = {'processing': processing._asdict()}
+
+        with patch.object(Repository, 'request',
+                          return_value=processing_hash) as repository_request:
+            response = self.subject.last_processing_before(self.date)
+            repository_request.assert_called_once_with(':id/last_processing/before', params={'id': self.subject.id, 'date': self.date})
+            assert_equal(response, processing)
 
     def test_branches(self):
         branches = {'branches': ['master', 'stable']}

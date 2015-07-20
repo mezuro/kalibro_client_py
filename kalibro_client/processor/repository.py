@@ -96,25 +96,25 @@ class Repository(attributes_class_constructor('RepositoryAttr', (('name', None),
                             method='get')['processing_state']
 
     def last_ready_processing(self):
-        return Processing(self.request(':id/last_ready_processing',
+        return Processing(**self.request(':id/last_ready_processing',
                                        params={'id': self.id},
                                        method='get')['last_ready_processing'])
 
     def first_processing(self):
-        return Processing(self.request(":id/first_processing",
+        return Processing(**self.request(":id/first_processing",
                                        params={'id': self.id})['processing'])
 
     def last_processing(self):
-        return Processing(self.request(":id/last_processing",
+        return Processing(**self.request(":id/last_processing",
                                        params={'id': self.id})['processing'])
 
     def first_processing_after(self, date):
-        return Processing(self.request(":id/first_processing/after",
+        return Processing(**self.request(":id/first_processing/after",
                                        params={'id': self.id,
                                         'date': date})["processing"])
 
     def last_processing_before(self, date):
-        return Processing(self.request(":id/last_processing/before",
+        return Processing(**self.request(":id/last_processing/before",
                                        params={'id': self.id,
                                         'date': date})['processing'])
 
