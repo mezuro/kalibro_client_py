@@ -72,7 +72,8 @@ class TestKalibroModule(TestCase):
 class TestRepository(TestCase):
     def setUp(self):
         self.subject = RepositoryFactory.build()
-        self.date = dateutil.parser.parse("2015-07-05T22:16:18+00:00")
+        self.date_str = "2015-07-05T22:16:18+00:00"
+        self.date = dateutil.parser.parse(self.date_str)
 
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'period'))
@@ -110,9 +111,59 @@ class TestRepository(TestCase):
             self.subject.processing()
             has_ready_processing_request.assert_called_once()
             last_processing_request.assert_called_once()
-    @skip
+
+    def test_processing_with_date_as_string_after(self):
+        processing = ProcessingFactory.build()
+        with patch.object(Repository, 'has_processing_after', return_value=True) as has_processing_after_request, \
+             patch.object(Repository, 'first_processing_after', return_value=processing) as first_processing_after_request:
+            self.subject.processing_with_date(self.date_str)
+            has_processing_after_request.assert_called_once_with(self.date)
+            first_processing_after_request.assert_called_once_with(self.date)
+
+    def test_processing_with_date_as_string_before(self):
+        processing = ProcessingFactory.build()
+        with patch.object(Repository, 'has_processing_after', return_value=False) as has_processing_after_request, \
+             patch.object(Repository, 'has_processing_before', return_value=True) as has_processing_before_request, \
+             patch.object(Repository, 'last_processing_before', return_value=processing) as last_processing_before_request:
+            self.subject.processing_with_date(self.date_str)
+            has_processing_after_request.assert_called_once_with(self.date)
+            has_processing_before_request.assert_called_once_with(self.date)
+            last_processing_before_request.assert_called_once_with(self.date)
+
+    def test_processing_with_date_as_string(self):
+        processing = ProcessingFactory.build()
+        with patch.object(Repository, 'has_processing_after', return_value=False) as has_processing_after_request, \
+             patch.object(Repository, 'has_processing_before', return_value=False) as has_processing_before_request:
+            assert_equal(self.subject.processing_with_date(self.date_str), None)
+            has_processing_after_request.assert_called_once_with(self.date)
+            has_processing_before_request.assert_called_once_with(self.date)
+
+
+    def test_processing_with_date_after(self):
+        processing = ProcessingFactory.build()
+        with patch.object(Repository, 'has_processing_after', return_value=True) as has_processing_after_request, \
+             patch.object(Repository, 'first_processing_after', return_value=processing) as first_processing_after_request:
+            self.subject.processing_with_date(self.date)
+            has_processing_after_request.assert_called_once_with(self.date)
+            first_processing_after_request.assert_called_once_with(self.date)
+
+    def test_processing_with_date_before(self):
+        processing = ProcessingFactory.build()
+        with patch.object(Repository, 'has_processing_after', return_value=False) as has_processing_after_request, \
+             patch.object(Repository, 'has_processing_before', return_value=True) as has_processing_before_request, \
+             patch.object(Repository, 'last_processing_before', return_value=processing) as last_processing_before_request:
+            self.subject.processing_with_date(self.date)
+            has_processing_after_request.assert_called_once_with(self.date)
+            has_processing_before_request.assert_called_once_with(self.date)
+            last_processing_before_request.assert_called_once_with(self.date)
+
     def test_processing_with_date(self):
-        pass
+        processing = ProcessingFactory.build()
+        with patch.object(Repository, 'has_processing_after', return_value=False) as has_processing_after_request, \
+             patch.object(Repository, 'has_processing_before', return_value=False) as has_processing_before_request:
+            assert_equal(self.subject.processing_with_date(self.date), None)
+            has_processing_after_request.assert_called_once_with(self.date)
+            has_processing_before_request.assert_called_once_with(self.date)
 
     def test_has_processing(self):
         has_processing_hash = {'has_processing': True}
