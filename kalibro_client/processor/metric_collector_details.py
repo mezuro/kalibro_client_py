@@ -31,3 +31,7 @@ class MetricCollectorDetails(attributes_class_constructor('MetricCollectorDetail
         for code, metric in self.supported_metrics.iteritems():
             if metric.name == name:
                 return metric
+
+    @classmethod
+    def find_by_name(cls, name):
+        return cls(**cls.request('/names', method='get')['metric_collector_details'])

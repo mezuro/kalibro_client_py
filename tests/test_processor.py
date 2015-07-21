@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 from kalibro_client.processor import Project, Repository, ProcessTime,\
     MetricCollectorDetails
 from kalibro_client.processor.base import Base
@@ -331,3 +331,11 @@ class TestMetricCollectorDetails(TestCase):
         name = self.native_metric.name
 
         assert_equal(self.subject.find_metric_by_name(name), self.native_metric)
+
+    @skip # Missing override to _asdict() so it creates the Processing and other nested objects
+    def test_find_by_name(self):
+        with patch.object(MetricCollectorDetails, 'request',
+                          return_value={'metric_collector_details': self.subject._asdict()}) as metric_collector_details_request:
+            assert_equal(MetricCollectorDetails.find_by_name(self.subject.name), self.subject)
+
+            metric_collector_details_request.assert_called_once_with('/names', params=None, method='get')
