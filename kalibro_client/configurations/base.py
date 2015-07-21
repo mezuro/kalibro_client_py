@@ -1,7 +1,7 @@
 import kalibro_client
-from kalibro_client.base import Base as ClientBase
+from kalibro_client.base import BaseCRUD
 
-class Base(ClientBase):
+class Base(BaseCRUD):
     @classmethod
     def service_address(cls):
         return kalibro_client.config()['configurations_address']
