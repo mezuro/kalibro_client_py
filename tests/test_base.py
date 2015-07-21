@@ -171,7 +171,7 @@ class TestBase(TestCase):
 
         subject.save()
 
-        subject.request.assert_called_with('', {subject.entity_name() : subject._asdict()})
+        subject.request.assert_called_with(action='', params={subject.entity_name() : subject._asdict()}, prefix=subject.save_prefix())
         assert_equal(subject.id, id)
         assert_equal(subject.created_at, date)
         assert_equal(subject.updated_at, date)
@@ -228,14 +228,14 @@ class TestBase(TestCase):
         subject = IdentifiedBase(id=1, attribute='test')
         with patch.object(subject, 'request', return_value={}) as request_mock:
             subject.delete()
-            request_mock.assert_called_once_with(action=':id', params={'id':subject.id}, method='delete')
+            request_mock.assert_called_once_with(action=':id', params={'id':subject.id}, method='delete', prefix=subject.delete_prefix())
 
     @raises (KalibroClientDeleteError)
     def test_unsuccessful_delete(self):
         subject = IdentifiedBase(id=1, attribute='test')
         with patch.object(subject, 'request', return_value={'errors':'Resource not found'}) as request_mock:
             subject.delete()
-            request_mock.assert_called_once_with(action=':id', params={'id':subject.id}, method='delete')
+            request_mock.assert_called_once_with(action=':id', params={'id':subject.id}, method='delete', prefix=subject.delete_prefix())
 
     @raises (KalibroClientDeleteError)
     def test_unsuccessful_delete_without_id(self):
@@ -410,9 +410,10 @@ class TestSuccessfulUpdates(TestCase):
         self.subject.attribute = self.new_attribute_value
         self.subject.save()
 
-        self.subject.request.assert_called_with(str(self.subject.id),
-                                                self.request_params,
-                                                method='put')
+        self.subject.request.assert_called_with(action=str(self.subject.id),
+                                                params=self.request_params,
+                                                method='put',
+                                                prefix=self.subject.update_prefix())
 
         assert_equal(self.subject.id, 42)
         assert_equal(self.subject.created_at,self.date)
@@ -426,9 +427,10 @@ class TestSuccessfulUpdates(TestCase):
 
         self.subject.update(attribute=self.new_attribute_value)
 
-        self.subject.request.assert_called_with(str(self.subject.id),
-                                                self.request_params,
-                                                method='put')
+        self.subject.request.assert_called_with(action=str(self.subject.id),
+                                                params=self.request_params,
+                                                method='put',
+                                                prefix=self.subject.update_prefix())
 
         assert_equal(self.subject.id, 42)
         assert_equal(self.subject.created_at, self.date)
