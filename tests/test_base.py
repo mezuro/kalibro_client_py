@@ -5,7 +5,7 @@ from mock import Mock, patch, create_autospec
 from nose.tools import assert_equal, assert_true, assert_raises_regexp, raises
 import dateutil.parser
 
-from kalibro_client.base import Base, attributes_class_constructor, \
+from kalibro_client.base import BaseCRUD, attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.errors import KalibroClientSaveError, KalibroClientDeleteError, \
     KalibroClientNotFoundError
@@ -15,22 +15,22 @@ from .helpers import not_raises
 
 class Derived(attributes_class_constructor('DerivedAttr',
                                            ('name', 'description'),
-                                           identity=False), Base):
+                                           identity=False), BaseCRUD):
     pass
 
 
 @entity_name_decorator
-class DerivedWithEntityName(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), Base):
+class DerivedWithEntityName(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), BaseCRUD):
     pass
 
 @entity_name_decorator
-class CompositeEntity(Base):
+class CompositeEntity(BaseCRUD):
     pass
 
 
 @entity_name_decorator
 class IdentifiedBase(attributes_class_constructor('Identified',
-                                                  ('attribute')), Base):
+                                                  ('attribute')), BaseCRUD):
     pass
 
 
@@ -53,7 +53,7 @@ class TestBase(TestCase):
 
     @raises(NotImplementedError)
     def test_service_address(self):
-        Base.service_address()
+        BaseCRUD.service_address()
 
     @patch('requests.request')
     def test_request(self, requests_request):
@@ -303,7 +303,7 @@ class TestBase(TestCase):
 
 class TestsEntityNameDecorator(TestCase):
     @entity_name_decorator
-    class Entity(Base):
+    class Entity(BaseCRUD):
         def __init__(self):
             pass
 

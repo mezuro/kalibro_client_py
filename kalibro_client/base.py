@@ -12,6 +12,21 @@ from kalibro_client.errors import KalibroClientSaveError, KalibroClientDeleteErr
 
 class Base(object):
     @classmethod
+    def _is_valid_field(cls, name):
+        return name in cls._fields
+
+    @classmethod
+    def response_to_objects_array(cls, response):
+        array = response[inflection.pluralize(cls.entity_name())]
+        return cls.array_to_objects_array(array)
+
+    @classmethod
+    def array_to_objects_array(cls, array):
+        return [cls(**attributes) for attributes in array]
+
+
+class BaseCRUD(Base):
+    @classmethod
     def endpoint(cls):
         return inflection.pluralize(cls.entity_name())
 
@@ -38,6 +53,21 @@ class Base(object):
                                     headers={'Content-Type': 'application/json'})
         return response.json()
 
+    @classmethod
+    def find(cls, id):
+        response = cls.request(':id', params={'id': id}, method='get')
+        if 'errors' in response:
+            raise KalibroClientNotFoundError(response['errors'])
+        return cls(**response[cls.entity_name()])
+
+    @classmethod
+    def all(cls):
+        return cls.response_to_objects_array(cls.request('', method='get'))
+
+    @classmethod
+    def exists(cls, id):
+        return cls.request(':id/exists', params={'id': id}, method='get')['exists']
+
     def _update_request(self):
         return self.request(str(self.id),
                         {self.entity_name(): self._asdict(), 'id': str(self.id)},
@@ -58,10 +88,6 @@ class Base(object):
         else:
             raise KalibroClientSaveError(response['errors'])
 
-    @classmethod
-    def _is_valid_field(cls, name):
-        return name in cls._fields
-
     def update(self, **kwargs):
         if not self.id:
             raise KalibroClientSaveError("Cannot update a record that is not saved.")
@@ -77,31 +103,6 @@ class Base(object):
 
         response_body = response[self.entity_name()]
         self.updated_at = response_body['updated_at']
-
-    @classmethod
-    def find(cls, id):
-        response = cls.request(':id', params={'id': id}, method='get')
-        if 'errors' in response:
-            raise KalibroClientNotFoundError(response['errors'])
-        return cls(**response[cls.entity_name()])
-
-
-    @classmethod
-    def all(cls):
-        return cls.response_to_objects_array(cls.request('', method='get'))
-
-    @classmethod
-    def response_to_objects_array(cls, response):
-        array = response[inflection.pluralize(cls.entity_name())]
-        return cls.array_to_objects_array(array)
-
-    @classmethod
-    def array_to_objects_array(cls, array):
-        return [cls(**attributes) for attributes in array]
-
-    @classmethod
-    def exists(cls, id):
-        return cls.request(':id/exists', params={'id': id}, method='get')['exists']
 
     def delete(self):
         if not isinstance(self.id, (int, long)):
