@@ -1,6 +1,7 @@
 import factory
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule
+from kalibro_client.miscellaneous import NativeMetric
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration
 
@@ -71,3 +72,15 @@ class KalibroModuleFactory(factory.Factory):
     granlrty = None # TODO add a Granularity instance here
     long_name = "kalibro_client_py.tests.factories"
     module_result_id = 1
+
+class NativeMetricFactory(factory.Factory):
+    class Meta:
+        model = NativeMetric
+
+    type = "native"
+    name = "Cyclomatic Complexity"
+    code = "saikuro"
+    scope = "METHOD"
+    description = ""
+    languages = ["RUBY"]
+    metric_collector_name = "MetricFu"
