@@ -1,13 +1,14 @@
 from unittest import TestCase
 from kalibro_client.configurations.base import Base
-from kalibro_client.configurations import MetricConfiguration
+from kalibro_client.configurations import MetricConfiguration, Reading
 
 import kalibro_client
 
 from nose.tools import assert_equal
 
 from mock import patch
-from factories import KalibroConfigurationFactory, MetricConfigurationFactory
+from factories import KalibroConfigurationFactory, MetricConfigurationFactory, \
+    ReadingGroupFactory, ReadingFactory
 
 class TestConfigurationsBase(TestCase):
     @patch('kalibro_client.config')
@@ -30,3 +31,17 @@ class TestKalibroConfiguration(TestCase):
             self.subject.metric_configurations()
             request_mock.assert_called_once_with(":id/metric_configurations", {'id': 1}, method='get')
             mock.assert_called_once_with(metric_configurations_hash)
+
+class TestReadingGroup(TestCase):
+    def setUp(self):
+        self.subject = ReadingGroupFactory.build(id=1)
+        self.reading = ReadingFactory.build()
+        self.readings = [self.reading]
+
+    def test_metric_configurations(self):
+        readings_hash = {"readings": [self.reading._asdict()]}
+        with patch.object(self.subject, 'request', return_value=readings_hash) as request_mock, \
+             patch.object(Reading, 'response_to_objects_array', return_value=self.readings) as mock:
+            self.subject.readings()
+            request_mock.assert_called_once_with(":id/readings", {'id': 1}, method='get')
+            mock.assert_called_once_with(readings_hash)
