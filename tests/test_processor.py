@@ -1,12 +1,14 @@
 from unittest import TestCase
-from kalibro_client.processor import Project, Repository
+from kalibro_client.processor import Project, Repository, KalibroModule
 from kalibro_client.processor.base import Base
 import kalibro_client
 
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_true
 
 from mock import Mock, patch
-from factories import ProjectFactory, RepositoryFactory
+from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory
+
+from .helpers import not_raises
 
 class TestProcessorBase(TestCase):
     @patch('kalibro_client.config')
@@ -31,3 +33,32 @@ class TestProcessor(TestCase):
             self.project.repositories()
             request_mock.assert_called_once_with("1/repositories", method='get')
             mock.assert_called_once_with(repositories_hash)
+
+class TestKalibroModule(TestCase):
+    def setUp(self):
+        self.subject = KalibroModuleFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'name'))
+
+        long_name = "test.name"
+        self.subject.long_name = long_name
+        assert_equal(self.subject.name, long_name.split("."))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        long_name = "test.name"
+        self.subject.name = long_name
+        assert_equal(self.subject.long_name, long_name)
+
+        name = ["test", "name"]
+        self.subject.name = name
+        assert_equal(self.subject.long_name, ".".join(name))
+
+    def test_short_name(self):
+        name = ["test", "name"]
+        self.subject.name = name
+        assert_equal(self.subject.short_name, name[-1])
+
+    def test_granularity(self):
+        assert_equal(self.subject.granularity, self.subject.granlrty)

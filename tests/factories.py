@@ -1,5 +1,5 @@
 import factory
-from kalibro_client.processor import Project, Repository
+from kalibro_client.processor import Project, Repository, KalibroModule
 from kalibro_client.configurations import KalibroConfiguration, MetricConfiguration
 
 class ProjectFactory(factory.Factory):
@@ -47,3 +47,12 @@ class MetricConfigurationFactory(factory.Factory):
     aggregation_form = "MEAN"
     reading_group_id = 1
     kalibro_configuration_id = 1
+
+class KalibroModuleFactory(factory.Factory):
+    class Meta:
+        model = KalibroModule
+
+    id = 1
+    granlrty = None # TODO add a Granularity instance here
+    long_name = "kalibro_client_py.tests.factories"
+    module_result_id = 1
