@@ -26,3 +26,8 @@ class MetricCollectorDetails(attributes_class_constructor('MetricCollectorDetail
         if value is not None:
             for code, metric in value.iteritems():
                 self._supported_metrics[code] = NativeMetric(**metric) if not isinstance(metric, NativeMetric) else metric
+
+    def find_metric_by_name(self, name):
+        for code, metric in self.supported_metrics.iteritems():
+            if metric.name == name:
+                return metric

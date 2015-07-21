@@ -311,6 +311,7 @@ class TestRepository(TestCase):
 class TestMetricCollectorDetails(TestCase):
     def setUp(self):
         self.subject = MetricCollectorDetailsFactory.build()
+        self.native_metric = NativeMetricFactory.build()
 
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'supported_metrics'))
@@ -320,9 +321,13 @@ class TestMetricCollectorDetails(TestCase):
         self.subject.supported_metrics = None
 
     def test_supported_metrics_conversion_from_hash(self):
-        native_metric = NativeMetricFactory.build()
-        supported_metrics_hash = {native_metric.code: native_metric._asdict()}
+        supported_metrics_hash = {self.native_metric.code: self.native_metric._asdict()}
 
         self.subject.supported_metrics = supported_metrics_hash
 
-        assert_equal(self.subject.supported_metrics, {native_metric.code: native_metric})
+        assert_equal(self.subject.supported_metrics, {self.native_metric.code: self.native_metric})
+
+    def test_find_metric_by_name(self):
+        name = self.native_metric.name
+
+        assert_equal(self.subject.find_metric_by_name(name), self.native_metric)
