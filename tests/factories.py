@@ -3,7 +3,7 @@ from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule
 from kalibro_client.miscellaneous import NativeMetric
 from kalibro_client.configurations import KalibroConfiguration,\
-    MetricConfiguration
+    MetricConfiguration, ReadingGroup, Reading
 
 
 class ProjectFactory(factory.Factory):
@@ -84,3 +84,19 @@ class NativeMetricFactory(factory.Factory):
     description = ""
     languages = ["RUBY"]
     metric_collector_name = "MetricFu"
+
+class ReadingGroupFactory(factory.Factory):
+    class Meta:
+        model = ReadingGroup
+
+    name = "Sample reading group"
+    description = "Sample reading group"
+
+class ReadingFactory(factory.Factory):
+    class Meta:
+        model = Reading
+
+    label = "Reading"
+    grade = 10
+    color = "33dd33"
+    reading_group_id = 1
