@@ -7,8 +7,16 @@ import dateutil
 
 
 @entity_name_decorator
-class Repository(attributes_class_constructor('RepositoryAttr', (('name', None), ('description', None), ('license', None), ('scm_type', None), ('address', None), ('code_directory', None), ('branch', None))), Base):
-    def __init__(self, period=None, project_id=None, kalibro_configuration_id=None, *init_args, **init_kwargs):
+class Repository(attributes_class_constructor('RepositoryAttr',
+                                              (('name', None),
+                                               ('description', None),
+                                               ('license', None),
+                                               ('scm_type', None),
+                                               ('address', None),
+                                               ('code_directory', None),
+                                               ('branch', None))), Base):
+    def __init__(self, period=None, project_id=None,
+                 kalibro_configuration_id=None, *init_args, **init_kwargs):
         super(Repository, self).__init__(*init_args, **init_kwargs)
         self.period = period
         self.project_id = project_id
@@ -62,7 +70,8 @@ class Repository(attributes_class_constructor('RepositoryAttr', (('name', None),
         return self.last_processing()
 
     def processing_with_date(self, date):
-        date = dateutil.parser.parse(date) if isinstance(date, (str, unicode)) else date
+        date = dateutil.parser.parse(date) \
+            if isinstance(date, (str, unicode)) else date
         if self.has_processing_after(date):
             return self.first_processing_after(date)
         elif self.has_processing_before(date):
@@ -72,7 +81,8 @@ class Repository(attributes_class_constructor('RepositoryAttr', (('name', None),
 
     def has_processing(self):
         return self.request(':id/has_processing',
-                            params={'id': self.id}, method='get')['has_processing']
+                            params={'id': self.id},
+                            method='get')['has_processing']
 
     def has_ready_processing(self):
         return self.request(":id/has_ready_processing",
@@ -82,12 +92,12 @@ class Repository(attributes_class_constructor('RepositoryAttr', (('name', None),
     def has_processing_after(self, date):
         return self.request(":id/has_processing/after",
                             params={'id': self.id,
-                             'date': date})['has_processing_in_time']
+                                    'date': date})['has_processing_in_time']
 
     def has_processing_before(self, date):
         return self.request(":id/has_processing/before",
                             params={'id': self.id,
-                             'date': date})['has_processing_in_time']
+                                    'date': date})['has_processing_in_time']
 
     def last_processing_state(self):
         return self.request(":id/last_processing_state",
@@ -95,27 +105,27 @@ class Repository(attributes_class_constructor('RepositoryAttr', (('name', None),
                             method='get')['processing_state']
 
     def last_ready_processing(self):
-        return Processing(**self.request(':id/last_ready_processing',
-                                       params={'id': self.id},
-                                       method='get')['last_ready_processing'])
+        return Processing(**self.request(
+            ':id/last_ready_processing',
+            params={'id': self.id}, method='get')['last_ready_processing'])
 
     def first_processing(self):
         return Processing(**self.request(":id/first_processing",
-                                       params={'id': self.id})['processing'])
+                                         params={'id': self.id})['processing'])
 
     def last_processing(self):
         return Processing(**self.request(":id/last_processing",
-                                       params={'id': self.id})['processing'])
+                                         params={'id': self.id})['processing'])
 
     def first_processing_after(self, date):
         return Processing(**self.request(":id/first_processing/after",
-                                       params={'id': self.id,
-                                        'date': date})["processing"])
+                                         params={'id': self.id,
+                                                 'date': date})["processing"])
 
     def last_processing_before(self, date):
         return Processing(**self.request(":id/last_processing/before",
-                                       params={'id': self.id,
-                                        'date': date})['processing'])
+                                         params={'id': self.id,
+                                                 'date': date})['processing'])
 
     @classmethod
     def branches(cls, url, scm_type):
