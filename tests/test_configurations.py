@@ -22,7 +22,7 @@ class TestConfigurationsBase(TestCase):
 
 class TestKalibroConfiguration(TestCase):
     def setUp(self):
-        self.subject = KalibroConfigurationFactory.build()
+        self.subject = KalibroConfigurationFactory.build(id=1)
         self.metric_configuration = MetricConfigurationFactory.build()
         self.metric_configurations = [self.metric_configuration]
 
