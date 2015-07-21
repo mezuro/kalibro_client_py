@@ -1,5 +1,6 @@
 from unittest import TestCase
-from kalibro_client.processor import Project, Repository, ProcessTime
+from kalibro_client.processor import Project, Repository, ProcessTime,\
+    MetricCollectorDetails
 from kalibro_client.processor.base import Base
 import kalibro_client
 
@@ -7,7 +8,7 @@ from nose.tools import assert_equal, assert_true
 
 from mock import patch
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
-    ProcessingFactory
+    ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory
 
 import dateutil
 
@@ -306,3 +307,22 @@ class TestRepository(TestCase):
                           return_value=branches) as repository_request:
             Repository.branches(url, scm_type)
             repository_request.assert_called_once_with("/branches", {'url': url, 'scm_type': scm_type})
+
+class TestMetricCollectorDetails(TestCase):
+    def setUp(self):
+        self.subject = MetricCollectorDetailsFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'supported_metrics'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.supported_metrics = None
+
+    def test_supported_metrics_conversion_from_hash(self):
+        native_metric = NativeMetricFactory.build()
+        supported_metrics_hash = {native_metric.code: native_metric._asdict()}
+
+        self.subject.supported_metrics = supported_metrics_hash
+
+        assert_equal(self.subject.supported_metrics, {native_metric.code: native_metric})
