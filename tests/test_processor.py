@@ -1,4 +1,4 @@
-from unittest import TestCase, skip
+from unittest import TestCase
 from kalibro_client.processor import Project, Repository
 from kalibro_client.processor.base import Base
 import kalibro_client
