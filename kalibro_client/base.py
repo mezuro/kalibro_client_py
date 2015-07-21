@@ -9,6 +9,15 @@ import recordtype
 from kalibro_client.errors import KalibroClientSaveError, KalibroClientDeleteError, \
     KalibroClientNotFoundError
 
+class RequestMethods(object):
+    def save_prefix(self):
+        return ""
+
+    def update_prefix(self):
+        return ""
+
+    def delete_prefix(self):
+        return ""
 
 class Base(object):
     @classmethod
@@ -25,7 +34,7 @@ class Base(object):
         return [cls(**attributes) for attributes in array]
 
 
-class BaseCRUD(Base):
+class BaseCRUD(Base, RequestMethods):
     @classmethod
     def endpoint(cls):
         return inflection.pluralize(cls.entity_name())
@@ -69,13 +78,16 @@ class BaseCRUD(Base):
         return cls.request(':id/exists', params={'id': id}, method='get')['exists']
 
     def _update_request(self):
-        return self.request(str(self.id),
-                        {self.entity_name(): self._asdict(), 'id': str(self.id)},
-                        method='put')
+        return self.request(action=str(self.id),
+                        params={self.entity_name(): self._asdict(), 'id': str(self.id)},
+                        method='put',
+                        prefix=self.update_prefix())
 
     def save(self):
         if not self.id:
-            response = self.request('', {self.entity_name(): self._asdict()})
+            response = self.request(action='',
+                                    params={self.entity_name(): self._asdict()},
+                                    prefix=self.save_prefix())
         else:
             response = self._update_request()
 
@@ -108,7 +120,7 @@ class BaseCRUD(Base):
         if not isinstance(self.id, (int, long)):
             raise KalibroClientDeleteError('Can not delete object without id')
 
-        response = self.request(action=':id', params={'id': self.id}, method='delete')
+        response = self.request(action=':id', params={'id': self.id}, method='delete', prefix=self.delete_prefix())
 
         if 'errors' in response:
             raise KalibroClientDeleteError(response['errors'])
