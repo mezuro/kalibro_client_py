@@ -46,8 +46,8 @@ def step_impl(context):
 
 @when(u'I ask for the readings of the given reading group')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I ask for the readings of the given reading group')
+    context.response = Reading.readings_of(context.reading_group.id)
 
 @then(u'I should get a list with the given reading')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a list with the given reading')
+    assert_in(context.reading, context.response)

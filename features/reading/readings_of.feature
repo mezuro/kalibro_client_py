@@ -3,7 +3,7 @@ Feature: Readings Of
   As a developer
   I want to get the readings of the given reading group
 
-  @kalibro_configuration_restart @skip
+  @kalibro_configuration_restart
   Scenario: readings of a valid reading group
     Given I have a reading group with name "Kalibro"
     And I have a reading within the given reading group
