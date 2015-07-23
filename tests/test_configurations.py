@@ -12,8 +12,6 @@ from factories import KalibroConfigurationFactory, MetricConfigurationFactory, \
 
 from .helpers import not_raises
 
-from .helpers import not_raises
-
 class TestConfigurationsBase(TestCase):
     @patch('kalibro_client.config')
     def test_service_address(self, kalibro_client_config):
