@@ -2,13 +2,34 @@ language: python
 python:
   - "2.7"
 
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/.rvm
+    - cache/kalibro_configurations
+    - cache/kalibro_processor
+
 install:
+  # Install Ruby manually since the Kalibro script assumes it is already there
+  - rvm install 2.2.2
+  - rvm use 2.2.2 --default
+  - rvm @global do gem install bundler
+  # Kalibro Install script
+  - git clone https://github.com/mezuro/kalibro_install.git -b v3.0
+  - ANALIZO_VERSION= CACHE_DIR=$PWD/cache bash ./kalibro_install/install.sh
+  # Python dependencies
   - pip install -r requirements.txt
   - pip install coveralls
 
-script: nosetests
+script:
+  - nosetests
+  - behave
 
 after_success: coveralls
+
+before_cache:
+  - rm -rf $HOME/.cache/pip/log
+  - rm -rf $HOME/.rvm/log
 
 notifications:
   email:

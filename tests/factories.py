@@ -47,7 +47,6 @@ class KalibroConfigurationFactory(factory.Factory):
     class Meta:
         model = KalibroConfiguration
 
-    id = 1
     name = 'Ruby Configuration'
     description = 'A simple Ruby Configuration'
 
@@ -55,7 +54,6 @@ class MetricConfigurationFactory(factory.Factory):
     class Meta:
         model = MetricConfiguration
 
-    id = 1
     created_at = None
     updated_at = None
     metric = None # TODO: Add a Metric instance here
