@@ -87,4 +87,12 @@ class TestMetricConfiguration(TestCase):
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'reading_group_id'))
         assert_true(hasattr(self.subject, 'kalibro_configuration_id'))
+        assert_true(hasattr(self.subject, 'weight'))
+        assert_true(hasattr(self.subject, 'metric'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
         self.subject.kalibro_configuration_id = None
+        self.subject.reading_group_id = None
+        self.subject.weight = None
+

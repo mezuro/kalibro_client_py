@@ -62,13 +62,25 @@ class KalibroConfigurationFactory(factory.Factory):
     name = 'Ruby Configuration'
     description = 'A simple Ruby Configuration'
 
+class NativeMetricFactory(factory.Factory):
+    class Meta:
+        model = NativeMetric
+
+    type = "NativeMetricSnapshot"
+    name = "Cyclomatic Complexity"
+    code = "saikuro"
+    scope = "METHOD"
+    description = ""
+    languages = ["RUBY"]
+    metric_collector_name = "MetricFu"
+
 class MetricConfigurationFactory(factory.Factory):
     class Meta:
         model = MetricConfiguration
 
     created_at = None
     updated_at = None
-    metric = None # TODO: Add a Metric instance here
+    metric = NativeMetricFactory.build()
     weight = 1.0
     aggregation_form = "MEAN"
     reading_group_id = 1
@@ -82,18 +94,6 @@ class KalibroModuleFactory(factory.Factory):
     granlrty = None # TODO add a Granularity instance here
     long_name = "kalibro_client_py.tests.factories"
     module_result_id = 1
-
-class NativeMetricFactory(factory.Factory):
-    class Meta:
-        model = NativeMetric
-
-    type = "NativeMetricSnapshot"
-    name = "Cyclomatic Complexity"
-    code = "saikuro"
-    scope = "METHOD"
-    description = ""
-    languages = ["RUBY"]
-    metric_collector_name = "MetricFu"
 
 class CompoundMetricFactory(factory.Factory):
     class Meta:
