@@ -1,5 +1,5 @@
 from unittest import TestCase
-from kalibro_client.processor import Project, Repository
+from kalibro_client.processor import Project, Repository, ProcessTime
 from kalibro_client.processor.base import Base
 import kalibro_client
 
@@ -13,6 +13,9 @@ import dateutil
 
 from .helpers import not_raises
 
+from factories import ProjectFactory, RepositoryFactory, ProcessTimeFactory
+
+from .helpers import not_raises
 
 class TestProcessorBase(TestCase):
     @patch('kalibro_client.config')
@@ -37,6 +40,21 @@ class TestProject(TestCase):
             self.project.repositories()
             request_mock.assert_called_once_with("1/repositories", method='get')
             mock.assert_called_once_with(repositories_hash)
+
+class TestProcessTime(TestCase):
+    def setUp(self):
+        self.subject = ProcessTimeFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'time'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.time = "1"
+
+    def test_time_setter_conversion_to_integer(self):
+        self.subject.time = "42"
+        assert_equal(self.subject.time, 42)
 
 
 class TestKalibroModule(TestCase):
