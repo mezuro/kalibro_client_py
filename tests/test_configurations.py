@@ -2,13 +2,16 @@ from unittest import TestCase
 from kalibro_client.configurations.base import Base
 from kalibro_client.configurations import MetricConfiguration, Reading
 
+from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, Metric
+
 import kalibro_client
 
-from nose.tools import assert_equal, assert_true, assert_in
+from nose.tools import assert_equal, assert_true, assert_in, raises
 
 from mock import patch
 from factories import KalibroConfigurationFactory, MetricConfigurationFactory, \
-    ReadingGroupFactory, ReadingFactory, NativeMetricFactory
+    ReadingGroupFactory, ReadingFactory, NativeMetricFactory,\
+    CompoundMetricFactory
 
 from .helpers import not_raises
 
@@ -103,3 +106,24 @@ class TestMetricConfiguration(TestCase):
         assert_equal(dict_['reading_group_id'], self.subject.reading_group_id)
         assert_equal(dict_['weight'], self.subject.weight)
 
+    def test_metric_setter_with_native_metric(self):
+        metric = NativeMetricFactory.build()
+        self.subject.metric = metric._asdict()
+        assert_true(isinstance(self.subject.metric, NativeMetric))
+        assert_equal(self.subject.metric, metric)
+
+    def test_metric_setter_with_compound_metric(self):
+        metric = CompoundMetricFactory.build()
+        self.subject.metric = metric._asdict()
+        assert_true(isinstance(self.subject.metric, CompoundMetric))
+        assert_equal(self.subject.metric, metric)
+
+    def test_metric_setter_with_generic_metric(self):
+        metric = CompoundMetricFactory.build()
+        self.subject.metric = metric
+        assert_true(isinstance(self.subject.metric, Metric))
+        assert_equal(self.subject.metric, metric)
+
+    @raises(ValueError)
+    def test_metric_setter_with_something_that_isnt_a_metric(self):
+        self.subject.metric = None

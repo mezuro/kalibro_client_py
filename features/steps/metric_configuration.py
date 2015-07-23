@@ -30,11 +30,11 @@ def step_impl(context):
 
 @when(u'I search a metric configuration with the same id of the given metric configuration')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I search a metric configuration with the same id of the given metric configuration')
+    context.found_metric_configuration = MetricConfiguration.find(context.metric_configuration.id)
 
 @then(u'it should return the same metric configuration as the given one')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then it should return the same metric configuration as the given one')
+    assert_equal(context.found_metric_configuration, context.metric_configuration)
 
 @when(u'I search an inexistent metric configuration')
 def step_impl(context):

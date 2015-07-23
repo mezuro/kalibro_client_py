@@ -1,15 +1,17 @@
 from kalibro_client.base import attributes_class_constructor,\
     entity_name_decorator
 from kalibro_client.configurations.base import Base
+from kalibro_client.miscellaneous import CompoundMetric, Metric, NativeMetric
 
 
 @entity_name_decorator
-class MetricConfiguration(attributes_class_constructor('MetricConfigurationAttr', ('metric', 'aggregation_form')), Base):
-    def __init__(self, reading_group_id=None, kalibro_configuration_id=None, weight=None, *init_args, **init_kwargs):
+class MetricConfiguration(attributes_class_constructor('MetricConfigurationAttr', ('aggregation_form')), Base):
+    def __init__(self, metric, reading_group_id=None, kalibro_configuration_id=None, weight=None, *init_args, **init_kwargs):
         super(MetricConfiguration, self).__init__(*init_args, **init_kwargs)
         self.reading_group_id = reading_group_id
         self.kalibro_configuration_id = kalibro_configuration_id
         self.weight = weight
+        self.metric = metric
 
     @property
     def reading_group_id(self):
@@ -50,3 +52,19 @@ class MetricConfiguration(attributes_class_constructor('MetricConfigurationAttr'
         dict_['reading_group_id'] = self.reading_group_id
         dict_['weight'] = self.weight
         return dict_
+
+    @property
+    def metric(self):
+        return self._metric
+
+    @metric.setter
+    def metric(self, value):
+        if isinstance(value, dict):
+            if value['type'] == "NativeMetricSnapshot":
+                self._metric = NativeMetric(**value)
+            else:
+                self._metric = CompoundMetric(**value)
+        elif isinstance(value, Metric):
+            self._metric = value
+        else:
+            raise ValueError("Cannot cast {} into Metric".format(value))
