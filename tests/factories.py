@@ -1,4 +1,5 @@
 import factory
+
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric
@@ -75,7 +76,7 @@ class NativeMetricFactory(factory.Factory):
     class Meta:
         model = NativeMetric
 
-    type = "native"
+    type = "NativeMetricSnapshot"
     name = "Cyclomatic Complexity"
     code = "saikuro"
     scope = "METHOD"
