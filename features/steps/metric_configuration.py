@@ -17,15 +17,16 @@ def step_impl(context):
 
 @given(u'I have a loc configuration within the given kalibro configuration')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Given I have a loc configuration within the given kalibro configuration')
+    context.execute_steps(
+        u'When I have a loc configuration within the given kalibro configuration')
 
 @when(u'I destroy the metric configuration')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I destroy the metric configuration')
+    context.metric_configuration.delete()
 
 @then(u'the metric configuration should no longer exist')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the metric configuration should no longer exist')
+    assert_true(not MetricConfiguration.exists(context.metric_configuration.id))
 
 @when(u'I search a metric configuration with the same id of the given metric configuration')
 def step_impl(context):
