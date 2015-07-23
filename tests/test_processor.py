@@ -52,7 +52,7 @@ class TestProcessTime(TestCase):
     def test_properties_setters(self):
         self.subject.time = "1"
 
-    def test_time_setter_conversion_to_string(self):
+    def test_time_setter_conversion_to_integer(self):
         self.subject.time = "42"
         assert_equal(self.subject.time, 42)
 
