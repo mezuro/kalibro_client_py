@@ -42,3 +42,11 @@ class MetricConfiguration(attributes_class_constructor('MetricConfigurationAttr'
         if value is not None:
             value = float(value)
         self._weight = value
+
+    def _asdict(self):
+        dict_ = super(MetricConfiguration, self)._asdict()
+        dict_['metric'] = self.metric._asdict()
+        dict_['kalibro_configuration_id'] = self.kalibro_configuration_id
+        dict_['reading_group_id'] = self.reading_group_id
+        dict_['weight'] = self.weight
+        return dict_

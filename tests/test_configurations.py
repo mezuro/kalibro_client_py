@@ -4,11 +4,11 @@ from kalibro_client.configurations import MetricConfiguration, Reading
 
 import kalibro_client
 
-from nose.tools import assert_equal, assert_true
+from nose.tools import assert_equal, assert_true, assert_in
 
 from mock import patch
 from factories import KalibroConfigurationFactory, MetricConfigurationFactory, \
-    ReadingGroupFactory, ReadingFactory
+    ReadingGroupFactory, ReadingFactory, NativeMetricFactory
 
 from .helpers import not_raises
 
@@ -93,4 +93,13 @@ class TestMetricConfiguration(TestCase):
         self.subject.kalibro_configuration_id = None
         self.subject.reading_group_id = None
         self.subject.weight = None
+
+    def test_asdict(self):
+        dict_ = self.subject._asdict()
+        metric_dict = NativeMetricFactory.build()._asdict()
+        assert_in('metric', dict_)
+        assert_in(metric_dict, dict_.values())
+        assert_equal(dict_['kalibro_configuration_id'], self.subject.kalibro_configuration_id)
+        assert_equal(dict_['reading_group_id'], self.subject.reading_group_id)
+        assert_equal(dict_['weight'], self.subject.weight)
 

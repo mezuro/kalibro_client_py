@@ -1,9 +1,9 @@
 from behave import *
 from nose.tools import assert_true, assert_in, assert_equal
 
-from ..tests.factories import KalibroConfigurationFactory, MetricConfigurationFactory
+from ..tests.factories import MetricConfigurationFactory
 
-from kalibro_client.configurations import KalibroConfiguration
+from kalibro_client.configurations import MetricConfiguration
 
 
 @when(u'I have a loc configuration within the given kalibro configuration')
