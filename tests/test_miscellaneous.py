@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from nose.tools import assert_true
+from nose.tools import assert_true, assert_equal, raises
 
 from factories import NativeMetricFactory, CompoundMetricFactory
 
@@ -19,6 +19,11 @@ class TestNativeMetric(TestCase):
         self.subject.metric_collector_name = "test"
         self.subject.languages = ["test"]
 
+    def test_asdict(self):
+        dict_ = self.subject._asdict()
+        assert_equal(dict_['languages'], ["RUBY"])
+        assert_equal(dict_['metric_collector_name'], "MetricFu")
+
 
 class TestCompoudMetric(TestCase):
     def setUp(self):
@@ -30,3 +35,11 @@ class TestCompoudMetric(TestCase):
     @not_raises((AttributeError, ValueError))
     def test_properties_setters(self):
         self.subject.script = "test"
+
+    @raises(ValueError)
+    def test_properties_setters(self):
+        self.subject.script = None
+
+    def test_asdict(self):
+        dict_ = self.subject._asdict()
+        assert_equal(dict_['script'], "return 0;")
