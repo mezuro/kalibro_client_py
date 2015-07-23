@@ -1,7 +1,7 @@
 import factory
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule
-from kalibro_client.miscellaneous import NativeMetric
+from kalibro_client.miscellaneous import NativeMetric, CompoundMetric
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading
 
@@ -82,6 +82,17 @@ class NativeMetricFactory(factory.Factory):
     description = ""
     languages = ["RUBY"]
     metric_collector_name = "MetricFu"
+
+class CompoundMetricFactory(factory.Factory):
+    class Meta:
+        model = CompoundMetric
+
+    type = "CompoundMetricSnapshot"
+    name = "Lines of Code"
+    code = "loc"
+    scope = "CLASS"
+    description = ""
+    script = "return 0;"
 
 class ReadingGroupFactory(factory.Factory):
     class Meta:
