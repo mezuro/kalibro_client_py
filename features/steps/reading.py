@@ -32,15 +32,17 @@ def step_impl(context):
 
 @given(u'I have a reading within the given reading group')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Given I have a reading within the given reading group')
+    context.reading = ReadingFactory.build(
+        reading_group_id=context.reading_group.id)
+    context.reading.save()
 
 @when(u'I ask for a reading with the same id of the given reading')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I ask for a reading with the same id of the given reading')
+    context.response = Reading.find(context.reading.id)
 
 @then(u'I should get the given reading')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get the given reading')
+    assert_equal(context.response, context.reading)
 
 @when(u'I ask for the readings of the given reading group')
 def step_impl(context):
