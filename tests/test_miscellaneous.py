@@ -21,8 +21,9 @@ class TestNativeMetric(TestCase):
 
     def test_asdict(self):
         dict_ = self.subject._asdict()
-        assert_equal(dict_['languages'], ["RUBY"])
-        assert_equal(dict_['metric_collector_name'], "MetricFu")
+        assert_equal(dict_['languages'], self.subject.languages)
+        assert_equal(dict_['metric_collector_name'],
+                     self.subject.metric_collector_name)
 
 
 class TestCompoudMetric(TestCase):
@@ -42,4 +43,4 @@ class TestCompoudMetric(TestCase):
 
     def test_asdict(self):
         dict_ = self.subject._asdict()
-        assert_equal(dict_['script'], "return 0;")
+        assert_equal(dict_['script'], self.subject.script)
