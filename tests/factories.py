@@ -1,6 +1,7 @@
 import factory
 
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric
+from kalibro_client.miscellaneous.date_metric_result import DateMetricResult
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule, ProcessTime
 from kalibro_client.configurations import KalibroConfiguration,\
@@ -120,3 +121,15 @@ class ReadingFactory(factory.Factory):
     grade = 10
     color = "33dd33"
     reading_group_id = 1
+
+class DateMetricResultFactory(factory.Factory):
+    class Meta:
+        model = DateMetricResult
+
+    date = "2011-10-20T18:26:43.151+00:00"
+
+    metric_result = {
+        'value': "1.0",
+        'module_result_id': 1,
+        'metric_configuration_id': 1
+    }
