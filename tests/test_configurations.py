@@ -127,3 +127,16 @@ class TestMetricConfiguration(TestCase):
     @raises(ValueError)
     def test_metric_setter_with_something_that_isnt_a_metric(self):
         self.subject.metric = None
+
+    def test_metric_configurations_of(self):
+        response = {"metric_configurations": [self.subject._asdict()]}
+        with patch.object(MetricConfiguration, 'request', return_value=response) as request_mock, \
+            patch.object(MetricConfiguration, 'response_to_objects_array', return_value=[self.subject]) as response_to_array_mock:
+            metric_configurations = MetricConfiguration.metric_configurations_of(self.subject.kalibro_configuration_id)
+            request_mock.assert_called_once_with(
+                '',
+                {'id': self.subject.kalibro_configuration_id},
+                method='get',
+                prefix='kalibro_configurations/:id')
+            response_to_array_mock.assert_called_once_with(response)
+            assert_equal(metric_configurations, [self.subject])

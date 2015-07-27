@@ -5,6 +5,8 @@ from ..tests.factories import MetricConfigurationFactory
 
 from kalibro_client.configurations import MetricConfiguration
 
+from kalibro_client.base import KalibroClientNotFoundError
+
 
 @when(u'I have a loc configuration within the given kalibro configuration')
 def step_impl(context):
@@ -38,24 +40,30 @@ def step_impl(context):
 
 @when(u'I search an inexistent metric configuration')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I search an inexistent metric configuration')
+    try:
+        MetricConfiguration.find(-1)
+    except Exception as exception:
+        context.response = exception
 
 @then(u'I should get an error')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get an error')
+    assert_true(isinstance(context.response, KalibroClientNotFoundError))
 
 @given(u'I have a metric configuration within the given kalibro configuration')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Given I have a metric configuration within the given kalibro configuration')
+    context.metric_configuration = MetricConfigurationFactory.build(
+        kalibro_configuration_id=context.kalibro_configuration.id)
+    context.metric_configuration.save()
 
 @when(u'I request all metric configurations of the given kalibro configuration')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I request all metric configurations of the given kalibro configuration')
+    context.metric_configurations = MetricConfiguration.metric_configurations_of(
+        context.kalibro_configuration.id)
 
 @then(u'I should get a list of its metric configurations')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a list of its metric configurations')
+    assert_in(context.metric_configuration, context.metric_configurations)
 
 @then(u'I should get an empty list of metric configurations')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get an empty list of metric configurations')
+    assert_equal(len(context.metric_configurations), 0)

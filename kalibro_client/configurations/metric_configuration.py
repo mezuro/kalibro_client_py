@@ -68,3 +68,11 @@ class MetricConfiguration(attributes_class_constructor('MetricConfigurationAttr'
             self._metric = value
         else:
             raise ValueError("Cannot cast {} into Metric".format(value))
+
+    @classmethod
+    def metric_configurations_of(cls, kalibro_configuration_id):
+        return cls.response_to_objects_array(
+            cls.request('',
+                        {'id': kalibro_configuration_id},
+                        method='get',
+                        prefix='kalibro_configurations/:id'))
