@@ -5,6 +5,7 @@ from kalibro_client.configurations import MetricConfiguration, Reading
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, Metric
 
 import kalibro_client
+from kalibro_client.configurations.statistic import Statistic
 
 from nose.tools import assert_equal, assert_true, assert_in, raises
 
@@ -81,6 +82,7 @@ class TestReading(TestCase):
     def test_delete_prefix(self):
         assert_equal(self.subject.delete_prefix(), "reading_groups/{}".format(self.subject.reading_group_id))
 
+
 class TestMetricConfiguration(TestCase):
     def setUp(self):
         self.subject = MetricConfigurationFactory.build()
@@ -140,3 +142,15 @@ class TestMetricConfiguration(TestCase):
                 prefix='kalibro_configurations/:id')
             response_to_array_mock.assert_called_once_with(response)
             assert_equal(metric_configurations, [self.subject])
+
+
+class TestStatistic(object):
+    def test_metric_percentage(self):
+        response = {"metric_percentage": 10.0}
+
+        with patch.object(Statistic, 'request', return_value=response) as request_mock:
+            result = Statistic.metric_percentage('test_metric')
+            request_mock.assert_called_once_with('/metric_percentage',
+                {'metric_code': 'test_metric'}, method='get')
+
+            assert_equal(result, response)
