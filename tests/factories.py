@@ -1,7 +1,7 @@
 import factory
 
-from kalibro_client.miscellaneous import NativeMetric, CompoundMetric
-from kalibro_client.miscellaneous.date_metric_result import DateMetricResult
+from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
+    DateModuleResult, DateMetricResult
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule, ProcessTime
 from kalibro_client.configurations import KalibroConfiguration,\
@@ -133,3 +133,10 @@ class DateMetricResultFactory(factory.Factory):
         'module_result_id': 1,
         'metric_configuration_id': 1
     }
+
+class DateModuleResultFactory(factory.Factory):
+    class Meta:
+        model = DateModuleResult
+
+    date = "2011-10-20T18:26:43.151+00:00"
+    module_result = None

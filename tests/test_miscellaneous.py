@@ -1,10 +1,13 @@
 from unittest import TestCase, skip
+from datetime import datetime
 
 from nose.tools import assert_true, assert_equal, assert_is_not_none, \
     assert_almost_equal, raises
 
+from mock import Mock
+
 from factories import NativeMetricFactory, CompoundMetricFactory, \
-    DateMetricResultFactory
+    DateMetricResultFactory, DateModuleResultFactory
 from .helpers import not_raises
 
 from kalibro_client.miscellaneous import Granularity, DateMetricResult
@@ -70,6 +73,23 @@ class TestGranularity(object):
     def test_str(self):
         assert_equal(str(Granularity.SOFTWARE), 'SOFTWARE')
 
+
+class TestDateModuleResult(object):
+    def setUp(self):
+        self.subject = DateModuleResultFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'date'))
+        assert_true(hasattr(self.subject, 'module_result'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.date = "2011-10-20T18:27:43.151+00:00"
+        self.subject.module_result = None
+        
+    def test_result(self):
+        self.subject.module_result = Mock(grade=1.0)
+        assert_equal(self.subject.result, 1.0)
 
 @skip("Won't work until MetricResult is implemented")
 class TestDateMetricResult(TestCase):
