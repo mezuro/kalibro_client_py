@@ -1,11 +1,13 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 
-from nose.tools import assert_true, assert_equal, raises
+from nose.tools import assert_true, assert_equal, assert_is_not_none, \
+    assert_almost_equal, raises
 
-from factories import NativeMetricFactory, CompoundMetricFactory
+from factories import NativeMetricFactory, CompoundMetricFactory, \
+    DateMetricResultFactory
 from .helpers import not_raises
 
-from kalibro_client.miscellaneous import Granularity
+from kalibro_client.miscellaneous import Granularity, DateMetricResult
 
 
 class TestNativeMetric(TestCase):
@@ -67,3 +69,34 @@ class TestGranularity(object):
 
     def test_str(self):
         assert_equal(str(Granularity.SOFTWARE), 'SOFTWARE')
+
+
+@skip("Won't work until MetricResult is implemented")
+class TestDateMetricResult(TestCase):
+    def setUp(self):
+        self.subject = DateMetricResultFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'date'))
+        assert_true(hasattr(self.subject, 'metric_result'))
+
+    @raises(AttributeError)
+    def test_properties_setter_date(self):
+        self.subject.date = None
+
+    @raises(AttributeError)
+    def test_properties_setter_metric_result(self):
+        self.subject.metric_result = None
+
+    def test_constructor(self):
+        assert_equal(self.subject.date, DateMetricResultFactory.date)
+
+        assert_is_not_none(self.subject.metric_result)
+        metric_result = self.subject.metric_result
+        metric_result_params = DateMetricResultFactory.metric_result
+
+        assert_equal(metric_result.value, float(metric_result_params["value"]))
+        assert_equal(metric_result.module_result_id,
+                     metric_result_params["module_result_id"])
+        assert_equal(metric_result.metric_configuration_id,
+                     metric_result_params["metric_configuration_id"])
