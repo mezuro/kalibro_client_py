@@ -5,7 +5,7 @@ from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule, ProcessTime
 from kalibro_client.configurations import KalibroConfiguration,\
-    MetricConfiguration, ReadingGroup, Reading
+    MetricConfiguration, ReadingGroup, Reading, RangeSnapshot
 
 
 class ProjectFactory(factory.Factory):
@@ -154,3 +154,14 @@ class DateModuleResultFactory(factory.Factory):
 
     date = "2011-10-20T18:26:43.151+00:00"
     module_result = None
+
+class RangeSnapshotFactory(factory.Factory):
+    class Meta:
+        model = RangeSnapshot
+
+    beginning = 1.1
+    end = 5.1
+    label = "Snapshot"
+    grade = 10.1
+    color = "FF2284"
+    comments = "Comment"
