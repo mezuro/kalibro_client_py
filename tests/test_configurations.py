@@ -211,8 +211,8 @@ class TestKalibroRange(TestCase):
 
     @not_raises((AttributeError, ValueError))
     def test_properties_setters(self):
-        self.subject.beginning = None
-        self.subject.end = None
-        self.subject.reading_id = None
-        self.subject.metric_configuration_id = None
+        self.subject.beginning = 0.0
+        self.subject.end = 10.0
+        self.subject.reading_id = 1
+        self.subject.metric_configuration_id = 2
         self.subject.comments = None
