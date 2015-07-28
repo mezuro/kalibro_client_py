@@ -5,7 +5,8 @@ from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule, ProcessTime
 from kalibro_client.configurations import KalibroConfiguration,\
-    MetricConfiguration, ReadingGroup, Reading, RangeSnapshot
+    MetricConfiguration, ReadingGroup, Reading, RangeSnapshot, \
+    KalibroRange
 
 
 class ProjectFactory(factory.Factory):
@@ -147,6 +148,16 @@ class DateMetricResultFactory(factory.Factory):
         'module_result_id': 1,
         'metric_configuration_id': 1
     }
+
+class KalibroRangeFactory(factory.Factory):
+    class Meta:
+        model = KalibroRange
+
+    beginning = 1.1
+    end = 5.1
+    reading_id = 3
+    comments = "Comment"
+    metric_configuration_id = 1
 
 class DateModuleResultFactory(factory.Factory):
     class Meta:
