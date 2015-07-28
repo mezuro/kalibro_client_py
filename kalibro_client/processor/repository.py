@@ -55,6 +55,12 @@ class Repository(attributes_class_constructor('RepositoryAttr',
 
         self._kalibro_configuration_id = value
 
+    @classmethod
+    def repository_types(cls):
+        response = cls.request(action='/types', params={}, method='get')['types']
+        if response == None: response = []
+        return response
+
     def process(self):
         return self.request(action='/process', params={'id': self.id},
                             method='get')

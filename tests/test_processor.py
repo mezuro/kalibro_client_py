@@ -104,6 +104,18 @@ class TestRepository(TestCase):
         self.subject.project_id = None
         self.subject.kalibro_configuration_id = None
 
+    def test_repository_types(self):
+        response = {"types": ["GIT", "SVN"]}
+        with patch.object(Repository, 'request', return_value=response) as repository_request:
+            assert_equal(self.subject.repository_types(), response["types"])
+            repository_request.assert_called_once_with(action='/types', params={}, method='get')
+
+    def test_repository_types_with_none(self):
+        response = {"types": None}
+        with patch.object(Repository, 'request', return_value=response) as repository_request:
+            assert_equal(self.subject.repository_types(), [])
+            repository_request.assert_called_once_with(action='/types', params={}, method='get')
+
     def test_process(self):
         with patch.object(Repository, 'request') as repository_request:
             self.subject.process()
