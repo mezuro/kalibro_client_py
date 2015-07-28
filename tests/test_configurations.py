@@ -252,3 +252,9 @@ class TestKalibroRange(TestCase):
             assert_equal(KalibroRange.ranges_of(self.subject.id), self.kalibro_ranges)
             request_mock.assert_called_once_with('', params={"id": self.subject.id}, method='get', prefix="metric_configurations/:id")
             kalibro_ranges_mock.assert_called_once_with(kalibro_ranges_hash)
+
+    def test_asdict(self):
+        dict_ = self.subject._asdict()
+
+        assert_equal(dict_['reading_id'], self.subject.reading_id)
+        assert_equal(dict_['metric_configuration_id'], self.subject.metric_configuration_id)

@@ -52,3 +52,9 @@ class KalibroRange(attributes_class_constructor('KalibroRangeAttr', ('beginning'
         response = cls.request('', params={'id': metric_configuration_id},
                                method='get', prefix='metric_configurations/:id')
         return cls.response_to_objects_array(response)
+
+    def _asdict(self):
+        dict_ = super(KalibroRange, self)._asdict()
+        dict_['metric_configuration_id'] = self.metric_configuration_id
+        dict_['reading_id'] = self.reading_id
+        return dict_
