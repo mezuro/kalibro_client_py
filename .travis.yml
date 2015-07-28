@@ -15,7 +15,7 @@ install:
   - rvm use 2.2.2 --default
   - rvm @global do gem install bundler
   # Kalibro Install script
-  - git clone https://github.com/mezuro/kalibro_install.git -b v3.0
+  - git clone https://github.com/mezuro/kalibro_install.git -b v3.1
   - ANALIZO_VERSION= CACHE_DIR=$PWD/cache bash ./kalibro_install/install.sh
   # Python dependencies
   - pip install -r requirements.txt
