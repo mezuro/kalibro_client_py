@@ -1,15 +1,15 @@
 from unittest import TestCase
-from kalibro_client.configurations.base import Base
-from kalibro_client.configurations import MetricConfiguration, Reading
 
-from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, Metric
+from mock import patch, PropertyMock
+from nose.tools import assert_equal, assert_true, assert_in, raises
 
 import kalibro_client
 from kalibro_client.configurations.statistic import Statistic
 
-from nose.tools import assert_equal, assert_true, assert_in, raises
+from kalibro_client.configurations import MetricConfiguration, Reading
+from kalibro_client.configurations.base import Base
+from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, Metric
 
-from mock import patch
 from factories import KalibroConfigurationFactory, MetricConfigurationFactory, \
     ReadingGroupFactory, ReadingFactory, NativeMetricFactory,\
     CompoundMetricFactory, RangeSnapshotFactory, KalibroRangeFactory
@@ -201,6 +201,7 @@ class TestRangeSnapShot(TestCase):
 class TestKalibroRange(TestCase):
     def setUp(self):
         self.subject = KalibroRangeFactory.build()
+        self.reading = ReadingFactory.build()
 
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'beginning'))
@@ -216,3 +217,26 @@ class TestKalibroRange(TestCase):
         self.subject.reading_id = 1
         self.subject.metric_configuration_id = 2
         self.subject.comments = None
+
+    def test_reading(self):
+        with patch.object(Reading, 'find', return_value=self.reading) as reading_find:
+            assert_equal(self.subject.reading, self.reading)
+            reading_find.assert_called_once_with(self.subject.reading_id)
+
+    def patch_reading(self):
+        return patch.object(type(self.subject), 'reading', new_callable=PropertyMock, return_value=self.reading)
+
+    def test_label(self):
+        with self.patch_reading() as reading_mock:
+            assert_equal(self.subject.label, self.reading.label)
+            reading_mock.assert_called_once()
+
+    def test_grade(self):
+        with self.patch_reading() as reading_mock:
+            assert_equal(self.subject.grade, self.reading.grade)
+            reading_mock.assert_called_once()
+
+    def test_color(self):
+        with self.patch_reading() as reading_mock:
+            assert_equal(self.subject.color, self.reading.color)
+            reading_mock.assert_called_once()
