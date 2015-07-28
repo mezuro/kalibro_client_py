@@ -74,6 +74,20 @@ class NativeMetricFactory(factory.Factory):
     languages = ["RUBY"]
     metric_collector_name = "MetricFu"
 
+
+class LinesOfCodeMetricFactory(factory.Factory):
+    class Meta:
+        model = NativeMetric
+
+    type = "NativeMetricSnapshot"
+    name = "Lines of Code"
+    code = "loc"
+    scope = "CLASS"
+    description = ""
+    languages = ["C"]
+    metric_collector_name = "Analizo"
+
+
 class MetricConfigurationFactory(factory.Factory):
     class Meta:
         model = MetricConfiguration

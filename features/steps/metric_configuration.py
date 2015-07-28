@@ -1,7 +1,8 @@
 from behave import *
 from nose.tools import assert_true, assert_in, assert_equal
 
-from ..tests.factories import MetricConfigurationFactory
+from ..tests.factories import MetricConfigurationFactory, \
+    LinesOfCodeMetricFactory
 
 from kalibro_client.configurations import MetricConfiguration
 
@@ -10,7 +11,9 @@ from kalibro_client.base import KalibroClientNotFoundError
 
 @when(u'I have a loc configuration within the given kalibro configuration')
 def step_impl(context):
-    context.metric_configuration = MetricConfigurationFactory.build(kalibro_configuration_id=context.kalibro_configuration.id)
+    context.metric_configuration = MetricConfigurationFactory.build(
+        kalibro_configuration_id=context.kalibro_configuration.id,
+        metric=LinesOfCodeMetricFactory.build())
     context.metric_configuration.save()
 
 @then(u'the metric configuration should exist')
