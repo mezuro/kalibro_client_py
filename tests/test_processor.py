@@ -56,6 +56,22 @@ class TestProcessTime(TestCase):
         assert_equal(self.subject.time, 42)
 
 
+class TestProcessing(TestCase):
+    def setUp(self):
+        self.subject = ProcessingFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'date'))
+        assert_true(hasattr(self.subject, 'repository_id'))
+        assert_true(hasattr(self.subject, 'root_module_result_id'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.date = "1"
+        self.subject.repository_id = 1
+        self.subject.root_module_result_id = 1
+
+
 class TestKalibroModule(TestCase):
     def setUp(self):
         self.subject = KalibroModuleFactory.build()
