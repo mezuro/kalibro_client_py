@@ -5,7 +5,7 @@ Feature: Find
 
   @kalibro_configuration_restart
   Scenario: find a valid metric configuration
-	  Given I have a kalibro configuration with name "Kalibro for Java"
+    Given I have a kalibro configuration with name "Kalibro for Java"
     And I have a reading group with name "Group"
     And I have a loc configuration within the given kalibro configuration
     When I search a metric configuration with the same id of the given metric configuration
