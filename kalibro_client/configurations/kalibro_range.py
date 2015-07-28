@@ -46,3 +46,9 @@ class KalibroRange(attributes_class_constructor('KalibroRangeAttr', ('beginning'
     @property
     def color(self):
         return self.reading.color
+
+    @classmethod
+    def ranges_of(cls, metric_configuration_id):
+        response = cls.request('', params={'id': metric_configuration_id},
+                               method='get', prefix='metric_configurations/:id')
+        return cls.response_to_objects_array(response)

@@ -6,7 +6,8 @@ from nose.tools import assert_equal, assert_true, assert_in, raises
 import kalibro_client
 from kalibro_client.configurations.statistic import Statistic
 
-from kalibro_client.configurations import MetricConfiguration, Reading
+from kalibro_client.configurations import MetricConfiguration, Reading, \
+    KalibroRange
 from kalibro_client.configurations.base import Base
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, Metric
 
@@ -202,6 +203,7 @@ class TestKalibroRange(TestCase):
     def setUp(self):
         self.subject = KalibroRangeFactory.build()
         self.reading = ReadingFactory.build()
+        self.kalibro_ranges = [self.subject]
 
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'beginning'))
@@ -240,3 +242,13 @@ class TestKalibroRange(TestCase):
         with self.patch_reading() as reading_mock:
             assert_equal(self.subject.color, self.reading.color)
             reading_mock.assert_called_once()
+
+    def test_ranges_of(self):
+        kalibro_ranges_hash = {"kalibro_ranges": [self.subject._asdict()]}
+
+        with patch.object(KalibroRange, 'request', return_value=kalibro_ranges_hash) as request_mock, \
+             patch.object(KalibroRange, 'response_to_objects_array', return_value=self.kalibro_ranges) as kalibro_ranges_mock:
+
+            assert_equal(KalibroRange.ranges_of(self.subject.id), self.kalibro_ranges)
+            request_mock.assert_called_once_with('', params={"id": self.subject.id}, method='get', prefix="metric_configurations/:id")
+            kalibro_ranges_mock.assert_called_once_with(kalibro_ranges_hash)
