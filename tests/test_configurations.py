@@ -12,7 +12,7 @@ from nose.tools import assert_equal, assert_true, assert_in, raises
 from mock import patch
 from factories import KalibroConfigurationFactory, MetricConfigurationFactory, \
     ReadingGroupFactory, ReadingFactory, NativeMetricFactory,\
-    CompoundMetricFactory
+    CompoundMetricFactory, RangeSnapshotFactory
 
 from .helpers import not_raises
 
@@ -181,3 +181,19 @@ class TestStatistic(object):
     @raises(NotImplementedError)
     def test_not_implemented_delete(self):
         self.subject.delete()
+
+
+class TestRangeSnapShot(TestCase):
+    def setUp(self):
+        self.subject = RangeSnapshotFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'beginning'))
+        assert_true(hasattr(self.subject, 'end'))
+        assert_true(hasattr(self.subject, 'grade'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.beginning = "-INF"
+        self.subject.end = "INF"
+        self.subject.grade = 5.6
