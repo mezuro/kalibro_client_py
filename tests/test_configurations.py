@@ -145,6 +145,9 @@ class TestMetricConfiguration(TestCase):
 
 
 class TestStatistic(object):
+    def setUp(self):
+        self.subject = Statistic()
+
     def test_metric_percentage(self):
         response = {"metric_percentage": 10.0}
 
@@ -154,3 +157,27 @@ class TestStatistic(object):
                 {'metric_code': 'test_metric'}, method='get')
 
             assert_equal(result, response)
+
+    @raises(NotImplementedError)
+    def test_not_implemented_find(self):
+        Statistic.find(1)
+
+    @raises(NotImplementedError)
+    def test_not_implemented_all(self):
+        Statistic.all()
+
+    @raises(NotImplementedError)
+    def test_not_implemented_exists(self):
+        Statistic.exists(1)
+
+    @raises(NotImplementedError)
+    def test_not_implemented_save(self):
+        self.subject.save()
+
+    @raises(NotImplementedError)
+    def test_not_implemented_update(self):
+        self.subject.update()
+
+    @raises(NotImplementedError)
+    def test_not_implemented_delete(self):
+        self.subject.delete()

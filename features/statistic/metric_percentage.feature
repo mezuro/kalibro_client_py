@@ -3,7 +3,7 @@ Feature: Calculating the percentage of metrics used
   As a developer
   I want to know which metrics are more used
 
-  @kalibro_configuration_restart @skip
+  @kalibro_configuration_restart
   Scenario: With an used metric
     Given I have a kalibro configuration with name "Java"
     And I have a reading group with name "Group"
