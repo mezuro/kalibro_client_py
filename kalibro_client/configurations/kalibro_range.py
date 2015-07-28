@@ -58,3 +58,12 @@ class KalibroRange(attributes_class_constructor('KalibroRangeAttr', ('beginning'
         dict_['metric_configuration_id'] = self.metric_configuration_id
         dict_['reading_id'] = self.reading_id
         return dict_
+
+    def save_prefix(self):
+        return "metric_configurations/{}".format(self.metric_configuration_id)
+
+    def update_prefix(self):
+        return "metric_configurations/{}".format(self.metric_configuration_id)
+
+    def delete_prefix(self):
+        return "metric_configurations/{}".format(self.metric_configuration_id)

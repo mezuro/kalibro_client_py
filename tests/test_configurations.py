@@ -258,3 +258,12 @@ class TestKalibroRange(TestCase):
 
         assert_equal(dict_['reading_id'], self.subject.reading_id)
         assert_equal(dict_['metric_configuration_id'], self.subject.metric_configuration_id)
+
+    def test_save_prefix(self):
+        assert_equal(self.subject.save_prefix(), "metric_configurations/{}".format(self.subject.metric_configuration_id))
+
+    def test_update_prefix(self):
+        assert_equal(self.subject.update_prefix(), "metric_configurations/{}".format(self.subject.metric_configuration_id))
+
+    def test_delete_prefix(self):
+        assert_equal(self.subject.delete_prefix(), "metric_configurations/{}".format(self.subject.metric_configuration_id))
