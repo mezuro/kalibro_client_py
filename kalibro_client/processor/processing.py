@@ -18,6 +18,7 @@ class Processing(attributes_class_constructor('ProcessingAttr',
         self.repository_id = repository_id
         self.date = date
         self.root_module_result_id = root_module_result_id
+        self._process_times = None
 
     @property
     def repository_id(self):
@@ -58,3 +59,10 @@ class Processing(attributes_class_constructor('ProcessingAttr',
         dict_["date"] = self.date
         dict_["root_module_result_id"] = self.root_module_result_id
         return dict_
+
+    def process_times(self):
+        if self._process_times is not None:
+            return self._process_times
+
+        self._process_times = self.response_to_objects_array(self.request(action=':id/process_times', params={'id': self.id}, method='get'))
+        return self._process_times
