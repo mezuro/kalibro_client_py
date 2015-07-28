@@ -7,14 +7,17 @@ from kalibro_client.miscellaneous import NativeMetric
 @entity_name_decorator
 class MetricCollectorDetails(attributes_class_constructor('MetricCollectorDetailsAttr',
                                                           (('name', None),
-                                                           ('description', None),
-                                                           ('wanted_metrics', None),
-                                                           ('processing', None)),
+                                                           ('description', None)),
                                                           identity=False),
                             Base):
     def __init__(self, supported_metrics=None, *init_args, **init_kwargs):
-        super(MetricCollectorDetails, self).__init__(init_args, init_kwargs)
+        super(MetricCollectorDetails, self).__init__(*init_args, **init_kwargs)
         self.supported_metrics = supported_metrics
+
+    def _asdict(self):
+        dict_ = super(MetricCollectorDetails, self)._asdict()
+        dict_['supported_metrics'] = self.supported_metrics
+        return dict_
 
     @property
     def supported_metrics(self):

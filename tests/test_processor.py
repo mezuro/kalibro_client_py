@@ -332,10 +332,16 @@ class TestMetricCollectorDetails(TestCase):
 
         assert_equal(self.subject.find_metric_by_name(name), self.native_metric)
 
-    @skip # Missing override to _asdict() so it creates the Processing and other nested objects
+    def test_asdict(self):
+        dict = self.subject._asdict()
+
+        assert_equal(self.subject.name, dict["name"])
+        assert_equal(self.subject.description, dict["description"])
+        assert_equal(self.subject.supported_metrics, dict["supported_metrics"])
+
     def test_find_by_name(self):
         with patch.object(MetricCollectorDetails, 'request',
                           return_value={'metric_collector_details': self.subject._asdict()}) as metric_collector_details_request:
             assert_equal(MetricCollectorDetails.find_by_name(self.subject.name), self.subject)
 
-            metric_collector_details_request.assert_called_once_with('/names', params=None, method='get')
+            metric_collector_details_request.assert_called_once_with('/names', method='get')

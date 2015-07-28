@@ -190,5 +190,3 @@ class MetricCollectorDetailsFactory(factory.Factory):
     name = "MetricFu"
     description = ""
     supported_metrics = {NativeMetricFactory.build().code: NativeMetricFactory.build()}
-    wanted_metrics = {}
-    processing = ProcessingFactory.build()
