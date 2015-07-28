@@ -344,4 +344,19 @@ class TestMetricCollectorDetails(TestCase):
                           return_value={'metric_collector_details': self.subject._asdict()}) as metric_collector_details_request:
             assert_equal(MetricCollectorDetails.find_by_name(self.subject.name), self.subject)
 
-            metric_collector_details_request.assert_called_once_with('/names', method='get')
+            metric_collector_details_request.assert_called_once_with('find', params={"name": self.subject.name})
+
+    def test_all_names(self):
+        names = ['Analizo', 'MetricFu']
+        with patch.object(MetricCollectorDetails, 'request',
+                          return_value={'metric_collector_names': names}) as metric_collector_details_request:
+            all_names = MetricCollectorDetails.all_names()
+            assert_equal(all_names, names)
+            metric_collector_details_request.assert_called_once_with('names', method='get')
+
+    def test_all(self):
+        with patch.object(MetricCollectorDetails, 'request',
+                          return_value=[self.subject._asdict()]) as metric_collector_details_request:
+            all_metric_collectors = MetricCollectorDetails.all()
+            assert_equal(all_metric_collectors, [self.subject])
+            metric_collector_details_request.assert_called_once_with('', method='get')

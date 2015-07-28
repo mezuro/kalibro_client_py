@@ -37,4 +37,12 @@ class MetricCollectorDetails(attributes_class_constructor('MetricCollectorDetail
 
     @classmethod
     def find_by_name(cls, name):
-        return cls(**cls.request('/names', method='get')['metric_collector_details'])
+        return cls(**cls.request('find', params={"name": name})['metric_collector_details'])
+
+    @classmethod
+    def all_names(cls):
+        return cls.request('names', method='get')['metric_collector_names']
+
+    @classmethod
+    def all(cls):
+        return cls.array_to_objects_array(cls.request('', method='get'))
