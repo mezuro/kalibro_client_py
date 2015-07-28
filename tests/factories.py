@@ -159,6 +159,11 @@ class KalibroRangeFactory(factory.Factory):
     comments = "Comment"
     metric_configuration_id = 1
 
+class AnotherKalibroRangeFactory(KalibroRangeFactory):
+    beginning = 0.0
+    end = 1.1
+    comments = "Another Comment"
+
 class DateModuleResultFactory(factory.Factory):
     class Meta:
         model = DateModuleResult
