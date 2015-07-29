@@ -5,4 +5,4 @@ Feature: All Names
 
   Scenario: all metric collectors names
     When I get all metric collector names
-    Then it should return Analizo string inside of an array
+    Then it should return MetricFu string inside of an array

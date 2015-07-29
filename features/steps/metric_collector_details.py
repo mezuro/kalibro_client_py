@@ -10,17 +10,17 @@ from kalibro_client.errors import KalibroClientError
 def step_impl(context):
     context.all_names = MetricCollectorDetails.all_names()
 
-@then(u'it should return Analizo string inside of an array')
+@then(u'it should return MetricFu string inside of an array')
 def step_impl(context):
-    assert_in("Analizo", context.all_names)
+    assert_in("MetricFu", context.all_names)
 
-@when(u'I search metric collector Analizo by name')
+@when(u'I search metric collector MetricFu by name')
 def step_impl(context):
-    context.analizo_details = MetricCollectorDetails.find_by_name("Analizo")
+    context.metric_fu_etails = MetricCollectorDetails.find_by_name("MetricFu")
 
-@then(u'I should get Analizo metric collector')
+@then(u'I should get MetricFu metric collector')
 def step_impl(context):
-    assert_equal(context.analizo_details.name, "Analizo")
+    assert_equal(context.metric_fu_etails.name, "MetricFu")
 
 @when(u'I search metric collector Avalio by name')
 def step_impl(context):
