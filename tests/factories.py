@@ -3,7 +3,7 @@ import factory
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
     DateModuleResult, DateMetricResult
 from kalibro_client.processor import Project, Repository, Processing,\
-    KalibroModule, ProcessTime
+    KalibroModule, ProcessTime, MetricCollectorDetails
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading, RangeSnapshot, \
     KalibroRange
@@ -137,6 +137,7 @@ class ReadingFactory(factory.Factory):
     color = "33dd33"
     reading_group_id = 1
 
+
 class DateMetricResultFactory(factory.Factory):
     class Meta:
         model = DateMetricResult
@@ -181,3 +182,11 @@ class RangeSnapshotFactory(factory.Factory):
     grade = 10.1
     color = "FF2284"
     comments = "Comment"
+
+class MetricCollectorDetailsFactory(factory.Factory):
+    class Meta:
+        model = MetricCollectorDetails
+
+    name = "MetricFu"
+    description = ""
+    supported_metrics = {NativeMetricFactory.build().code: NativeMetricFactory.build()}

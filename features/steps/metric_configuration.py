@@ -1,5 +1,5 @@
 from behave import *
-from nose.tools import assert_true, assert_in, assert_equal
+from nose.tools import assert_true, assert_in, assert_equal, assert_is_instance
 
 from ..tests.factories import MetricConfigurationFactory, \
     LinesOfCodeMetricFactory
@@ -47,10 +47,6 @@ def step_impl(context):
         MetricConfiguration.find(-1)
     except Exception as exception:
         context.response = exception
-
-@then(u'I should get an error')
-def step_impl(context):
-    assert_true(isinstance(context.response, KalibroClientNotFoundError))
 
 @given(u'I have a metric configuration within the given kalibro configuration')
 def step_impl(context):
