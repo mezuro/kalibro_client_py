@@ -139,6 +139,13 @@ class TestRepository(TestCase):
         self.subject.project_id = None
         self.subject.kalibro_configuration_id = None
 
+    def test_asdict(self):
+        dict_ = self.subject._asdict()
+
+        assert_equal(dict_['period'], self.subject.period)
+        assert_equal(dict_['project_id'], self.subject.project_id)
+        assert_equal(dict_['kalibro_configuration_id'], self.subject.kalibro_configuration_id)
+
     def test_repository_types(self):
         response = {"types": ["GIT", "SVN"]}
         with patch.object(Repository, 'request', return_value=response) as repository_request:
