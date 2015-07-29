@@ -174,7 +174,7 @@ class TestRepository(TestCase):
     def test_process(self):
         with patch.object(Repository, 'request') as repository_request:
             self.subject.process()
-            repository_request.assert_called_once_with(action='/process', params={'id': self.subject.id}, method='get')
+            repository_request.assert_called_once_with(action=':id/process', params={'id': self.subject.id}, method='get')
 
     def test_cancel_processing(self):
         with patch.object(Repository, 'request') as repository_request:

@@ -78,7 +78,7 @@ class Repository(attributes_class_constructor('RepositoryAttr',
             prefix="projects/:id"))
 
     def process(self):
-        return self.request(action='/process', params={'id': self.id},
+        return self.request(action=':id/process', params={'id': self.id},
                             method='get')
 
     def cancel_processing_of_a_repository(self):
