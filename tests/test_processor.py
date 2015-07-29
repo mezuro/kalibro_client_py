@@ -104,6 +104,31 @@ class TestRepository(TestCase):
         self.subject.project_id = None
         self.subject.kalibro_configuration_id = None
 
+    def test_repository_types(self):
+        response = {"types": ["GIT", "SVN"]}
+        with patch.object(Repository, 'request', return_value=response) as repository_request:
+            assert_equal(self.subject.repository_types(), response["types"])
+            repository_request.assert_called_once_with(action='/types', params={}, method='get')
+
+    def test_repository_types_with_none(self):
+        response = {"types": None}
+        with patch.object(Repository, 'request', return_value=response) as repository_request:
+            assert_equal(self.subject.repository_types(), [])
+            repository_request.assert_called_once_with(action='/types', params={}, method='get')
+
+    def test_repositories_of(self):
+        response = {"repositories": [self.subject._asdict()]}
+        with patch.object(Repository, 'request', return_value=response) as request_mock, \
+            patch.object(Repository, 'response_to_objects_array', return_value=[self.subject]) as response_to_array_mock:
+            repositories = Repository.repositories_of(self.subject.project_id)
+            request_mock.assert_called_once_with(
+                action='',
+                params={'id': self.subject.project_id},
+                method='get',
+                prefix='projects/:id')
+            response_to_array_mock.assert_called_once_with(response)
+            assert_equal(repositories, [self.subject])
+
     def test_process(self):
         with patch.object(Repository, 'request') as repository_request:
             self.subject.process()
