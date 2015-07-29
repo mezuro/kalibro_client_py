@@ -4,6 +4,7 @@ from nose.tools import assert_true, assert_in, assert_equal
 from ..tests.factories import MetricCollectorDetailsFactory
 
 from kalibro_client.processor import MetricCollectorDetails
+from kalibro_client.errors import KalibroClientError
 
 @when(u'I get all metric collector names')
 def step_impl(context):
@@ -25,5 +26,5 @@ def step_impl(context):
 def step_impl(context):
     try:
         MetricCollectorDetails.find_by_name("Avalio")
-    except Exception as exception:
+    except KalibroClientError as exception:
         context.response = exception
