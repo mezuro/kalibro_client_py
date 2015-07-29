@@ -11,10 +11,10 @@ from kalibro_client.errors import KalibroClientNotFoundError
 
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
-    ProcessTimeFactory
-
+    ProcessTimeFactory, MetricResultFactory
 
 from .helpers import not_raises
+
 
 class TestProcessorBase(TestCase):
     @patch('kalibro_client.config')
@@ -408,3 +408,21 @@ class TestMetricCollectorDetails(TestCase):
             all_metric_collectors = MetricCollectorDetails.all()
             assert_equal(all_metric_collectors, [self.subject])
             metric_collector_details_request.assert_called_once_with('', method='get')
+
+
+class TestMetricResult(TestCase):
+    def setUp(self):
+        self.subject = MetricResultFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'value'))
+        assert_true(hasattr(self.subject, 'metric_configuration_id'))
+        assert_true(hasattr(self.subject, 'module_result_id'))
+        assert_true(hasattr(self.subject, 'persisted'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.value = 3
+        self.subject.metric_configuration_id = 4
+        self.subject.module_result_id = 4
+        self.subject.persisted = True

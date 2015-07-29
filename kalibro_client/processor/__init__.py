@@ -4,3 +4,4 @@ from .project import Project
 from .kalibro_module import KalibroModule
 from .repository import Repository
 from .metric_collector_details import MetricCollectorDetails
+from .metric_result import MetricResult
