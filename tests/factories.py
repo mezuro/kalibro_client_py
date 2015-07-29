@@ -21,7 +21,6 @@ class RepositoryFactory(factory.Factory):
     class Meta:
         model = Repository
 
-    id = 1
     created_at = None
     updated_at = None
     name = "QtCalculator"
