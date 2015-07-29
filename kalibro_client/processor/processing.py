@@ -12,7 +12,7 @@ class Processing(attributes_class_constructor('ProcessingAttr',
                                                ('error_message', None))),
                  Base):
 
-    def __init__(self, repository_id, date, root_module_result_id,
+    def __init__(self, repository_id, root_module_result_id, date=None,
                  *init_args, **init_kwargs):
         super(Processing, self).__init__(*init_args, **init_kwargs)
         self.repository_id = repository_id
