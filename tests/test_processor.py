@@ -78,8 +78,18 @@ class TestProcessing(TestCase):
         with patch.object(self.subject, 'request', return_value=process_times_hash) as request_mock, \
         patch.object(self.subject, 'response_to_objects_array', return_value=self.process_times) as mock:
             response = self.subject.process_times()
+            second_response = self.subject.process_times()
             request_mock.assert_called_once_with(action=':id/process_times', params={'id': self.subject.id}, method='get')
             mock.assert_called_once_with(process_times_hash)
+            assert_equal(response, self.process_times)
+            assert_equal(response, second_response)
+
+    def test_asdict(self):
+        dict_ = self.subject._asdict()
+
+        assert_equal(dict_['repository_id'], self.subject.repository_id)
+        assert_equal(dict_['date'], self.subject.date)
+        assert_equal(dict_['root_module_result_id'], self.subject.root_module_result_id)
 
 
 class TestKalibroModule(TestCase):
