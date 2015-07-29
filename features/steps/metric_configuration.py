@@ -48,10 +48,6 @@ def step_impl(context):
     except Exception as exception:
         context.response = exception
 
-@then(u'I should get an error')
-def step_impl(context):
-    assert_is_instance(context.response, KalibroClientNotFoundError)
-
 @given(u'I have a metric configuration within the given kalibro configuration')
 def step_impl(context):
     context.metric_configuration = MetricConfigurationFactory.build(
