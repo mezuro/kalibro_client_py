@@ -2,7 +2,7 @@ from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
 from kalibro_client.miscellaneous import NativeMetric
-
+from kalibro_client.errors import KalibroClientNotFoundError
 
 @entity_name_decorator
 class MetricCollectorDetails(attributes_class_constructor('MetricCollectorDetailsAttr',
@@ -37,7 +37,12 @@ class MetricCollectorDetails(attributes_class_constructor('MetricCollectorDetail
 
     @classmethod
     def find_by_name(cls, name):
-        return cls(**cls.request('find', params={"name": name})['metric_collector_details'])
+        response = cls.request('find', params={"name": name})
+        try:
+            return cls(**response['metric_collector_details'])
+        except KeyError:
+            error = response.get('error', None)
+            raise KalibroClientNotFoundError(error)
 
     @classmethod
     def all_names(cls):
