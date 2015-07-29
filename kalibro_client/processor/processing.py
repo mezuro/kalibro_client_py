@@ -37,7 +37,7 @@ class Processing(attributes_class_constructor('ProcessingAttr',
 
     @date.setter
     def date(self, value):
-        if not isinstance(value, datetime):
+        if not isinstance(value, datetime) and value is not None:
             value = dateutil.parser.parse(value)
 
         self._date = value
