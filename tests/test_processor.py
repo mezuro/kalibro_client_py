@@ -426,3 +426,23 @@ class TestMetricResult(TestCase):
         self.subject.metric_configuration_id = 4
         self.subject.module_result_id = 4
         self.subject.persisted = True
+
+    def test_value_setter_with_none(self):
+        self.subject.value = None
+
+        assert_equal(self.subject.value, None)
+
+    def test_value_setter_with_string(self):
+        self.subject.value = "1.1"
+
+        assert_equal(self.subject.value, 1.1)
+
+    def test_metric_configuration_id_setter_with_none(self):
+        self.subject.metric_configuration_id = None
+
+        assert_equal(self.subject.metric_configuration_id, None)
+
+    def test_metric_configuration_id_setter_with_string(self):
+        self.subject.metric_configuration_id = "42"
+
+        assert_equal(self.subject.metric_configuration_id, 42)
