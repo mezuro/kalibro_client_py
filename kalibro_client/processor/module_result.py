@@ -1,6 +1,7 @@
 from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
+from kalibro_client.processor import KalibroModule
 
 @entity_name_decorator
 class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
@@ -11,6 +12,7 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
         self.parent_id = parent_id
         self.height = height
         self.processing_id = processing_id
+        self._kalibro_module = None
 
     @property
     def grade(self):
@@ -69,3 +71,12 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
         parent_list = parent.parents()
         parent_list.append(parent)
         return parent_list
+
+    def kalibro_module(self):
+        if self._kalibro_module is None:
+            self._kalibro_module = KalibroModule(**self.request(
+                                                    action=':id/kalibro_module',
+                                                    params={'id': self.id},
+                                                    method='get')['kalibro_module'])
+
+        return self._kalibro_module

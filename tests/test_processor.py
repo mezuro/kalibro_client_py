@@ -533,3 +533,14 @@ class TestModuleResult(TestCase):
             parents = self.subject.parents()
             assert_equal(parents, [parent])
             find_request.assert_called_once_with(self.subject.parent_id)
+
+    def test_kalibro_module(self):
+        kalibro_module = KalibroModuleFactory.build()
+        response = {'kalibro_module': kalibro_module._asdict()}
+        with patch.object(self.subject, 'request',
+                          return_value=response) as kalibro_module_request:
+            first_kalibro_module = self.subject.kalibro_module()
+            second_kalibro_module = self.subject.kalibro_module()
+            assert_equal(first_kalibro_module, kalibro_module)
+            assert_equal(first_kalibro_module, second_kalibro_module)
+            kalibro_module_request.assert_called_once_with(action=':id/kalibro_module', params={'id': self.subject.id}, method='get')
