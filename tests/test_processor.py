@@ -554,3 +554,23 @@ class TestModuleResult(TestCase):
             assert_equal(first_processing, processing)
             assert_equal(first_processing, second_processing)
             find_request.assert_called_once_with(self.subject.processing_id)
+
+    def test_is_folder(self):
+        response = [ModuleResultFactory.build()]
+        with patch.object(self.subject, 'children',
+                          return_value=response) as children_request:
+            assert_true(self.subject.is_folder())
+            children_request.assert_called_once()
+
+    def test_is_folder_with_no_children(self):
+        response = []
+        with patch.object(self.subject, 'children',
+                          return_value=response) as children_request:
+            assert_true(not self.subject.is_folder())
+            children_request.assert_called_once()
+
+    def test_is_file(self):
+        with patch.object(self.subject, 'is_folder',
+                          return_value=True) as is_folder_request:
+            assert_true(not self.subject.is_file())
+            is_folder_request.assert_called_once()

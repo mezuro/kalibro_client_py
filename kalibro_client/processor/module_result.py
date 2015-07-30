@@ -87,3 +87,9 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
             self._processing = Processing.find(self.processing_id)
 
         return self._processing
+
+    def is_folder(self):
+        return len(self.children()) > 0
+
+    def is_file(self):
+        return not self.is_folder()
