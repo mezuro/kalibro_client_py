@@ -416,16 +416,16 @@ class TestMetricResult(TestCase):
 
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'value'))
+        assert_true(hasattr(self.subject, 'aggregated_value'))
         assert_true(hasattr(self.subject, 'metric_configuration_id'))
         assert_true(hasattr(self.subject, 'module_result_id'))
-        assert_true(hasattr(self.subject, 'persisted'))
 
     @not_raises((AttributeError, ValueError))
     def test_properties_setters(self):
         self.subject.value = 3
+        self.subject.aggregated_value = 3
         self.subject.metric_configuration_id = 4
         self.subject.module_result_id = 4
-        self.subject.persisted = True
 
     def test_value_setter_with_none(self):
         self.subject.value = None
@@ -436,6 +436,16 @@ class TestMetricResult(TestCase):
         self.subject.value = "1.1"
 
         assert_equal(self.subject.value, 1.1)
+
+    def test_aggregated_value_setter_with_none(self):
+        self.subject.aggregated_value = None
+
+        assert_equal(self.subject.aggregated_value, None)
+
+    def test_aggregated_value_setter_with_string(self):
+        self.subject.aggregated_value = "1.1"
+
+        assert_equal(self.subject.aggregated_value, 1.1)
 
     def test_metric_configuration_id_setter_with_none(self):
         self.subject.metric_configuration_id = None

@@ -207,3 +207,4 @@ class MetricResultFactory(factory.Factory):
 
     metric_configuration_id = 1
     value = 10
+    aggregated_value = 5
