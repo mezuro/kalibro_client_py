@@ -1,5 +1,5 @@
 from behave import *
-from nose.tools import assert_is_instance, assert_equal
+from nose.tools import assert_is_instance, assert_equal, assert_true
 from time import sleep
 
 from ..tests.factories import RepositoryFactory
@@ -32,6 +32,6 @@ def step_impl(context):
 
 @then(u'I should get a list of ProcessTimes')
 def step_impl(context):
-    assert_equal(len(context.process_times), 1)
+    assert_true(len(context.process_times) > 0)
     for process_time in context.process_times:
         assert_is_instance(process_time, ProcessTime)

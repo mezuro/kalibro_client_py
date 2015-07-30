@@ -76,7 +76,7 @@ class TestProcessing(TestCase):
     def test_process_times(self):
         process_times_hash = {"process_times": [self.process_time._asdict()]}
         with patch.object(self.subject, 'request', return_value=process_times_hash) as request_mock, \
-        patch.object(self.subject, 'response_to_objects_array', return_value=self.process_times) as mock:
+        patch.object(ProcessTime, 'response_to_objects_array', return_value=self.process_times) as mock:
             response = self.subject.process_times()
             second_response = self.subject.process_times()
             request_mock.assert_called_once_with(action=':id/process_times', params={'id': self.subject.id}, method='get')

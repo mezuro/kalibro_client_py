@@ -3,7 +3,7 @@ Feature: ProcessTimes
   As a developer
   I want to get all the ProcessTimes for the given processing
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
+  @kalibro_processor_restart @kalibro_configuration_restart
   Scenario: With a ready processing
     Given I have a project with name "Kalibro"
     And I have a kalibro configuration with name "Java"

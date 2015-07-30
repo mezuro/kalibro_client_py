@@ -1,6 +1,7 @@
 from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
+from kalibro_client.processor import ProcessTime
 
 from datetime import datetime
 import dateutil
@@ -64,5 +65,5 @@ class Processing(attributes_class_constructor('ProcessingAttr',
         if self._process_times is not None:
             return self._process_times
 
-        self._process_times = self.response_to_objects_array(self.request(action=':id/process_times', params={'id': self.id}, method='get'))
+        self._process_times = ProcessTime.response_to_objects_array(self.request(action=':id/process_times', params={'id': self.id}, method='get'))
         return self._process_times
