@@ -55,6 +55,15 @@ class Repository(attributes_class_constructor('RepositoryAttr',
 
         self._kalibro_configuration_id = value
 
+    def _asdict(self):
+        dict_ = super(Repository, self)._asdict()
+
+        dict_['period'] = self.period
+        dict_['project_id'] = self.project_id
+        dict_['kalibro_configuration_id'] = self.kalibro_configuration_id
+
+        return dict_
+
     @classmethod
     def repository_types(cls):
         response = cls.request(action='/types', params={}, method='get')['types']
@@ -69,7 +78,7 @@ class Repository(attributes_class_constructor('RepositoryAttr',
             prefix="projects/:id"))
 
     def process(self):
-        return self.request(action='/process', params={'id': self.id},
+        return self.request(action=':id/process', params={'id': self.id},
                             method='get')
 
     def cancel_processing_of_a_repository(self):

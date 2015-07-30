@@ -1,7 +1,8 @@
 from behave import *
 from nose.tools import assert_true, assert_in, assert_equal
 
-from ..tests.factories import KalibroConfigurationFactory, MetricConfigurationFactory
+from ..tests.factories import KalibroConfigurationFactory, \
+    MetricConfigurationFactory, ReadingGroupFactory, ReadingFactory, NativeMetricFactory
 
 from kalibro_client.configurations import KalibroConfiguration
 
@@ -9,6 +10,21 @@ from kalibro_client.configurations import KalibroConfiguration
 def step_impl(context, kalibro_configuration_name):
     context.kalibro_configuration = KalibroConfigurationFactory.build(name=kalibro_configuration_name)
     context.kalibro_configuration.save()
+
+@given(u'I have a sample configuration with MetricFu metrics')
+def step_impl(context):
+  context.reading_group = ReadingGroupFactory.build()
+  context.reading_group.save()
+  context.reading = ReadingFactory.build(reading_group_id = context.reading_group.id)
+  context.reading.save()
+
+  context.kalibro_configuration = KalibroConfigurationFactory.build()
+  context.kalibro_configuration.save()
+
+  native_metric = NativeMetricFactory.build()
+  metric_configuration = MetricConfigurationFactory.build(metric=native_metric,
+                                                          reading_group_id=context.reading_group.id,
+                                                          kalibro_configuration_id=context.kalibro_configuration.id)
 
 @when(u'I get all the kalibro configurations')
 def step_impl(context):
