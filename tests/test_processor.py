@@ -11,7 +11,8 @@ from kalibro_client.errors import KalibroClientNotFoundError
 
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
-    ProcessTimeFactory, MetricResultFactory, DateMetricResultFactory
+    ProcessTimeFactory, MetricResultFactory, DateMetricResultFactory,\
+    ModuleResultFactory
 
 from .helpers import not_raises
 
@@ -487,3 +488,23 @@ class TestMetricResult(TestCase):
                                                  params={'metric_name': native_metric.name,
                                                          'kalibro_module_id': kalibro_module.id,
                                                          'id': repository.id})
+
+class TestModuleResult(TestCase):
+    def setUp(self):
+        self.subject = ModuleResultFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'grade'))
+        assert_true(hasattr(self.subject, 'parent_id'))
+        assert_true(hasattr(self.subject, 'height'))
+        assert_true(hasattr(self.subject, 'processing_id'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.parent_id = None
+
+    @raises(TypeError)
+    def test_properties_setters_with_invalid_parameters(self):
+        self.subject.grade = None
+        self.subject.processing_id = None
+        self.subject.height = None

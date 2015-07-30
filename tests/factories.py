@@ -3,7 +3,8 @@ import factory
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
     DateModuleResult, DateMetricResult
 from kalibro_client.processor import Project, Repository, Processing,\
-    KalibroModule, ProcessTime, MetricCollectorDetails, MetricResult
+    KalibroModule, ProcessTime, MetricCollectorDetails, MetricResult,\
+    ModuleResult
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading, RangeSnapshot, \
     KalibroRange
@@ -207,3 +208,12 @@ class MetricResultFactory(factory.Factory):
     metric_configuration_id = 1
     value = 10
     aggregated_value = 5
+
+class ModuleResultFactory(factory.Factory):
+    class Meta:
+        model = ModuleResult
+
+    grade = 10.0
+    parent_id = 21
+    height = 6
+    processing_id = 1

@@ -1,3 +1,4 @@
+from .module_result import ModuleResult
 from .process_time import ProcessTime
 from .processing import Processing
 from .project import Project
