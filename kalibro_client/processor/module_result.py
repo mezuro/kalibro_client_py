@@ -4,7 +4,7 @@ from kalibro_client.processor.base import Base
 
 @entity_name_decorator
 class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
-    def __init__(self, grade, height, processing_id, parent_id=None, *args, 
+    def __init__(self, grade, height, processing_id, parent_id=None, *args,
                  **kwargs):
         super(ModuleResult, self).__init__(*args, **kwargs)
         self.grade = grade
@@ -46,3 +46,17 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
     @processing_id.setter
     def processing_id(self, value):
         self._processing_id = int(value)
+
+    def _asdict(self):
+        dict_ = super(ModuleResult, self)._asdict()
+        dict_['grade'] = self.grade
+        dict_['parent_id'] = self.parent_id
+        dict_['height'] = self.height
+        dict_['processing_id'] = self.processing_id
+        return dict_
+
+    def children(self):
+        return self.response_to_objects_array(self.request(
+                                                action=':id/children',
+                                                params={'id': self.id},
+                                                method='get'))

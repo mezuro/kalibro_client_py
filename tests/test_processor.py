@@ -508,3 +508,20 @@ class TestModuleResult(TestCase):
         self.subject.grade = None
         self.subject.processing_id = None
         self.subject.height = None
+
+    def test_asdict(self):
+        dict = self.subject._asdict()
+
+        assert_equal(self.subject.grade, dict["grade"])
+        assert_equal(self.subject.parent_id, dict["parent_id"])
+        assert_equal(self.subject.height, dict["height"])
+        assert_equal(self.subject.processing_id, dict["processing_id"])
+
+    def test_children(self):
+        child = ModuleResultFactory.build()
+        response = {'module_results': [child._asdict()]}
+        with patch.object(self.subject, 'request',
+                          return_value=response) as module_result_request:
+            children = self.subject.children()
+            assert_equal(children, [child])
+            module_result_request.assert_called_once_with(action=':id/children', params={'id': self.subject.id}, method='get')
