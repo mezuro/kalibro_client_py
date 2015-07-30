@@ -173,13 +173,21 @@ class AnotherKalibroRangeFactory(KalibroRangeFactory):
     end = 1.1
     comments = "Another Comment"
 
+class ModuleResultFactory(factory.Factory):
+    class Meta:
+        model = ModuleResult
+
+    grade = 10.0
+    parent_id = 21
+    height = 6
+    processing_id = 1
 
 class DateModuleResultFactory(factory.Factory):
     class Meta:
         model = DateModuleResult
 
     date = "2011-10-20T18:26:43.151+00:00"
-    module_result = None
+    module_result = ModuleResultFactory.build()
 
 
 class RangeSnapshotFactory(factory.Factory):
@@ -208,12 +216,3 @@ class MetricResultFactory(factory.Factory):
     metric_configuration_id = 1
     value = 10
     aggregated_value = 5
-
-class ModuleResultFactory(factory.Factory):
-    class Meta:
-        model = ModuleResult
-
-    grade = 10.0
-    parent_id = 21
-    height = 6
-    processing_id = 1

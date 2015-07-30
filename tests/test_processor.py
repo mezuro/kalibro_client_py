@@ -5,14 +5,14 @@ from mock import patch
 
 import kalibro_client
 from kalibro_client.processor import Project, Repository, ProcessTime,\
-    MetricCollectorDetails, MetricResult, Processing
+    MetricCollectorDetails, MetricResult, Processing, ModuleResult
 from kalibro_client.processor.base import Base
 from kalibro_client.errors import KalibroClientNotFoundError
 
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
     ProcessTimeFactory, MetricResultFactory, DateMetricResultFactory,\
-    ModuleResultFactory
+    ModuleResultFactory, DateModuleResultFactory
 
 from .helpers import not_raises
 
@@ -574,3 +574,19 @@ class TestModuleResult(TestCase):
                           return_value=True) as is_folder_request:
             assert_true(not self.subject.is_file())
             is_folder_request.assert_called_once()
+
+    @skip
+    def test_history_of(self):
+        date_module_result = DateModuleResultFactory.build()
+        repository_id = 1
+        response = {'date_module_results': [date_module_result.date, self.subject._asdict()]}
+        with patch.object(Repository, 'request',
+                          return_value=response) as module_result_history_request:
+            history_module_results = ModuleResult.history_of(
+                                                    module_result=self.subject,
+                                                    repository_id=repository_id)
+            assert_equal([date_module_result], history_module_results)
+            module_result_history_request.assert_called_once_with(
+                                            action=':id/module_result_history_of',
+                                            params={'id': repository_id,
+                                                    'kalibro_module_id': self.subject.kalibro_module.id})

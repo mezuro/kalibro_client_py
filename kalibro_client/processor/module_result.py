@@ -2,6 +2,7 @@ from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
 from kalibro_client.processor import KalibroModule, Processing
+from kalibro_client.miscellaneous import DateModuleResult
 
 @entity_name_decorator
 class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
