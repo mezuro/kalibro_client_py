@@ -86,7 +86,7 @@ class TestDateModuleResult(object):
     def test_properties_setters(self):
         self.subject.date = "2011-10-20T18:27:43.151+00:00"
         self.subject.module_result = None
-        
+
     def test_result(self):
         self.subject.module_result = Mock(grade=1.0)
         assert_equal(self.subject.result, 1.0)
@@ -99,6 +99,11 @@ class TestDateMetricResult(TestCase):
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'date'))
         assert_true(hasattr(self.subject, 'metric_result'))
+
+    def test_asdict(self):
+        dict_ = self.subject._asdict
+
+        assert_equal(dict_['metric_result'], self.subject.metric_result._asdict)
 
     @raises(AttributeError)
     def test_properties_setter_date(self):
