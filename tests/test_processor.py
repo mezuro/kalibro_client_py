@@ -5,13 +5,13 @@ from mock import patch
 
 import kalibro_client
 from kalibro_client.processor import Project, Repository, ProcessTime,\
-    MetricCollectorDetails
+    MetricCollectorDetails, MetricResult
 from kalibro_client.processor.base import Base
 from kalibro_client.errors import KalibroClientNotFoundError
 
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
-    ProcessTimeFactory, MetricResultFactory
+    ProcessTimeFactory, MetricResultFactory, DateMetricResultFactory
 
 from .helpers import not_raises
 
@@ -456,3 +456,28 @@ class TestMetricResult(TestCase):
         self.subject.metric_configuration_id = "42"
 
         assert_equal(self.subject.metric_configuration_id, 42)
+
+    def test_descendant_values(self):
+        descendant_values_hash = {'descendant_values': ["1.1", "2.2", "3.3"]}
+        descendant_values = [1.1, 2.2, 3.3]
+
+        with patch.object(self.subject, 'request', return_value=descendant_values_hash) as request_mock:
+            assert_equal(self.subject.descendant_values(), descendant_values)
+            request_mock.assert_called_once_with(action=':id/descendant_values', params={'id': self.subject.id}, method='get')
+
+    @skip
+    def test_history_of(self):
+        date_metric_result = DateMetricResultFactory.build()
+        kalibro_module = KalibroModuleFactory.build(id = 2)
+        native_metric = NativeMetricFactory.build()
+        repository = RepositoryFactory.build(id = 3)
+
+        metric_result_history_of_hash = {'metric_result_history_of': [date_metric_result._asdict()]}
+        with patch.object(Repository, 'request', return_value=metric_result_history_of_hash) as request_mock:
+            assert_equal(MetricResult.history_of(native_metric.name, kalibro_module.id,
+                                                 repository.id),
+                         [date_metric_result])
+            request_mock.assert_called_once_with(action=':id/metric_result_history_of',
+                                                 params={'metric_name': native_metric.name,
+                                                         'kalibro_module_id': kalibro_module.id,
+                                                         'id': repository.id})
