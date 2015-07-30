@@ -60,3 +60,12 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
                                                 action=':id/children',
                                                 params={'id': self.id},
                                                 method='get'))
+
+    def parents(self):
+        if self.parent_id is None:
+            return []
+
+        parent = self.find(self.parent_id)
+        parent_list = parent.parents()
+        parent_list.append(parent)
+        return parent_list

@@ -525,3 +525,11 @@ class TestModuleResult(TestCase):
             children = self.subject.children()
             assert_equal(children, [child])
             module_result_request.assert_called_once_with(action=':id/children', params={'id': self.subject.id}, method='get')
+
+    def test_parents(self):
+        parent = ModuleResultFactory.build(parent_id=None)
+        with patch.object(self.subject, 'find',
+                          return_value=parent) as find_request:
+            parents = self.subject.parents()
+            assert_equal(parents, [parent])
+            find_request.assert_called_once_with(self.subject.parent_id)
