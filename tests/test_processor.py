@@ -5,7 +5,7 @@ from mock import patch
 
 import kalibro_client
 from kalibro_client.processor import Project, Repository, ProcessTime,\
-    MetricCollectorDetails, MetricResult
+    MetricCollectorDetails, MetricResult, Processing
 from kalibro_client.processor.base import Base
 from kalibro_client.errors import KalibroClientNotFoundError
 
@@ -544,3 +544,13 @@ class TestModuleResult(TestCase):
             assert_equal(first_kalibro_module, kalibro_module)
             assert_equal(first_kalibro_module, second_kalibro_module)
             kalibro_module_request.assert_called_once_with(action=':id/kalibro_module', params={'id': self.subject.id}, method='get')
+
+    def test_processing(self):
+        processing = ProcessingFactory.build()
+        with patch.object(Processing, 'find',
+                          return_value=processing) as find_request:
+            first_processing = self.subject.processing()
+            second_processing = self.subject.processing()
+            assert_equal(first_processing, processing)
+            assert_equal(first_processing, second_processing)
+            find_request.assert_called_once_with(self.subject.processing_id)

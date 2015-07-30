@@ -9,3 +9,4 @@ Describes the general workings of the API, including differences between the Rub
 * There is no `create` method, just instantiate the class and call `save`
 * Save does not return True or False. In case it fails it raises an exception
 * Destroy is called Delete and returns no value. In case it fails it raises an exception
+* Memoization on ModuleResult#processing
