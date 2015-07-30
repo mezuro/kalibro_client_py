@@ -60,6 +60,7 @@ class BaseCRUD(Base, RequestMethods):
 
         response = requests.request(method, url, data=json.dumps(params),
                                     headers={'Content-Type': 'application/json'})
+        response.raise_for_status()
         return response.json()
 
     @classmethod
