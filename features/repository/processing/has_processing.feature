@@ -3,8 +3,8 @@ Feature: Has processing
   As a developer
   I want to be able to check if a repository has processings
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
-  Scenario: With one repository after process
+  @kalibro_processor_restart @kalibro_configuration_restart
+  Scenario: Has processing with one repository after process
     Given I have a project with name "Kalibro"
     And I have a kalibro configuration with name "Java"
     And I have a reading group with name "Group"

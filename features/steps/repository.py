@@ -45,14 +45,14 @@ def step_impl(context):
     yesterday = datetime.now() - timedelta(hours=24)
     context.response = context.repository.first_processing_after(yesterday)
 
+@when(u'I call the has_processing for the given repository')
+def step_impl(context):
+    context.response = context.repository.has_processing()
+
 @then(u'the response should contain the given repositories')
 def step_impl(context):
     assert_in(context.repository, context.repositories)
     assert_in(context.independent_repository, context.repositories)
-
-@when(u'I call the has_processing for the given repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the has_processing for the given repository')
 
 @when(u'I call the has_processing_after for the given repository with yerterday\'s date')
 def step_impl(context):
