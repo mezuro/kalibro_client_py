@@ -3,7 +3,8 @@ import factory
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
     DateModuleResult, DateMetricResult
 from kalibro_client.processor import Project, Repository, Processing,\
-    KalibroModule, ProcessTime, MetricCollectorDetails, MetricResult
+    KalibroModule, ProcessTime, MetricCollectorDetails, MetricResult,\
+    ModuleResult
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading, RangeSnapshot, \
     KalibroRange
@@ -172,13 +173,21 @@ class AnotherKalibroRangeFactory(KalibroRangeFactory):
     end = 1.1
     comments = "Another Comment"
 
+class ModuleResultFactory(factory.Factory):
+    class Meta:
+        model = ModuleResult
+
+    grade = 10.0
+    parent_id = 21
+    height = 6
+    processing_id = 1
 
 class DateModuleResultFactory(factory.Factory):
     class Meta:
         model = DateModuleResult
 
     date = "2011-10-20T18:26:43.151+00:00"
-    module_result = None
+    module_result = ModuleResultFactory.build()._asdict()
 
 
 class RangeSnapshotFactory(factory.Factory):
