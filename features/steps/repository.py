@@ -133,7 +133,7 @@ def step_impl(context):
 
 @when(u'I call the cancel_process method for the given repository')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the cancel_process method for the given repository')
+    context.response = context.repository.cancel_processing_of_a_repository()
 
 @then(u'I should get success')
 def step_impl(context):
