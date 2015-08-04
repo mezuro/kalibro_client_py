@@ -148,8 +148,11 @@ def step_impl(context):
 
 @when(u'I list types')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I list types')
+    context.repository_types = Repository.repository_types()
 
 @then(u'I should get an array of types')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get an array of types')
+    assert_is_instance(context.repository_types, list)
+    assert_true(len(context.repository_types) >= 1)
+    assert_in("GIT", context.repository_types)
+    assert_in("SVN", context.repository_types)
