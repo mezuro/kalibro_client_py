@@ -1,7 +1,8 @@
 from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
-from kalibro_client.processor import KalibroModule, Processing, MetricResult
+from kalibro_client.processor import KalibroModule, Processing, MetricResult, \
+    Repository
 import kalibro_client.miscellaneous.date_module_result
 
 @entity_name_decorator
@@ -74,6 +75,7 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
         parent_list.append(parent)
         return parent_list
 
+    @property
     def kalibro_module(self):
         if self._kalibro_module is None:
             self._kalibro_module = KalibroModule(**self.request(
@@ -83,6 +85,7 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
 
         return self._kalibro_module
 
+    @property
     def processing(self):
         if self._processing is None:
             self._processing = Processing.find(self.processing_id)
@@ -94,6 +97,12 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
 
     def is_file(self):
         return not self.is_folder()
+
+    @classmethod
+    def history_of(cls, module_result, repository_id):
+        response = Repository.request(action=':id/module_result_history_of',
+                                      params={'id': repository_id, 'kalibro_module_id': module_result.kalibro_module.id})['module_result_history_of']
+        return [kalibro_client.miscellaneous.date_module_result.DateModuleResult(element[0], element[1]) for element in response]
 
     def metric_results(self):
         return MetricResult.response_to_objects_array(self.request(

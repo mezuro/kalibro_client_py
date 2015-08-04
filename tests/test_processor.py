@@ -539,8 +539,8 @@ class TestModuleResult(TestCase):
         response = {'kalibro_module': kalibro_module._asdict()}
         with patch.object(self.subject, 'request',
                           return_value=response) as kalibro_module_request:
-            first_kalibro_module = self.subject.kalibro_module()
-            second_kalibro_module = self.subject.kalibro_module()
+            first_kalibro_module = self.subject.kalibro_module
+            second_kalibro_module = self.subject.kalibro_module
             assert_equal(first_kalibro_module, kalibro_module)
             assert_equal(first_kalibro_module, second_kalibro_module)
             kalibro_module_request.assert_called_once_with(action=':id/kalibro_module', params={'id': self.subject.id}, method='get')
@@ -549,8 +549,8 @@ class TestModuleResult(TestCase):
         processing = ProcessingFactory.build()
         with patch.object(Processing, 'find',
                           return_value=processing) as find_request:
-            first_processing = self.subject.processing()
-            second_processing = self.subject.processing()
+            first_processing = self.subject.processing
+            second_processing = self.subject.processing
             assert_equal(first_processing, processing)
             assert_equal(first_processing, second_processing)
             find_request.assert_called_once_with(self.subject.processing_id)
@@ -575,13 +575,15 @@ class TestModuleResult(TestCase):
             assert_true(not self.subject.is_file())
             is_folder_request.assert_called_once()
 
-    @skip
     def test_history_of(self):
         date_module_result = DateModuleResultFactory.build()
+        kalibro_module = KalibroModuleFactory.build()
+        response_kalibro_module = {'kalibro_module': kalibro_module._asdict()}
         repository_id = 1
-        response = {'date_module_results': [date_module_result.date, self.subject._asdict()]}
+        response = {'module_result_history_of': [[date_module_result.date, self.subject._asdict()]]}
         with patch.object(Repository, 'request',
-                          return_value=response) as module_result_history_request:
+                          return_value=response) as module_result_history_request, \
+             patch.object(ModuleResult, 'request', return_value=response_kalibro_module) as kalibro_module_request:
             history_module_results = ModuleResult.history_of(
                                                     module_result=self.subject,
                                                     repository_id=repository_id)
@@ -590,6 +592,7 @@ class TestModuleResult(TestCase):
                                             action=':id/module_result_history_of',
                                             params={'id': repository_id,
                                                     'kalibro_module_id': self.subject.kalibro_module.id})
+            kalibro_module_request.assert_called_once_with(action=':id/kalibro_module', params={'id': self.subject.id}, method='get')
 
     def test_metric_result(self):
         metric_result = MetricResultFactory.build()
