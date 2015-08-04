@@ -1,8 +1,8 @@
 from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
-from kalibro_client.processor import KalibroModule, Processing
-from kalibro_client.miscellaneous import DateModuleResult
+from kalibro_client.processor import KalibroModule, Processing, MetricResult
+import kalibro_client.miscellaneous.date_module_result
 
 @entity_name_decorator
 class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
@@ -94,3 +94,9 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
 
     def is_file(self):
         return not self.is_folder()
+
+    def metric_results(self):
+        return MetricResult.response_to_objects_array(self.request(
+                                                action=':id/metric_results',
+                                                params={'id': self.id},
+                                                method='get'))

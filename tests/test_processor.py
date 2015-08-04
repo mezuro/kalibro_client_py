@@ -590,3 +590,14 @@ class TestModuleResult(TestCase):
                                             action=':id/module_result_history_of',
                                             params={'id': repository_id,
                                                     'kalibro_module_id': self.subject.kalibro_module.id})
+
+    def test_metric_result(self):
+        metric_result = MetricResultFactory.build()
+        response = {'metric_results': [metric_result._asdict()]}
+        with patch.object(self.subject, 'request',
+                          return_value=response) as metric_results_request:
+            metric_results = self.subject.metric_results()
+            assert_equal(metric_results, [metric_result])
+            metric_results_request.assert_called_once_with(
+                action=":id/metric_results", params={"id": self.subject.id},
+                method="get")
