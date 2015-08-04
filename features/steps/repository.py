@@ -2,7 +2,7 @@ from time import sleep
 from datetime import datetime, timedelta
 
 from behave import *
-from nose.tools import assert_in, assert_is_instance
+from nose.tools import assert_in, assert_is_instance, assert_true
 
 from ..tests.factories import RepositoryFactory
 from kalibro_client.processor import Repository
@@ -76,18 +76,18 @@ def step_impl(context):
 def step_impl(context):
     context.response = context.repository.last_processing_state()
 
+@when(u'I call the last_ready_processing method for the given repository')
+def step_impl(context):
+    context.response = context.repository.last_ready_processing()
+
 @then(u'the response should contain the given repositories')
 def step_impl(context):
     assert_in(context.repository, context.repositories)
     assert_in(context.independent_repository, context.repositories)
 
-@when(u'I call the last_ready_processing method for the given repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the last_ready_processing method for the given repository')
-
 @then(u'this processing should have process times')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then this processing should have process times')
+    assert_true(len(context.response.process_times()) > 0)
 
 @when(u'I call the processing_with_date method for the given repository and tomorrow\'s date')
 def step_impl(context):

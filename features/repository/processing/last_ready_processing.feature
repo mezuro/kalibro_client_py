@@ -3,8 +3,8 @@ Feature: Last ready processing
   As a developer
   I want to be able to check the last ready processing
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
-  Scenario: With one repository just after with ready processing
+  @kalibro_processor_restart @kalibro_configuration_restart
+  Scenario: Last ready processing with one repository just after with ready processing
     Given I have a project with name "Kalibro"
     And I have a kalibro configuration with name "Java"
     And I have a reading group with name "Group"
