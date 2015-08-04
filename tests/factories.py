@@ -187,7 +187,7 @@ class DateModuleResultFactory(factory.Factory):
         model = DateModuleResult
 
     date = "2011-10-20T18:26:43.151+00:00"
-    module_result = ModuleResultFactory.build()
+    module_result = ModuleResultFactory.build()._asdict()
 
 
 class RangeSnapshotFactory(factory.Factory):
