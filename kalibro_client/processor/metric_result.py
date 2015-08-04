@@ -14,7 +14,7 @@ class MetricResult(attributes_class_constructor('MetricResultAttrs',
     def __init__(self, value=None, metric_configuration_id=None,
                  aggregated_value=None, *init_args, **init_kwargs):
         super(MetricResult, self).__init__(*init_args, **init_kwargs)
-        self.value = float(aggregated_value) if value is None else float(value)
+        self.value = value
         self.metric_configuration_id = metric_configuration_id
         self.aggregated_value = aggregated_value
 
