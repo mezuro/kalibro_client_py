@@ -3,8 +3,8 @@ Feature: First processing after
   As a developer
   I want to be able to retrieve the first processing after a given date
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
-  Scenario: With one repository just after starting to process
+  @kalibro_processor_restart @kalibro_configuration_restart
+  Scenario: First processing after with one repository just after starting to process
     Given I have a project with name "Kalibro"
     And I have a kalibro configuration with name "Java"
     And I have a reading group with name "Group"
