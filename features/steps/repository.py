@@ -56,7 +56,8 @@ def step_impl(context):
 
 @when(u'I call the has_processing_after for the given repository with yerterday\'s date')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the has_processing_after for the given repository with yerterday\'s date')
+    yesterday = datetime.now() - timedelta(hours=24)
+    context.response = context.repository.has_processing_after(yesterday)
 
 @when(u'I call the has_processing_before for the given repository with tomorrows\'s date')
 def step_impl(context):
