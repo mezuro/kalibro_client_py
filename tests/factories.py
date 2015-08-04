@@ -32,7 +32,7 @@ class RepositoryFactory(factory.Factory):
     address = "svn://svn.code.sf.net/p/qt-calculator/code/trunk"
     kalibro_configuration_id = 1
     project_id = 1
-    code_directory = ""
+    code_directory = None
     branch = "master"
 
 

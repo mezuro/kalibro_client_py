@@ -1,6 +1,9 @@
 from time import sleep
 
+from nose.tools import assert_in
+
 from ..tests.factories import RepositoryFactory
+from kalibro_client.processor import Repository
 
 @given(u'the given project has the following Repositories')
 def step_impl(context):
@@ -21,3 +24,17 @@ def step_impl(context):
 @when(u'I call the processing method for the given repository')
 def step_impl(context):
     context.processing = context.repository.processing()
+
+@given(u'I have an independent repository')
+def step_impl(context):
+    context.independent_repository = RepositoryFactory.build()
+    context.independent_repository.save()
+
+@when(u'I ask for all the repositories')
+def step_impl(context):
+    context.repositories = Repository.all()
+
+@then(u'the response should contain the given repositories')
+def step_impl(context):
+    assert_in(context.repository, context.repositories)
+    assert_in(context.independent_repository, context.repositories)
