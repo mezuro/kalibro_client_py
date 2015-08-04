@@ -472,7 +472,6 @@ class TestMetricResult(TestCase):
             assert_equal(self.subject.descendant_values(), descendant_values)
             request_mock.assert_called_once_with(action=':id/descendant_values', params={'id': self.subject.id}, method='get')
 
-    @skip
     def test_history_of(self):
         date_metric_result = DateMetricResultFactory.build()
         kalibro_module = KalibroModuleFactory.build(id = 2)
