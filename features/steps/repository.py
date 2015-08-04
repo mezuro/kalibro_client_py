@@ -91,11 +91,13 @@ def step_impl(context):
 
 @when(u'I call the processing_with_date method for the given repository and tomorrow\'s date')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the processing_with_date method for the given repository and tomorrow\'s date')
+    tomorrow = datetime.now() + timedelta(hours=24)
+    context.response = context.repository.processing_with_date(tomorrow)
 
 @when(u'I call the processing_with_date method for the given repository and yesterday\'s date')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the processing_with_date method for the given repository and yesterday\'s date')
+    yesterday = datetime.now() - timedelta(hours=24)
+    context.response = context.repository.processing_with_date(yesterday)
 
 @when(u'I call the cancel_process method for the given repository')
 def step_impl(context):
