@@ -51,6 +51,15 @@ class MetricResult(attributes_class_constructor('MetricResultAttrs',
 
         self._metric_configuration_id = number
 
+    def _asdict(self):
+        dict_ = super(MetricResult, self)._asdict()
+
+        dict_['value'] = self.value
+        dict_['metric_configuration_id'] = self.metric_configuration_id
+        dict_['aggregated_value'] = self.aggregated_value
+
+        return dict_
+
     def descendant_values(self):
         descendant_values = self.request(action=':id/descendant_values',
                                          params={'id': self.id},

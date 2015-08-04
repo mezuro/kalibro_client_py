@@ -457,6 +457,13 @@ class TestMetricResult(TestCase):
 
         assert_equal(self.subject.metric_configuration_id, 42)
 
+    def test_asdict(self):
+        dict = self.subject._asdict()
+
+        assert_equal(self.subject.value, dict["value"])
+        assert_equal(self.subject.metric_configuration_id, dict["metric_configuration_id"])
+        assert_equal(self.subject.aggregated_value, dict["aggregated_value"])
+
     def test_descendant_values(self):
         descendant_values_hash = {'descendant_values': ["1.1", "2.2", "3.3"]}
         descendant_values = [1.1, 2.2, 3.3]
