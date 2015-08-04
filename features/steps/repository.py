@@ -137,14 +137,11 @@ def step_impl(context):
 
 @then(u'I should get success')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get success')
-
-
-
+    assert_true("errors" not in context.response)
 
 @when(u'I call the process method for the given repository')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the process method for the given repository')
+    context.response = context.repository.process()
 
 @when(u'I list types')
 def step_impl(context):

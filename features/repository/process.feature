@@ -3,7 +3,7 @@ Feature: Process
   As a developer
   I want to start the repository processing
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
+  @kalibro_processor_restart @kalibro_configuration_restart
   Scenario: With one repository
     Given I have a project with name "Kalibro"
     And I have a sample configuration with MetricFu metrics
