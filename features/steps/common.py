@@ -1,7 +1,7 @@
 from time import sleep
 
 from behave import *
-from nose.tools import assert_is_instance
+from nose.tools import assert_is_instance, assert_true
 
 from kalibro_client.errors import KalibroClientNotFoundError
 
@@ -12,3 +12,7 @@ def step_impl(context, seconds):
 @then(u'I should get an error')
 def step_impl(context):
     assert_is_instance(context.response, KalibroClientNotFoundError)
+
+@then(u'I should get true')
+def step_impl(context):
+    assert_true(context.response)
