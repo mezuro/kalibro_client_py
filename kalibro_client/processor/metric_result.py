@@ -72,4 +72,4 @@ class MetricResult(attributes_class_constructor('MetricResultAttrs',
                                       params={'metric_name': metric_name,
                                               'kalibro_module_id': kalibro_module_id,
                                               'id': repository_id})['metric_result_history_of']
-        return map(lambda date_metric_result_hash: kalibro_client.miscellaneous.date_metric_result.DateMetricResult(**date_metric_result_hash), response)
+        return [kalibro_client.miscellaneous.date_metric_result.DateMetricResult(**date_metric_result_hash) for date_metric_result_hash in response]
