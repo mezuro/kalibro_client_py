@@ -2,7 +2,7 @@ from time import sleep
 from datetime import datetime, timedelta
 
 from behave import *
-from nose.tools import assert_in, assert_is_instance, assert_true
+from nose.tools import assert_in, assert_is_instance, assert_true, assert_equal
 
 from ..tests.factories import RepositoryFactory
 from kalibro_client.processor import Repository
@@ -98,6 +98,10 @@ def step_impl(context):
 def step_impl(context):
     context.response = Repository.exists(context.repository.id)
 
+@when(u'I ask to find the given repository')
+def step_impl(context):
+    context.found_repository = Repository.find(context.repository.id)
+
 @then(u'the response should contain the given repositories')
 def step_impl(context):
     assert_in(context.repository, context.repositories)
@@ -111,6 +115,10 @@ def step_impl(context):
 def step_impl(context):
     assert_true(not Repository.exists(context.repository.id))
 
+@then(u'I should get the given repository')
+def step_impl(context):
+    assert_equal(context.repository, context.found_repository)
+
 @when(u'I call the cancel_process method for the given repository')
 def step_impl(context):
     raise NotImplementedError(u'STEP: When I call the cancel_process method for the given repository')
@@ -119,13 +127,6 @@ def step_impl(context):
 def step_impl(context):
     raise NotImplementedError(u'STEP: Then I should get success')
 
-@when(u'I ask to find the given repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I ask to find the given repository')
-
-@then(u'I should get the given repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get the given repository')
 
 @when(u'I ask for repositories from the given project')
 def step_impl(context):
