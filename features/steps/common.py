@@ -16,3 +16,7 @@ def step_impl(context):
 @then(u'I should get true')
 def step_impl(context):
     assert_true(context.response)
+
+@then(u'I should get false')
+def step_impl(context):
+    assert_true(not context.response)

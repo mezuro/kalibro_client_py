@@ -59,18 +59,14 @@ def step_impl(context):
     tomorrow = datetime.now() + timedelta(hours=24)
     context.response = context.repository.has_processing_before(tomorrow)
 
+@when(u'I call the has_ready_processing for the given repository')
+def step_impl(context):
+    context.response = context.repository.has_ready_processing()
+
 @then(u'the response should contain the given repositories')
 def step_impl(context):
     assert_in(context.repository, context.repositories)
     assert_in(context.independent_repository, context.repositories)
-
-@when(u'I call the has_ready_processing for the given repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the has_ready_processing for the given repository')
-
-@then(u'I should get false')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get false')
 
 @when(u'I call the last_processing method for the given repository')
 def step_impl(context):
