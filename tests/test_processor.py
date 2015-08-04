@@ -5,16 +5,16 @@ from mock import patch
 
 import kalibro_client
 from kalibro_client.processor import Project, Repository, ProcessTime,\
-    MetricCollectorDetails
+    MetricCollectorDetails, MetricResult
 from kalibro_client.processor.base import Base
 from kalibro_client.errors import KalibroClientNotFoundError
 
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
-    ProcessTimeFactory
-
+    ProcessTimeFactory, MetricResultFactory, DateMetricResultFactory
 
 from .helpers import not_raises
+
 
 class TestProcessorBase(TestCase):
     @patch('kalibro_client.config')
@@ -408,3 +408,82 @@ class TestMetricCollectorDetails(TestCase):
             all_metric_collectors = MetricCollectorDetails.all()
             assert_equal(all_metric_collectors, [self.subject])
             metric_collector_details_request.assert_called_once_with('', method='get')
+
+
+class TestMetricResult(TestCase):
+    def setUp(self):
+        self.subject = MetricResultFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'value'))
+        assert_true(hasattr(self.subject, 'aggregated_value'))
+        assert_true(hasattr(self.subject, 'metric_configuration_id'))
+        assert_true(hasattr(self.subject, 'module_result_id'))
+
+    @not_raises((AttributeError, ValueError))
+    def test_properties_setters(self):
+        self.subject.value = 3
+        self.subject.aggregated_value = 3
+        self.subject.metric_configuration_id = 4
+        self.subject.module_result_id = 4
+
+    def test_value_setter_with_none(self):
+        self.subject.value = None
+
+        assert_equal(self.subject.value, None)
+
+    def test_value_setter_with_string(self):
+        self.subject.value = "1.1"
+
+        assert_equal(self.subject.value, 1.1)
+
+    def test_aggregated_value_setter_with_none(self):
+        self.subject.aggregated_value = None
+
+        assert_equal(self.subject.aggregated_value, None)
+
+    def test_aggregated_value_setter_with_string(self):
+        self.subject.aggregated_value = "1.1"
+
+        assert_equal(self.subject.aggregated_value, 1.1)
+
+    def test_metric_configuration_id_setter_with_none(self):
+        self.subject.metric_configuration_id = None
+
+        assert_equal(self.subject.metric_configuration_id, None)
+
+    def test_metric_configuration_id_setter_with_string(self):
+        self.subject.metric_configuration_id = "42"
+
+        assert_equal(self.subject.metric_configuration_id, 42)
+
+    def test_asdict(self):
+        dict = self.subject._asdict()
+
+        assert_equal(self.subject.value, dict["value"])
+        assert_equal(self.subject.metric_configuration_id, dict["metric_configuration_id"])
+        assert_equal(self.subject.aggregated_value, dict["aggregated_value"])
+
+    def test_descendant_values(self):
+        descendant_values_hash = {'descendant_values': ["1.1", "2.2", "3.3"]}
+        descendant_values = [1.1, 2.2, 3.3]
+
+        with patch.object(self.subject, 'request', return_value=descendant_values_hash) as request_mock:
+            assert_equal(self.subject.descendant_values(), descendant_values)
+            request_mock.assert_called_once_with(action=':id/descendant_values', params={'id': self.subject.id}, method='get')
+
+    def test_history_of(self):
+        date_metric_result = DateMetricResultFactory.build()
+        kalibro_module = KalibroModuleFactory.build(id = 2)
+        native_metric = NativeMetricFactory.build()
+        repository = RepositoryFactory.build(id = 3)
+
+        metric_result_history_of_hash = {'metric_result_history_of': [date_metric_result._asdict()]}
+        with patch.object(Repository, 'request', return_value=metric_result_history_of_hash) as request_mock:
+            assert_equal(MetricResult.history_of(native_metric.name, kalibro_module.id,
+                                                 repository.id),
+                         [date_metric_result])
+            request_mock.assert_called_once_with(action=':id/metric_result_history_of',
+                                                 params={'metric_name': native_metric.name,
+                                                         'kalibro_module_id': kalibro_module.id,
+                                                         'id': repository.id})

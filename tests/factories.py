@@ -3,7 +3,7 @@ import factory
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
     DateModuleResult, DateMetricResult
 from kalibro_client.processor import Project, Repository, Processing,\
-    KalibroModule, ProcessTime, MetricCollectorDetails
+    KalibroModule, ProcessTime, MetricCollectorDetails, MetricResult
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading, RangeSnapshot, \
     KalibroRange
@@ -34,6 +34,7 @@ class RepositoryFactory(factory.Factory):
     code_directory = ""
     branch = "master"
 
+
 class ProcessTimeFactory(factory.Factory):
     class Meta:
         model = ProcessTime
@@ -55,12 +56,14 @@ class ProcessingFactory(factory.Factory):
     root_module_result_id = 13
     repository_id = 1
 
+
 class KalibroConfigurationFactory(factory.Factory):
     class Meta:
         model = KalibroConfiguration
 
     name = 'Ruby Configuration'
     description = 'A simple Ruby Configuration'
+
 
 class NativeMetricFactory(factory.Factory):
     class Meta:
@@ -100,14 +103,16 @@ class MetricConfigurationFactory(factory.Factory):
     reading_group_id = 1
     kalibro_configuration_id = 1
 
+
 class KalibroModuleFactory(factory.Factory):
     class Meta:
         model = KalibroModule
 
     id = 1
-    granlrty = None # TODO add a Granularity instance here
+    granlrty = None  # TODO add a Granularity instance here
     long_name = "kalibro_client_py.tests.factories"
     module_result_id = 1
+
 
 class CompoundMetricFactory(factory.Factory):
     class Meta:
@@ -120,12 +125,14 @@ class CompoundMetricFactory(factory.Factory):
     description = ""
     script = "return 0;"
 
+
 class ReadingGroupFactory(factory.Factory):
     class Meta:
         model = ReadingGroup
 
     name = "Sample reading group"
     description = "Sample reading group"
+
 
 class ReadingFactory(factory.Factory):
     class Meta:
@@ -142,12 +149,12 @@ class DateMetricResultFactory(factory.Factory):
         model = DateMetricResult
 
     date = "2011-10-20T18:26:43.151+00:00"
-
     metric_result = {
         'value': "1.0",
         'module_result_id': 1,
         'metric_configuration_id': 1
     }
+
 
 class KalibroRangeFactory(factory.Factory):
     class Meta:
@@ -159,10 +166,12 @@ class KalibroRangeFactory(factory.Factory):
     comments = "Comment"
     metric_configuration_id = 1
 
+
 class AnotherKalibroRangeFactory(KalibroRangeFactory):
     beginning = 0.0
     end = 1.1
     comments = "Another Comment"
+
 
 class DateModuleResultFactory(factory.Factory):
     class Meta:
@@ -170,6 +179,7 @@ class DateModuleResultFactory(factory.Factory):
 
     date = "2011-10-20T18:26:43.151+00:00"
     module_result = None
+
 
 class RangeSnapshotFactory(factory.Factory):
     class Meta:
@@ -189,3 +199,11 @@ class MetricCollectorDetailsFactory(factory.Factory):
     name = "MetricFu"
     description = ""
     supported_metrics = {NativeMetricFactory.build().code: NativeMetricFactory.build()}
+
+class MetricResultFactory(factory.Factory):
+    class Meta:
+        model = MetricResult
+
+    metric_configuration_id = 1
+    value = 10
+    aggregated_value = 5

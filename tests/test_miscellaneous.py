@@ -1,5 +1,6 @@
 from unittest import TestCase, skip
 from datetime import datetime
+import dateutil.parser
 
 from nose.tools import assert_true, assert_equal, assert_is_not_none, \
     assert_almost_equal, raises
@@ -7,7 +8,7 @@ from nose.tools import assert_true, assert_equal, assert_is_not_none, \
 from mock import Mock
 
 from factories import NativeMetricFactory, CompoundMetricFactory, \
-    DateMetricResultFactory, DateModuleResultFactory
+    DateMetricResultFactory, DateModuleResultFactory, MetricResultFactory
 from .helpers import not_raises
 
 from kalibro_client.miscellaneous import Granularity, DateMetricResult
@@ -86,15 +87,16 @@ class TestDateModuleResult(object):
     def test_properties_setters(self):
         self.subject.date = "2011-10-20T18:27:43.151+00:00"
         self.subject.module_result = None
-        
+
     def test_result(self):
         self.subject.module_result = Mock(grade=1.0)
         assert_equal(self.subject.result, 1.0)
 
-@skip("Won't work until MetricResult is implemented")
 class TestDateMetricResult(TestCase):
     def setUp(self):
+        self.metric_result = MetricResultFactory.build()
         self.subject = DateMetricResultFactory.build()
+        self.second_subject = DateMetricResultFactory.build(date=None, metric_result = self.metric_result)
 
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'date'))
@@ -109,7 +111,9 @@ class TestDateMetricResult(TestCase):
         self.subject.metric_result = None
 
     def test_constructor(self):
-        assert_equal(self.subject.date, DateMetricResultFactory.date)
+        assert_equal(self.subject.date, dateutil.parser.parse(DateMetricResultFactory.date))
+        assert_equal(self.second_subject.date, None)
+        assert_equal(self.second_subject.metric_result, self.metric_result)
 
         assert_is_not_none(self.subject.metric_result)
         metric_result = self.subject.metric_result
@@ -120,3 +124,10 @@ class TestDateMetricResult(TestCase):
                      metric_result_params["module_result_id"])
         assert_equal(metric_result.metric_configuration_id,
                      metric_result_params["metric_configuration_id"])
+
+    def test_asdict(self):
+        dict = self.subject._asdict()
+
+        assert_equal(self.subject.metric_result._asdict(), dict["metric_result"])
+
+        return dict
