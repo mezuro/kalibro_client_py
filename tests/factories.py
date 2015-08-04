@@ -149,7 +149,6 @@ class DateMetricResultFactory(factory.Factory):
         model = DateMetricResult
 
     date = "2011-10-20T18:26:43.151+00:00"
-
     metric_result = {
         'value': "1.0",
         'module_result_id': 1,
