@@ -11,9 +11,10 @@ from kalibro_client.base import KalibroClientNotFoundError
 
 @when(u'I have a loc configuration within the given kalibro configuration')
 def step_impl(context):
+    context.metric = LinesOfCodeMetricFactory.build()
     context.metric_configuration = MetricConfigurationFactory.build(
         kalibro_configuration_id=context.kalibro_configuration.id,
-        metric=LinesOfCodeMetricFactory.build())
+        metric=context.metric)
     context.metric_configuration.save()
 
 @then(u'the metric configuration should exist')

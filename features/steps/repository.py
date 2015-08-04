@@ -28,6 +28,10 @@ def step_impl(context):
     context.independent_repository = RepositoryFactory.build()
     context.independent_repository.save()
 
+@given(u'I call the first_processing method for the given repository')
+def step_impl(context):
+    context.execute_steps(u'when I call the first_processing method for the given repository')
+
 @when(u'I call the processing method for the given repository')
 def step_impl(context):
     context.processing = context.repository.processing()
