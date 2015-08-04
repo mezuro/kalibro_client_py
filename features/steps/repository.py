@@ -72,18 +72,14 @@ def step_impl(context):
     tomorrow = datetime.now() + timedelta(hours=24)
     context.response = context.repository.last_processing_before(tomorrow)
 
+@when(u'I call the last_processing_state method for the given repository')
+def step_impl(context):
+    context.response = context.repository.last_processing_state()
+
 @then(u'the response should contain the given repositories')
 def step_impl(context):
     assert_in(context.repository, context.repositories)
     assert_in(context.independent_repository, context.repositories)
-
-@when(u'I call the last_processing_state method for the given repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the last_processing_state method for the given repository')
-
-@then(u'I should get "PREPARING"')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get "PREPARING"')
 
 @when(u'I call the last_ready_processing method for the given repository')
 def step_impl(context):
@@ -92,14 +88,6 @@ def step_impl(context):
 @then(u'this processing should have process times')
 def step_impl(context):
     raise NotImplementedError(u'STEP: Then this processing should have process times')
-
-@then(u'I should get a Processing with state "PREPARING"')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a Processing with state "PREPARING"')
-
-@then(u'I should get a Processing with state "READY"')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a Processing with state "READY"')
 
 @when(u'I call the processing_with_date method for the given repository and tomorrow\'s date')
 def step_impl(context):
