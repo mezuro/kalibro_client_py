@@ -1,6 +1,7 @@
 from time import sleep
 
-from nose.tools import assert_in
+from behave import *
+from nose.tools import assert_in, assert_is_instance
 
 from ..tests.factories import RepositoryFactory
 from kalibro_client.processor import Repository
@@ -21,18 +22,22 @@ def step_impl(context):
     while not context.repository.has_ready_processing():
         sleep(10)
 
-@when(u'I call the processing method for the given repository')
-def step_impl(context):
-    context.processing = context.repository.processing()
-
 @given(u'I have an independent repository')
 def step_impl(context):
     context.independent_repository = RepositoryFactory.build()
     context.independent_repository.save()
 
+@when(u'I call the processing method for the given repository')
+def step_impl(context):
+    context.processing = context.repository.processing()
+
 @when(u'I ask for all the repositories')
 def step_impl(context):
     context.repositories = Repository.all()
+
+@when(u'I call the first_processing method for the given repository')
+def step_impl(context):
+    context.response = context.repository.first_processing()
 
 @then(u'the response should contain the given repositories')
 def step_impl(context):
@@ -90,18 +95,6 @@ def step_impl(context):
 @then(u'I should get an array of types')
 def step_impl(context):
     raise NotImplementedError(u'STEP: Then I should get an array of types')
-
-@given(u'I wait up to 1 seconds')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Given I wait up to 1 seconds')
-
-@when(u'I call the first_processing method for the given repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I call the first_processing method for the given repository')
-
-@then(u'I should get a Processing')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a Processing')
 
 @when(u'I call the first_processing_after method for the given repository and yesterday\'s date')
 def step_impl(context):
