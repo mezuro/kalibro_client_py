@@ -102,6 +102,10 @@ def step_impl(context):
 def step_impl(context):
     context.found_repository = Repository.find(context.repository.id)
 
+@when(u'I ask for repositories from the given project')
+def step_impl(context):
+    context.project_repositories = Repository.repositories_of(context.project.id)
+
 @then(u'the response should contain the given repositories')
 def step_impl(context):
     assert_in(context.repository, context.repositories)
@@ -119,6 +123,14 @@ def step_impl(context):
 def step_impl(context):
     assert_equal(context.repository, context.found_repository)
 
+@then(u'I should get a list with the given repository')
+def step_impl(context):
+    assert_in(context.repository, context.project_repositories)
+
+@then(u'the repositories should contain the project id')
+def step_impl(context):
+    assert_equal(context.project_repositories[0].project_id, context.project.id)
+
 @when(u'I call the cancel_process method for the given repository')
 def step_impl(context):
     raise NotImplementedError(u'STEP: When I call the cancel_process method for the given repository')
@@ -128,17 +140,7 @@ def step_impl(context):
     raise NotImplementedError(u'STEP: Then I should get success')
 
 
-@when(u'I ask for repositories from the given project')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I ask for repositories from the given project')
 
-@then(u'I should get a list with the given repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a list with the given repository')
-
-@then(u'the repositories should contain the project id')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the repositories should contain the project id')
 
 @when(u'I call the process method for the given repository')
 def step_impl(context):

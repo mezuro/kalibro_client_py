@@ -1,9 +1,9 @@
-Feature: Repositories listing
+Feature: Project repositories
   In order to be able to visualize repositories
   As a developer
   I want to see all the repository from a given project
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
+  @kalibro_processor_restart @kalibro_configuration_restart
   Scenario: With existing project repository
     Given I have a project with name "Kalibro"
     And I have a kalibro configuration with name "Java"
