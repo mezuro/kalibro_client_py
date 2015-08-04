@@ -1,10 +1,10 @@
-Feature: Repositories listing
+Feature: Repositories existance
   In order to be able to check know if a repository still exists
   As a developer
   I want to check that on the service
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
-  Scenario: With existing project repository
+  @kalibro_processor_restart @kalibro_configuration_restart
+  Scenario: Repositories existance with existing project repository
     Given I have a project with name "Kalibro"
     And I have a kalibro configuration with name "Java"
     And the given project has the following Repositories:

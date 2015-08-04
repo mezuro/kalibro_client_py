@@ -94,6 +94,10 @@ def step_impl(context):
 def step_impl(context):
     context.repository.delete()
 
+@when(u'I ask to check if the given repository exists')
+def step_impl(context):
+    context.response = Repository.exists(context.repository.id)
+
 @then(u'the response should contain the given repositories')
 def step_impl(context):
     assert_in(context.repository, context.repositories)
@@ -114,10 +118,6 @@ def step_impl(context):
 @then(u'I should get success')
 def step_impl(context):
     raise NotImplementedError(u'STEP: Then I should get success')
-
-@when(u'I ask to check if the given repository exists')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I ask to check if the given repository exists')
 
 @when(u'I ask to find the given repository')
 def step_impl(context):
