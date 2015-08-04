@@ -2,6 +2,7 @@ from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
 from kalibro_client.processor import Repository
+from kalibro_client.configurations import MetricConfiguration
 import kalibro_client.miscellaneous.date_metric_result
 
 
@@ -65,6 +66,9 @@ class MetricResult(attributes_class_constructor('MetricResultAttrs',
                                          params={'id': self.id},
                                          method='get')['descendant_values']
         return map(float, descendant_values)
+
+    def metric_configuration(self):
+        return MetricConfiguration.find(self.metric_configuration_id)
 
     @classmethod
     def history_of(cls, metric_name, kalibro_module_id, repository_id):

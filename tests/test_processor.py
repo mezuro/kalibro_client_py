@@ -6,13 +6,14 @@ from mock import patch
 import kalibro_client
 from kalibro_client.processor import Project, Repository, ProcessTime,\
     MetricCollectorDetails, MetricResult, Processing, ModuleResult
+from kalibro_client.configurations import MetricConfiguration
 from kalibro_client.processor.base import Base
 from kalibro_client.errors import KalibroClientNotFoundError
 
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
     ProcessTimeFactory, MetricResultFactory, DateMetricResultFactory,\
-    ModuleResultFactory, DateModuleResultFactory
+    ModuleResultFactory, DateModuleResultFactory, MetricConfigurationFactory
 
 from .helpers import not_raises
 
@@ -488,6 +489,12 @@ class TestMetricResult(TestCase):
                                                  params={'metric_name': native_metric.name,
                                                          'kalibro_module_id': kalibro_module.id,
                                                          'id': repository.id})
+
+    def test_metric_configuration(self):
+        metric_configuration = MetricConfigurationFactory.build()
+        with patch.object(MetricConfiguration, 'find', return_value=metric_configuration) as find_mock:
+            assert_equal(self.subject.metric_configuration(), metric_configuration)
+            find_mock.assert_called_once_with(self.subject.metric_configuration_id)
 
 class TestModuleResult(TestCase):
     def setUp(self):
