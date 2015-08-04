@@ -3,8 +3,8 @@ Feature: Repositories destroying
   As a developer
   I want to destroy a given repository
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
-  Scenario: With existing repository
+  @kalibro_processor_restart @kalibro_configuration_restart
+  Scenario: Repositories destroying with existing repository
     Given I have a project with name "Kalibro"
     And I have a kalibro configuration with name "Java"
     And the given project has the following Repositories:

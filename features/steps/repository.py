@@ -80,15 +80,6 @@ def step_impl(context):
 def step_impl(context):
     context.response = context.repository.last_ready_processing()
 
-@then(u'the response should contain the given repositories')
-def step_impl(context):
-    assert_in(context.repository, context.repositories)
-    assert_in(context.independent_repository, context.repositories)
-
-@then(u'this processing should have process times')
-def step_impl(context):
-    assert_true(len(context.response.process_times()) > 0)
-
 @when(u'I call the processing_with_date method for the given repository and tomorrow\'s date')
 def step_impl(context):
     tomorrow = datetime.now() + timedelta(hours=24)
@@ -99,6 +90,23 @@ def step_impl(context):
     yesterday = datetime.now() - timedelta(hours=24)
     context.response = context.repository.processing_with_date(yesterday)
 
+@when(u'I destroy the repository')
+def step_impl(context):
+    context.repository.delete()
+
+@then(u'the response should contain the given repositories')
+def step_impl(context):
+    assert_in(context.repository, context.repositories)
+    assert_in(context.independent_repository, context.repositories)
+
+@then(u'this processing should have process times')
+def step_impl(context):
+    assert_true(len(context.response.process_times()) > 0)
+
+@then(u'the repository should no longer exist')
+def step_impl(context):
+    assert_true(not Repository.exists(context.repository.id))
+
 @when(u'I call the cancel_process method for the given repository')
 def step_impl(context):
     raise NotImplementedError(u'STEP: When I call the cancel_process method for the given repository')
@@ -106,14 +114,6 @@ def step_impl(context):
 @then(u'I should get success')
 def step_impl(context):
     raise NotImplementedError(u'STEP: Then I should get success')
-
-@when(u'I destroy the repository')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I destroy the repository')
-
-@then(u'the repository should no longer exist')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the repository should no longer exist')
 
 @when(u'I ask to check if the given repository exists')
 def step_impl(context):
