@@ -1,5 +1,5 @@
 from behave import *
-from nose.tools import assert_is_instance, assert_true
+from nose.tools import assert_is_instance, assert_true, assert_equal
 
 from kalibro_client.processor import Processing, ProcessTime
 
@@ -16,3 +16,7 @@ def step_impl(context):
 @then(u'I should get a Processing')
 def step_impl(context):
     assert_is_instance(context.response, Processing)
+
+@then(u'I should get a Processing with state "{}"')
+def step_impl(context, state):
+    assert_equal(context.processing.state, state)

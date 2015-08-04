@@ -3,8 +3,8 @@ Feature: Processing
   As a developer
   I want to be able to retrieve the processing
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
-  Scenario: With one repository just after starting to process
+  @kalibro_processor_restart @kalibro_configuration_restart
+  Scenario: Processing with one repository just after starting to process
     Given I have a project with name "Kalibro"
     And I have a sample configuration with MetricFu metrics
     And the given project has the following Repositories:
@@ -15,8 +15,8 @@ Feature: Processing
     When I call the processing method for the given repository
     Then I should get a Processing with state "PREPARING"
 
-  @skip @kalibro_processor_restart @kalibro_configuration_restart
-  Scenario: With one repository just after with ready processing
+  @kalibro_processor_restart @kalibro_configuration_restart
+  Scenario: Processing with one repository just after with ready processing
     Given I have a project with name "Kalibro"
     And I have a sample configuration with MetricFu metrics
     And the given project has the following Repositories:
