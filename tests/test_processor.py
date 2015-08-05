@@ -6,13 +6,14 @@ from mock import patch
 import kalibro_client
 from kalibro_client.processor import Project, Repository, ProcessTime,\
     MetricCollectorDetails, MetricResult, Processing, ModuleResult
+from kalibro_client.configurations import MetricConfiguration
 from kalibro_client.processor.base import Base
 from kalibro_client.errors import KalibroClientNotFoundError
 
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
     ProcessTimeFactory, MetricResultFactory, DateMetricResultFactory,\
-    ModuleResultFactory, DateModuleResultFactory
+    ModuleResultFactory, DateModuleResultFactory, MetricConfigurationFactory
 
 from .helpers import not_raises
 
@@ -489,6 +490,12 @@ class TestMetricResult(TestCase):
                                                          'kalibro_module_id': kalibro_module.id,
                                                          'id': repository.id})
 
+    def test_metric_configuration(self):
+        metric_configuration = MetricConfigurationFactory.build()
+        with patch.object(MetricConfiguration, 'find', return_value=metric_configuration) as find_mock:
+            assert_equal(self.subject.metric_configuration(), metric_configuration)
+            find_mock.assert_called_once_with(self.subject.metric_configuration_id)
+
 class TestModuleResult(TestCase):
     def setUp(self):
         self.subject = ModuleResultFactory.build()
@@ -496,7 +503,6 @@ class TestModuleResult(TestCase):
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'grade'))
         assert_true(hasattr(self.subject, 'parent_id'))
-        assert_true(hasattr(self.subject, 'height'))
         assert_true(hasattr(self.subject, 'processing_id'))
 
     @not_raises((AttributeError, ValueError))
@@ -507,14 +513,12 @@ class TestModuleResult(TestCase):
     def test_properties_setters_with_invalid_parameters(self):
         self.subject.grade = None
         self.subject.processing_id = None
-        self.subject.height = None
 
     def test_asdict(self):
         dict = self.subject._asdict()
 
         assert_equal(self.subject.grade, dict["grade"])
         assert_equal(self.subject.parent_id, dict["parent_id"])
-        assert_equal(self.subject.height, dict["height"])
         assert_equal(self.subject.processing_id, dict["processing_id"])
 
     def test_children(self):

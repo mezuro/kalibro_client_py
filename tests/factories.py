@@ -179,7 +179,6 @@ class ModuleResultFactory(factory.Factory):
 
     grade = 10.0
     parent_id = 21
-    height = 6
     processing_id = 1
 
 class DateModuleResultFactory(factory.Factory):

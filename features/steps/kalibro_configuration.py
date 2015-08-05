@@ -21,10 +21,11 @@ def step_impl(context):
   context.kalibro_configuration = KalibroConfigurationFactory.build()
   context.kalibro_configuration.save()
 
-  native_metric = NativeMetricFactory.build()
-  metric_configuration = MetricConfigurationFactory.build(metric=native_metric,
+  context.metric = NativeMetricFactory.build()
+  metric_configuration = MetricConfigurationFactory.build(metric=context.metric,
                                                           reading_group_id=context.reading_group.id,
                                                           kalibro_configuration_id=context.kalibro_configuration.id)
+  metric_configuration.save()
 
 @when(u'I get all the kalibro configurations')
 def step_impl(context):
