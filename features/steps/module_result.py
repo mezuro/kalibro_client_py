@@ -1,6 +1,7 @@
 from nose.tools import assert_is_instance
 
 from kalibro_client.processor import ModuleResult, KalibroModule
+from kalibro_client.miscellaneous import DateModuleResult
 from kalibro_client.errors import KalibroClientError
 
 @when(u'I ask for the children of the processing root module result')
@@ -34,12 +35,14 @@ def step_impl(context):
 
 @given(u'I get the module result of the processing')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Given I get the module result of the processing')
+    context.module_result = ModuleResult.find(context.repository.processing().root_module_result_id)
 
 @when(u'I ask for the history of the given module result')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I ask for the history of the given module result')
+    context.history = ModuleResult.history_of(context.module_result, context.repository.id)
 
 @then(u'I should get a list with date module results')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a list with date module results')
+    assert_is_instance(context.history, list)
+    for element in context.history:
+        assert_is_instance(element, DateModuleResult)
