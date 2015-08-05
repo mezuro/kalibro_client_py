@@ -1,3 +1,6 @@
+from kalibro_client.processor import ModuleResult
+from kalibro_client.errors import KalibroClientError
+
 @when(u'I ask for the children of the processing root module result')
 def step_impl(context):
     raise NotImplementedError(u'STEP: When I ask for the children of the processing root module result')
@@ -24,7 +27,10 @@ def step_impl(context):
 
 @when(u'I ask for an inexistent module result')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I ask for an inexistent module result')
+    try:
+        ModuleResult.find(-1)
+    except KalibroClientError as exception:
+        context.response = exception
 
 @given(u'I get the module result of the processing')
 def step_impl(context):
