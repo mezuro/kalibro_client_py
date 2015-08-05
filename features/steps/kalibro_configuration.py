@@ -20,7 +20,6 @@ def step_impl(context):
 
   context.kalibro_configuration = KalibroConfigurationFactory.build()
   context.kalibro_configuration.save()
-  print(context.kalibro_configuration.id)
 
   context.metric = NativeMetricFactory.build()
   metric_configuration = MetricConfigurationFactory.build(metric=context.metric,
