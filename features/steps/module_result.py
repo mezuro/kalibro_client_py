@@ -1,19 +1,21 @@
 from nose.tools import assert_is_instance
 
-from kalibro_client.processor import ModuleResult
+from kalibro_client.processor import ModuleResult, KalibroModule
 from kalibro_client.errors import KalibroClientError
 
 @when(u'I ask for the children of the processing root module result')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I ask for the children of the processing root module result')
+    context.children = ModuleResult.find(context.repository.processing().root_module_result_id).children()
 
 @then(u'I should get a list with the children module results')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a list with the children module results')
+    assert_is_instance(context.children, list)
+    for element in context.children:
+        assert_is_instance(element, ModuleResult)
 
 @then(u'The first children should have a module')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then The first children should have a module')
+    assert_is_instance(context.children[0].kalibro_module, KalibroModule)
 
 @when(u'I get the module result of the processing')
 def step_impl(context):

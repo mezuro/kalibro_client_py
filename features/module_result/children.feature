@@ -3,7 +3,7 @@ Feature: Children
   As a developer
   I want to find children module results
 
-  @skip @kalibro_configuration_restart @kalibro_processor_restart
+  @kalibro_configuration_restart @kalibro_processor_restart
   Scenario: ModuleResult children returns valid module result
     Given I have a project with name "Kalibro"
     And I have a sample configuration with MetricFu metrics
