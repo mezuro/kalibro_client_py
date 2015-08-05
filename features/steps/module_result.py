@@ -1,3 +1,5 @@
+from nose.tools import assert_is_instance
+
 from kalibro_client.processor import ModuleResult
 from kalibro_client.errors import KalibroClientError
 
@@ -13,17 +15,13 @@ def step_impl(context):
 def step_impl(context):
     raise NotImplementedError(u'STEP: Then The first children should have a module')
 
-@when(u'I wait up for a ready processing')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I wait up for a ready processing')
-
 @when(u'I get the module result of the processing')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I get the module result of the processing')
+    context.module_result = ModuleResult.find(context.repository.processing().root_module_result_id)
 
 @then(u'I should get a module_result')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should get a module_result')
+    assert_is_instance(context.module_result, ModuleResult)
 
 @when(u'I ask for an inexistent module result')
 def step_impl(context):

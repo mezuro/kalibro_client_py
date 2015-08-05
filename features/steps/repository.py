@@ -106,6 +106,10 @@ def step_impl(context):
 def step_impl(context):
     context.found_repository = Repository.find(context.repository.id)
 
+@when(u'I wait up for a ready processing')
+def step_impl(context):
+    context.execute_steps(u'Given I wait up for a ready processing')
+
 @when(u'I ask for repositories from the given project')
 def step_impl(context):
     context.project_repositories = Repository.repositories_of(context.project.id)
