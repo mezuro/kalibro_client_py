@@ -2,15 +2,15 @@ from collections import namedtuple
 from datetime import datetime
 import dateutil.parser
 
-import kalibro_client.processor as processor
+import kalibro_client.processor
 
 class DateMetricResult(namedtuple('DateMetricResult', 'date metric_result')):
     __slots__ = ()
 
     # __new__ is overriden since namedtuple is a imutable type
     def __new__(cls, date, metric_result):
-        if metric_result is not None and not isinstance(metric_result, processor.MetricResult):
-            parsed_metric_result = processor.MetricResult(**metric_result)
+        if metric_result is not None and not isinstance(metric_result, kalibro_client.processor.MetricResult):
+            parsed_metric_result = kalibro_client.processor.MetricResult(**metric_result)
         else:
             parsed_metric_result = metric_result
 
