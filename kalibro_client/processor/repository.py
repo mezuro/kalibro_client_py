@@ -114,12 +114,12 @@ class Repository(attributes_class_constructor('RepositoryAttr',
     def has_processing_after(self, date):
         return self.request(":id/has_processing/after",
                             params={'id': self.id,
-                                    'date': date})['has_processing_in_time']
+                                    'date': date.isoformat()})['has_processing_in_time']
 
     def has_processing_before(self, date):
         return self.request(":id/has_processing/before",
                             params={'id': self.id,
-                                    'date': date})['has_processing_in_time']
+                                    'date': date.isoformat()})['has_processing_in_time']
 
     def last_processing_state(self):
         return self.request(":id/last_processing_state",
@@ -142,12 +142,12 @@ class Repository(attributes_class_constructor('RepositoryAttr',
     def first_processing_after(self, date):
         return Processing(**self.request(":id/first_processing/after",
                                          params={'id': self.id,
-                                                 'date': date})["processing"])
+                                                 'date': date.isoformat()})["processing"])
 
     def last_processing_before(self, date):
         return Processing(**self.request(":id/last_processing/before",
                                          params={'id': self.id,
-                                                 'date': date})['processing'])
+                                                 'date': date.isoformat()})['processing'])
 
     @classmethod
     def branches(cls, url, scm_type):

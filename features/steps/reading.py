@@ -26,10 +26,6 @@ def step_impl(context):
 def step_impl(context):
     context.response = Reading.exists(context.reading.id)
 
-@then(u'I should get true')
-def step_impl(context):
-    assert_true(context.response)
-
 @given(u'I have a reading within the given reading group')
 def step_impl(context):
     context.reading = ReadingFactory.build(

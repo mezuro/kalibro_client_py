@@ -272,7 +272,7 @@ class TestRepository(TestCase):
         with patch.object(Repository, 'request',
                           return_value=has_processing_after) as repository_request:
             response = self.subject.has_processing_after(self.date)
-            repository_request.assert_called_once_with(':id/has_processing/after', params={'id': self.subject.id, 'date': self.date})
+            repository_request.assert_called_once_with(':id/has_processing/after', params={'id': self.subject.id, 'date': self.date_str})
             assert_equal(response, True)
 
     def test_has_processing_before(self):
@@ -280,7 +280,7 @@ class TestRepository(TestCase):
         with patch.object(Repository, 'request',
                           return_value=has_processing_before) as repository_request:
             response = self.subject.has_processing_before(self.date)
-            repository_request.assert_called_once_with(':id/has_processing/before', params={'id': self.subject.id, 'date': self.date})
+            repository_request.assert_called_once_with(':id/has_processing/before', params={'id': self.subject.id, 'date': self.date_str})
             assert_equal(response, True)
 
     def test_last_processing_state(self):
@@ -327,7 +327,7 @@ class TestRepository(TestCase):
         with patch.object(Repository, 'request',
                           return_value=processing_hash) as repository_request:
             response = self.subject.first_processing_after(self.date)
-            repository_request.assert_called_once_with(':id/first_processing/after', params={'id': self.subject.id, 'date': self.date})
+            repository_request.assert_called_once_with(':id/first_processing/after', params={'id': self.subject.id, 'date': self.date_str})
             assert_equal(response, processing)
 
     def test_last_processing_before(self):
@@ -337,7 +337,7 @@ class TestRepository(TestCase):
         with patch.object(Repository, 'request',
                           return_value=processing_hash) as repository_request:
             response = self.subject.last_processing_before(self.date)
-            repository_request.assert_called_once_with(':id/last_processing/before', params={'id': self.subject.id, 'date': self.date})
+            repository_request.assert_called_once_with(':id/last_processing/before', params={'id': self.subject.id, 'date': self.date_str})
             assert_equal(response, processing)
 
     def test_branches(self):

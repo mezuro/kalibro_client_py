@@ -4,7 +4,7 @@ Feature: ProcessTimes
   I want to get all the ProcessTimes for the given processing
 
   @kalibro_processor_restart @kalibro_configuration_restart
-  Scenario: With a ready processing
+  Scenario: Checks ProcessTimes listing with a ready processing
     Given I have a project with name "Kalibro"
     And I have a sample configuration with MetricFu metrics
     And the given project has the following Repositories:
