@@ -1,5 +1,5 @@
 Feature: Process
-  In order to be have repositories
+  In order to process a repository
   As a developer
   I want to start the repository processing
 
