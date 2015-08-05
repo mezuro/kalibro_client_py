@@ -126,7 +126,7 @@ class TestKalibroModule(TestCase):
 class TestRepository(TestCase):
     def setUp(self):
         self.subject = RepositoryFactory.build()
-        self.date_str = "2015-07-05 22:16:18+00:00"
+        self.date_str = "2015-07-05T22:16:18+00:00"
         self.date = dateutil.parser.parse(self.date_str)
 
     def test_properties_getters(self):
