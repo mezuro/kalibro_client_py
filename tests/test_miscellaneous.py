@@ -80,6 +80,7 @@ class TestGranularity(object):
         assert_equal(Granularity.PACKAGE, Granularity.PACKAGE)
         assert_equal(Granularity.CLASS, Granularity.CLASS)
         assert_equal(Granularity.METHOD, Granularity.METHOD)
+        assert_equal(Granularity.FUNCTION, Granularity.FUNCTION)
 
         assert_true(Granularity.SOFTWARE > Granularity.PACKAGE)
         assert_true(Granularity.PACKAGE > Granularity.CLASS)
@@ -88,6 +89,19 @@ class TestGranularity(object):
         assert_true(Granularity.PACKAGE < Granularity.SOFTWARE)
         assert_true(Granularity.CLASS < Granularity.PACKAGE)
         assert_true(Granularity.METHOD < Granularity.CLASS)
+        assert_true(Granularity.FUNCTION < Granularity.PACKAGE)
+
+    @raises(ValueError)
+    def test_invalid_lt_comparisons(self):
+        Granularity.METHOD < Granularity.FUNCTION
+
+    @raises(ValueError)
+    def test_invalid_eq_comparisons(self):
+        Granularity.CLASS == Granularity.FUNCTION
+
+    @raises(ValueError)
+    def test_invalid_gt_comparisons(self):
+        Granularity.CLASS > Granularity.FUNCTION
 
 
 class TestDateModuleResult(object):
