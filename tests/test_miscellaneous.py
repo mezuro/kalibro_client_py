@@ -75,6 +75,20 @@ class TestGranularity(object):
     def test_str(self):
         assert_equal(str(Granularity.SOFTWARE), 'SOFTWARE')
 
+    def test_comparisons(self):
+        assert_equal(Granularity.SOFTWARE, Granularity.SOFTWARE)
+        assert_equal(Granularity.PACKAGE, Granularity.PACKAGE)
+        assert_equal(Granularity.CLASS, Granularity.CLASS)
+        assert_equal(Granularity.METHOD, Granularity.METHOD)
+
+        assert_true(Granularity.SOFTWARE > Granularity.PACKAGE)
+        assert_true(Granularity.PACKAGE > Granularity.CLASS)
+        assert_true(Granularity.CLASS > Granularity.METHOD)
+
+        assert_true(Granularity.PACKAGE < Granularity.SOFTWARE)
+        assert_true(Granularity.CLASS < Granularity.PACKAGE)
+        assert_true(Granularity.METHOD < Granularity.CLASS)
+
 
 class TestDateModuleResult(object):
     def setUp(self):
