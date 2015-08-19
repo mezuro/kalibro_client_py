@@ -76,20 +76,29 @@ class TestGranularity(object):
         assert_equal(str(Granularity.SOFTWARE), 'SOFTWARE')
 
     def test_comparisons(self):
-        assert_equal(Granularity.SOFTWARE, Granularity.SOFTWARE)
-        assert_equal(Granularity.PACKAGE, Granularity.PACKAGE)
-        assert_equal(Granularity.CLASS, Granularity.CLASS)
-        assert_equal(Granularity.METHOD, Granularity.METHOD)
-        assert_equal(Granularity.FUNCTION, Granularity.FUNCTION)
+        def check_equality(granularity1, granularity2):
+            assert_equal(granularity1, granularity2)
 
-        assert_true(Granularity.SOFTWARE > Granularity.PACKAGE)
-        assert_true(Granularity.PACKAGE > Granularity.CLASS)
-        assert_true(Granularity.CLASS > Granularity.METHOD)
+        yield check_equality, Granularity.SOFTWARE, Granularity.SOFTWARE
+        yield check_equality, Granularity.PACKAGE, Granularity.PACKAGE
+        yield check_equality, Granularity.CLASS, Granularity.CLASS
+        yield check_equality, Granularity.METHOD, Granularity.METHOD
+        yield check_equality, Granularity.FUNCTION, Granularity.FUNCTION
 
-        assert_true(Granularity.PACKAGE < Granularity.SOFTWARE)
-        assert_true(Granularity.CLASS < Granularity.PACKAGE)
-        assert_true(Granularity.METHOD < Granularity.CLASS)
-        assert_true(Granularity.FUNCTION < Granularity.PACKAGE)
+        def check_greater_than(granularity1, granularity2):
+            assert_true(granularity1 > granularity2)
+
+        yield check_greater_than, Granularity.SOFTWARE, Granularity.PACKAGE
+        yield check_greater_than, Granularity.PACKAGE, Granularity.CLASS
+        yield check_greater_than, Granularity.CLASS, Granularity.METHOD
+
+        def check_lesser_than(granularity1, granularity2):
+            assert_true(granularity1 < granularity2)
+
+        yield check_lesser_than, Granularity.PACKAGE, Granularity.SOFTWARE
+        yield check_lesser_than, Granularity.CLASS, Granularity.PACKAGE
+        yield check_lesser_than, Granularity.METHOD, Granularity.CLASS
+        yield check_lesser_than, Granularity.FUNCTION, Granularity.PACKAGE
 
     @raises(ValueError)
     def test_invalid_lt_comparisons(self):
