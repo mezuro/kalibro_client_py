@@ -77,7 +77,7 @@ class TestGranularity(object):
 
     def test_comparisons(self):
         def check_equality(granularity1, granularity2):
-            assert_equal(granularity1, granularity2)
+            assert_true(granularity1 == granularity2)
 
         yield check_equality, Granularity.SOFTWARE, Granularity.SOFTWARE
         yield check_equality, Granularity.PACKAGE, Granularity.PACKAGE
