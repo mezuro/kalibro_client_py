@@ -1,7 +1,7 @@
 import factory
 
 from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
-    DateModuleResult, DateMetricResult
+    DateModuleResult, DateMetricResult, HotspotMetric
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule, ProcessTime, MetricCollectorDetails, MetricResult,\
     ModuleResult
@@ -74,6 +74,17 @@ class NativeMetricFactory(factory.Factory):
     name = "Cyclomatic Complexity"
     code = "saikuro"
     scope = "METHOD"
+    description = ""
+    languages = ["RUBY"]
+    metric_collector_name = "MetricFu"
+
+
+class HotspotMetricFactory(factory.Factory):
+    class Meta:
+        model = HotspotMetric
+
+    name = "Code Similarity"
+    code = "flay"
     description = ""
     languages = ["RUBY"]
     metric_collector_name = "MetricFu"
