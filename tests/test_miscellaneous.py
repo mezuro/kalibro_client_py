@@ -9,7 +9,7 @@ from mock import Mock
 
 from factories import NativeMetricFactory, CompoundMetricFactory, \
     DateMetricResultFactory, DateModuleResultFactory, MetricResultFactory, \
-    ModuleResultFactory
+    ModuleResultFactory, HotspotMetricFactory
 from .helpers import not_raises
 
 from kalibro_client.miscellaneous import Granularity, DateMetricResult
@@ -54,6 +54,15 @@ class TestCompoudMetric(TestCase):
         dict_ = self.subject._asdict()
         assert_equal(dict_['script'], self.subject.script)
 
+class TestHotspotMetric(TestCase):
+    def setUp(self):
+        self.subject = HotspotMetricFactory.build()
+
+    def test_type(self):
+        assert_equal('HotspotMetricSnapshot', self.subject.type)
+
+    def test_scope(self):
+        assert_equal('SOFTWARE', self.subject.scope)
 
 # This does not subclass TestCase so test generators work
 class TestGranularity(object):

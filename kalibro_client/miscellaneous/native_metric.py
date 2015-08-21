@@ -3,7 +3,7 @@ from kalibro_client.miscellaneous import Metric
 
 class NativeMetric(Metric):
     def __init__(self, languages=None, metric_collector_name=None, *init_args, **init_kwargs):
-        init_kwargs['type'] = 'NativeMetricSnapshot'
+        init_kwargs['type'] = 'NativeMetricSnapshot' if 'type' not in init_kwargs else init_kwargs['type']
         super(NativeMetric, self).__init__(*init_args, **init_kwargs)
         self.languages = languages
         self.metric_collector_name = metric_collector_name
