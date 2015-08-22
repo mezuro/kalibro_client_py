@@ -508,6 +508,7 @@ class TestModuleResult(TestCase):
     @not_raises((AttributeError, ValueError))
     def test_properties_setters(self):
         self.subject.parent_id = None
+        self.subject.grade = None
 
     @raises(TypeError)
     def test_properties_setters_with_invalid_parameters(self):
