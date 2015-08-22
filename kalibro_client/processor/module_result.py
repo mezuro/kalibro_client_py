@@ -22,7 +22,10 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
 
     @grade.setter
     def grade(self, value):
-        self._grade = float(value)
+        if value is not None:
+            value = float(value)
+
+        self._grade = value
 
     @property
     def parent_id(self):
