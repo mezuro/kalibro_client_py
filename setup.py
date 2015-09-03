@@ -13,11 +13,11 @@ install_requires = [
     'inflection==0.3.1',
     'recordtype==1.1',
     'python-dateutil==2.4.2',
-    'factory_boy==2.5.2',
     'enum34>=1.0',
 ]
 
 tests_require = [
+    'factory_boy==2.5.2',
     'nose==1.3.7',
     'nose-progressive==1.5.1',
     'coverage==3.7.1',
