@@ -5,7 +5,8 @@ from mock import patch
 
 import kalibro_client
 from kalibro_client.processor import Project, Repository, ProcessTime,\
-    MetricCollectorDetails, MetricResult, Processing, ModuleResult
+    MetricCollectorDetails, MetricResult, Processing, ModuleResult,\
+    TreeMetricResult
 from kalibro_client.configurations import MetricConfiguration
 from kalibro_client.processor.base import Base
 from kalibro_client.errors import KalibroClientNotFoundError
@@ -13,7 +14,8 @@ from kalibro_client.errors import KalibroClientNotFoundError
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
     ProcessTimeFactory, MetricResultFactory, DateMetricResultFactory,\
-    ModuleResultFactory, DateModuleResultFactory, MetricConfigurationFactory
+    ModuleResultFactory, DateModuleResultFactory, MetricConfigurationFactory,\
+    TreeMetricResultFactory
 
 from .helpers import not_raises
 
@@ -418,14 +420,12 @@ class TestMetricResult(TestCase):
 
     def test_properties_getters(self):
         assert_true(hasattr(self.subject, 'value'))
-        assert_true(hasattr(self.subject, 'aggregated_value'))
         assert_true(hasattr(self.subject, 'metric_configuration_id'))
         assert_true(hasattr(self.subject, 'module_result_id'))
 
     @not_raises((AttributeError, ValueError))
     def test_properties_setters(self):
         self.subject.value = 3
-        self.subject.aggregated_value = 3
         self.subject.metric_configuration_id = 4
         self.subject.module_result_id = 4
 
@@ -438,16 +438,6 @@ class TestMetricResult(TestCase):
         self.subject.value = "1.1"
 
         assert_equal(self.subject.value, 1.1)
-
-    def test_aggregated_value_setter_with_none(self):
-        self.subject.aggregated_value = None
-
-        assert_equal(self.subject.aggregated_value, None)
-
-    def test_aggregated_value_setter_with_string(self):
-        self.subject.aggregated_value = "1.1"
-
-        assert_equal(self.subject.aggregated_value, 1.1)
 
     def test_metric_configuration_id_setter_with_none(self):
         self.subject.metric_configuration_id = None
@@ -464,7 +454,32 @@ class TestMetricResult(TestCase):
 
         assert_equal(self.subject.value, dict["value"])
         assert_equal(self.subject.metric_configuration_id, dict["metric_configuration_id"])
-        assert_equal(self.subject.aggregated_value, dict["aggregated_value"])
+
+    def test_metric_configuration(self):
+        metric_configuration = MetricConfigurationFactory.build()
+        with patch.object(MetricConfiguration, 'find', return_value=metric_configuration) as find_mock:
+            assert_equal(self.subject.metric_configuration(), metric_configuration)
+            find_mock.assert_called_once_with(self.subject.metric_configuration_id)
+
+class TestTreeMetricResult(TestCase):
+    def setUp(self):
+        self.subject = TreeMetricResultFactory.build()
+
+    def test_properties_getters(self):
+        assert_true(hasattr(self.subject, 'aggregated_value'))
+
+    def test_properties_setters(self):
+        self.subject.aggregated_value = 3
+
+    def test_aggregated_value_setter_with_none(self):
+        self.subject.aggregated_value = None
+
+        assert_equal(self.subject.aggregated_value, None)
+
+    def test_aggregated_value_setter_with_string(self):
+        self.subject.aggregated_value = "1.1"
+
+        assert_equal(self.subject.aggregated_value, 1.1)
 
     def test_descendant_values(self):
         descendant_values_hash = {'descendant_values': ["1.1", "2.2", "3.3"]}
@@ -482,7 +497,7 @@ class TestMetricResult(TestCase):
 
         metric_result_history_of_hash = {'metric_result_history_of': [date_metric_result._asdict()]}
         with patch.object(Repository, 'request', return_value=metric_result_history_of_hash) as request_mock:
-            assert_equal(MetricResult.history_of(native_metric.name, kalibro_module.id,
+            assert_equal(TreeMetricResult.history_of(native_metric.name, kalibro_module.id,
                                                  repository.id),
                          [date_metric_result])
             request_mock.assert_called_once_with(action=':id/metric_result_history_of',
@@ -490,11 +505,13 @@ class TestMetricResult(TestCase):
                                                          'kalibro_module_id': kalibro_module.id,
                                                          'id': repository.id})
 
-    def test_metric_configuration(self):
-        metric_configuration = MetricConfigurationFactory.build()
-        with patch.object(MetricConfiguration, 'find', return_value=metric_configuration) as find_mock:
-            assert_equal(self.subject.metric_configuration(), metric_configuration)
-            find_mock.assert_called_once_with(self.subject.metric_configuration_id)
+    def test_asdict(self):
+        dict = self.subject._asdict()
+
+        assert_equal(self.subject.aggregated_value, dict["aggregated_value"])
+
+    def test_endpoint(self):
+        assert_equal(self.subject.endpoint(), 'metric_results')
 
 class TestModuleResult(TestCase):
     def setUp(self):

@@ -4,7 +4,7 @@ from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
     DateModuleResult, DateMetricResult
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule, ProcessTime, MetricCollectorDetails, MetricResult,\
-    ModuleResult
+    ModuleResult, TreeMetricResult
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading, RangeSnapshot, \
     KalibroRange
@@ -211,6 +211,13 @@ class MetricCollectorDetailsFactory(factory.Factory):
 class MetricResultFactory(factory.Factory):
     class Meta:
         model = MetricResult
+
+    metric_configuration_id = 1
+    value = 10
+
+class TreeMetricResultFactory(factory.Factory):
+    class Meta:
+        model = TreeMetricResult
 
     metric_configuration_id = 1
     value = 10

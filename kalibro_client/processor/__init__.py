@@ -3,6 +3,7 @@ from .process_time import ProcessTime
 from .processing import Processing
 from .repository import Repository
 from .metric_result import MetricResult
+from .tree_metric_result import TreeMetricResult
 from .module_result import ModuleResult
 from .project import Project
 from .metric_collector_details import MetricCollectorDetails
