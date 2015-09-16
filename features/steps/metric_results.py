@@ -1,7 +1,7 @@
 from behave import *
 from nose.tools import assert_is_instance
 
-from kalibro_client.processor import ModuleResult, MetricResult
+from kalibro_client.processor import ModuleResult, MetricResult, TreeMetricResult
 from kalibro_client.configurations import MetricConfiguration
 from kalibro_client.miscellaneous import DateMetricResult
 
@@ -20,7 +20,7 @@ def step_impl(context):
 
 @when(u'I call the history of method with the metric name and the results root id of the given processing')
 def step_impl(context):
-    context.response = MetricResult.history_of(context.metric.name, context.response.root_module_result_id, context.repository.id)
+    context.response = TreeMetricResult.history_of(context.metric.name, context.response.root_module_result_id, context.repository.id)
 
 @then(u'I should get a list of date metric results')
 def step_impl(context):
