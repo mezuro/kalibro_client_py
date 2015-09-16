@@ -2,7 +2,7 @@ from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
 from kalibro_client.processor import KalibroModule, Processing, MetricResult, \
-    Repository
+    Repository, TreeMetricResult
 import kalibro_client.miscellaneous.date_module_result
 
 @entity_name_decorator
@@ -98,7 +98,11 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
         return [kalibro_client.miscellaneous.date_module_result.DateModuleResult(element[0], element[1]) for element in response]
 
     def metric_results(self):
-        return MetricResult.response_to_objects_array(self.request(
+        print("WARNING: ModuleResult#metric_results method has been deprecated. Please use tree_metric_results.")
+        return self.tree_metric_results()
+
+    def tree_metric_results(self):
+        return TreeMetricResult.response_to_objects_array(self.request(
                                                 action=':id/metric_results',
                                                 params={'id': self.id},
                                                 method='get'))

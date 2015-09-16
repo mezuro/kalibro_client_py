@@ -617,12 +617,12 @@ class TestModuleResult(TestCase):
             kalibro_module_request.assert_called_once_with(action=':id/kalibro_module', params={'id': self.subject.id}, method='get')
 
     def test_metric_result(self):
-        metric_result = MetricResultFactory.build()
-        response = {'metric_results': [metric_result._asdict()]}
+        tree_metric_result = TreeMetricResultFactory.build()
+        response = {'metric_results': [tree_metric_result._asdict()]}
         with patch.object(self.subject, 'request',
-                          return_value=response) as metric_results_request:
-            metric_results = self.subject.metric_results()
-            assert_equal(metric_results, [metric_result])
-            metric_results_request.assert_called_once_with(
+                          return_value=response) as tree_metric_results_request:
+            tree_metric_results = self.subject.metric_results()
+            assert_equal(tree_metric_results, [tree_metric_result])
+            tree_metric_results_request.assert_called_once_with(
                 action=":id/metric_results", params={"id": self.subject.id},
                 method="get")
