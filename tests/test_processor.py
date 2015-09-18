@@ -646,9 +646,10 @@ class TestModuleResult(TestCase):
                                             action=':id/module_result_history_of',
                                             params={'id': repository_id,
                                                     'kalibro_module_id': self.subject.kalibro_module.id})
-            kalibro_module_request.assert_called_once_with(action=':id/kalibro_module', params={'id': self.subject.id}, method='get')
+            kalibro_module_request.assert_called_once_with(action=':id/kalibro_module', params={'id': self.subject.id},
+                                                           method='get')
 
-    def test_metric_result(self):
+    def test_tree_metric_results(self):
         tree_metric_result = TreeMetricResultFactory.build()
         response = {'tree_metric_results': [tree_metric_result._asdict()]}
         with patch.object(self.subject, 'request',
@@ -658,3 +659,21 @@ class TestModuleResult(TestCase):
             tree_metric_results_request.assert_called_once_with(
                 action=":id/metric_results", params={"id": self.subject.id},
                 method="get")
+
+    def test_hotspot_metric_results(self):
+        hotspot_metric_result = HotspotMetricResultFactory.build()
+        response = {'hotspot_metric_results': [hotspot_metric_result._asdict()]}
+        with patch.object(self.subject, 'request', return_value=response) as hotspot_metric_results_request:
+            hotspot_metric_results = self.subject.hotspot_metric_results()
+            assert_equal(hotspot_metric_results, [hotspot_metric_result])
+            hotspot_metric_results_request.assert_called_once_with(
+                action=":id/hotspot_metric_results", params={"id": self.subject.id}, method="get")
+
+    def test_descendant_hotspot_metric_results(self):
+        hotspot_metric_result = HotspotMetricResultFactory.build()
+        response = {'hotspot_metric_results': [hotspot_metric_result._asdict()]}
+        with patch.object(self.subject, 'request', return_value=response) as hotspot_metric_results_request:
+            hotspot_metric_results = self.subject.descendant_hotspot_metric_results()
+            assert_equal(hotspot_metric_results, [hotspot_metric_result])
+            hotspot_metric_results_request.assert_called_once_with(
+                action=":id/descendant_hotspot_metric_results", params={"id": self.subject.id}, method="get")

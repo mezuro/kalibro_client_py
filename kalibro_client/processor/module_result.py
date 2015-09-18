@@ -4,6 +4,8 @@ from kalibro_client.processor.base import Base
 from kalibro_client.processor import KalibroModule, Processing, MetricResult, \
     Repository, TreeMetricResult
 import kalibro_client.miscellaneous.date_module_result
+from kalibro_client.processor.hotspot_metric_result import HotspotMetricResult
+
 
 @entity_name_decorator
 class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
@@ -106,3 +108,11 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
                                                 action=':id/metric_results',
                                                 params={'id': self.id},
                                                 method='get'))
+
+    def hotspot_metric_results(self):
+        return HotspotMetricResult.response_to_objects_array(self.request(action=':id/hotspot_metric_results',
+                                                                          params={'id': self.id}, method='get'))
+
+    def descendant_hotspot_metric_results(self):
+        return HotspotMetricResult.response_to_objects_array(
+            self.request(action=':id/descendant_hotspot_metric_results', params={'id': self.id}, method='get'))
