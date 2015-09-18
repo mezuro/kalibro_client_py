@@ -1,10 +1,10 @@
+from kalibro_client.base import entity_name_decorator
 from kalibro_client.processor import MetricResult
 from kalibro_client.processor import Repository
 import kalibro_client.miscellaneous.date_metric_result
 
-
+@entity_name_decorator
 class TreeMetricResult(MetricResult):
-
     def __init__(self, aggregated_value=None, *init_args, **init_kwargs):
         super(TreeMetricResult, self).__init__(*init_args, **init_kwargs)
         self.aggregated_value = aggregated_value
@@ -40,7 +40,3 @@ class TreeMetricResult(MetricResult):
         dict_['aggregated_value'] = self.aggregated_value
 
         return dict_
-
-    @classmethod
-    def endpoint(self):
-        return super(TreeMetricResult, self).endpoint()
