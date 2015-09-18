@@ -8,6 +8,7 @@ from kalibro_client.processor import Project, Repository, Processing,\
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading, RangeSnapshot, \
     KalibroRange
+from kalibro_client.processor.hotspot_metric_result import HotspotMetricResult
 
 
 class ProjectFactory(factory.Factory):
@@ -233,3 +234,12 @@ class TreeMetricResultFactory(factory.Factory):
     metric_configuration_id = 1
     value = 10
     aggregated_value = 5
+
+class HotspotMetricResultFactory(factory.Factory):
+    class Meta:
+        model = HotspotMetricResult
+
+    metric_configuration_id = 1
+    value = None
+    line_number = 10
+    message = "1) Similar code found in :module (mass = 154)"
