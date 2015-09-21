@@ -9,7 +9,7 @@ from kalibro_client.miscellaneous import DateMetricResult
 def step_impl(context):
     first_module_result = ModuleResult.find(context.response.root_module_result_id)
 
-    metric_results = first_module_result.metric_results()
+    metric_results = first_module_result.tree_metric_results()
     context.response = metric_results[0].descendant_values()
 
 @when(u'I call the history of method with the metric name and the results root id of the given processing')
