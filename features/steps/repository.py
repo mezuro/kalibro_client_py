@@ -32,6 +32,13 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(u'when I call the first_processing method for the given repository')
 
+@given(u'I have the given repository')
+def step_impl(context):
+    row = dict(zip(context.table.headings, context.table[0].cells))
+    context.repository = RepositoryFactory.build(
+        kalibro_configuration_id=context.kalibro_configuration.id, **row)
+    context.repository.save()
+
 @when(u'I call the processing method for the given repository')
 def step_impl(context):
     context.processing = context.repository.processing()

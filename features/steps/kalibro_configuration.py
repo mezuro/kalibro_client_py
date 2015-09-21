@@ -2,7 +2,8 @@ from behave import *
 from nose.tools import assert_true, assert_in, assert_equal
 
 from ..tests.factories import KalibroConfigurationFactory, \
-    MetricConfigurationFactory, ReadingGroupFactory, ReadingFactory, NativeMetricFactory
+    MetricConfigurationFactory, ReadingGroupFactory, ReadingFactory, NativeMetricFactory,\
+    HotspotMetricFactory
 
 from kalibro_client.configurations import KalibroConfiguration
 
@@ -22,6 +23,22 @@ def step_impl(context):
   context.kalibro_configuration.save()
 
   context.metric = NativeMetricFactory.build()
+  metric_configuration = MetricConfigurationFactory.build(metric=context.metric,
+                                                          reading_group_id=context.reading_group.id,
+                                                          kalibro_configuration_id=context.kalibro_configuration.id)
+  metric_configuration.save()
+
+@given(u'I have a flay configuration within the given kalibro configuration')
+def step_impl(context):
+  context.reading_group = ReadingGroupFactory.build()
+  context.reading_group.save()
+  context.reading = ReadingFactory.build(reading_group_id = context.reading_group.id)
+  context.reading.save()
+
+  context.kalibro_configuration = KalibroConfigurationFactory.build()
+  context.kalibro_configuration.save()
+
+  context.metric = HotspotMetricFactory.build()
   metric_configuration = MetricConfigurationFactory.build(metric=context.metric,
                                                           reading_group_id=context.reading_group.id,
                                                           kalibro_configuration_id=context.kalibro_configuration.id)
