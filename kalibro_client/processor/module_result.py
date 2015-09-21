@@ -99,10 +99,6 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
                                       params={'id': repository_id, 'kalibro_module_id': module_result.kalibro_module.id})['module_result_history_of']
         return [kalibro_client.miscellaneous.date_module_result.DateModuleResult(element[0], element[1]) for element in response]
 
-    def metric_results(self):
-        print("WARNING: ModuleResult#metric_results method has been deprecated. Please use tree_metric_results.")
-        return self.tree_metric_results()
-
     def tree_metric_results(self):
         return TreeMetricResult.response_to_objects_array(self.request(
                                                 action=':id/metric_results',

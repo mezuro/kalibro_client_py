@@ -654,7 +654,7 @@ class TestModuleResult(TestCase):
         response = {'tree_metric_results': [tree_metric_result._asdict()]}
         with patch.object(self.subject, 'request',
                           return_value=response) as tree_metric_results_request:
-            tree_metric_results = self.subject.metric_results()
+            tree_metric_results = self.subject.tree_metric_results()
             assert_equal(tree_metric_results, [tree_metric_result])
             tree_metric_results_request.assert_called_once_with(
                 action=":id/metric_results", params={"id": self.subject.id},
