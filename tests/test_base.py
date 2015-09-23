@@ -8,7 +8,7 @@ import dateutil.parser
 from kalibro_client.base import BaseCRUD, attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.errors import KalibroClientSaveError, KalibroClientDeleteError, \
-    KalibroClientNotFoundError
+    KalibroClientNotFoundError, KalibroClientRequestError
 
 from .helpers import not_raises
 
@@ -87,9 +87,10 @@ class TestBase(TestCase):
     @raises(KalibroClientSaveError)
     def test_unsuccessful_update(self):
         subject = IdentifiedBase(id=42, attribute='test')
-        unsuccessful_response = {'errors': ['A string with an error']}
+        response_body = Mock()
+        response_body.json = Mock(return_value={'errors': ['A string with an error']})
 
-        subject.request = create_autospec(subject.request, return_value=unsuccessful_response)
+        subject.request = create_autospec(subject.request, side_effect=KalibroClientRequestError(response_body))
 
         subject.update(attribute='new_value')
 
@@ -181,8 +182,11 @@ class TestBase(TestCase):
         date_str = dateutil.parser.parse("2015-07-05T22:16:18+00:00")
         subject = IdentifiedBase(id=1, attribute="attributes",
                                  created_at=date_str, updated_at=date_str)
+        response_body = Mock()
+        response_body.json = Mock(return_value={'errors': ["Couldn't find object"]})
+
         with patch.object(IdentifiedBase, 'request',
-                          return_value={'errors': ["Couldn't find object"]}) as mock:
+                          side_effect=KalibroClientRequestError(response_body)) as mock:
             IdentifiedBase.find(subject.id)
             mock.assert_called_once_with(":id", params={'id': (subject.id)}, method='get')
 

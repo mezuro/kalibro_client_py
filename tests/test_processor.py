@@ -1,7 +1,7 @@
 from unittest import TestCase, skip
 import dateutil
 from nose.tools import assert_equal, assert_true, raises
-from mock import patch
+from mock import patch, Mock
 
 import kalibro_client
 from kalibro_client.processor import Project, Repository, ProcessTime,\
@@ -9,7 +9,7 @@ from kalibro_client.processor import Project, Repository, ProcessTime,\
     TreeMetricResult
 from kalibro_client.configurations import MetricConfiguration
 from kalibro_client.processor.base import Base
-from kalibro_client.errors import KalibroClientNotFoundError
+from kalibro_client.errors import KalibroClientNotFoundError, KalibroClientRequestError
 
 from factories import ProjectFactory, RepositoryFactory, KalibroModuleFactory,\
     ProcessingFactory, MetricCollectorDetailsFactory, NativeMetricFactory,\
@@ -393,9 +393,10 @@ class TestMetricCollectorDetails(TestCase):
 
     @raises(KalibroClientNotFoundError)
     def test_find_by_name_invalid_collector(self):
-        error_response = {'error': "Metric Collector '{}' not found.".format(self.subject.name)}
+        response_body = Mock()
+        response_body.json = Mock(return_value={'error': "Metric Collector '{}' not found.".format(self.subject.name)})
         with patch.object(MetricCollectorDetails, 'request',
-                          return_value=error_response) as metric_collector_details_request:
+                          side_effect=KalibroClientRequestError(response_body)) as metric_collector_details_request:
             MetricCollectorDetails.find_by_name(self.subject.name)
 
     def test_all_names(self):
