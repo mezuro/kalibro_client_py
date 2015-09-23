@@ -3,7 +3,7 @@ Feature: history of
   As a developer
   I want to get the date metric results of the given module result and the given metric name
 
-  @kalibro_configuration_restart @kalibro_processor_restart @skip
+  @kalibro_configuration_restart @kalibro_processor_restart
   Scenario: when there is a metric result
     Given I have a project with name "Kalibro"
     And I have a sample configuration with MetricFu metrics

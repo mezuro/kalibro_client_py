@@ -27,7 +27,7 @@ def step_impl(context):
 
 @when(u'I call the metric results of method with the results root id of the given processing')
 def step_impl(context):
-    context.response = ModuleResult.find(context.response.root_module_result_id).metric_results()
+    context.response = ModuleResult.find(context.response.root_module_result_id).tree_metric_results()
 
 @then(u'I should get a Float list')
 def step_impl(context):
