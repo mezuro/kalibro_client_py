@@ -1,8 +1,8 @@
 from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
-from kalibro_client.processor import KalibroModule, Processing, MetricResult, \
-    Repository, TreeMetricResult
+from kalibro_client.processor import KalibroModule, Processing, Repository, \
+    TreeMetricResult
 import kalibro_client.miscellaneous.date_module_result
 from kalibro_client.processor.hotspot_metric_result import HotspotMetricResult
 
