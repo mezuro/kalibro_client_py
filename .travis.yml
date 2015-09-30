@@ -11,12 +11,12 @@ cache:
 
 install:
   # Install Ruby manually since the Kalibro script assumes it is already there
-  - rvm install 2.2.2
-  - rvm use 2.2.2 --default
+  - rvm install 2.2.3
+  - rvm use 2.2.3 --default
   - rvm @global do gem install bundler
   # Kalibro Install script
-  - git clone https://github.com/mezuro/kalibro_install.git -b v3.3
-  - ANALIZO_VERSION= CACHE_DIR=$PWD/cache bash ./kalibro_install/install.sh
+  - git clone https://github.com/mezuro/kalibro_install.git -b v3.7
+  - ANALIZO_VERSION=none KALIBRO_PROCESSOR_VERSION='v1.0.0' KALIBRO_CONFIGURATIONS_VERSION='v1.1.1' CACHE_DIR=$PWD/cache ./kalibro_install/install.sh
   # Python dependencies
   - pip install -r requirements.txt
   - pip install coveralls

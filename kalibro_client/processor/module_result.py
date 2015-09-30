@@ -2,8 +2,10 @@ from kalibro_client.base import attributes_class_constructor, \
     entity_name_decorator
 from kalibro_client.processor.base import Base
 from kalibro_client.processor import KalibroModule, Processing, MetricResult, \
-    Repository
+    Repository, TreeMetricResult
 import kalibro_client.miscellaneous.date_module_result
+from kalibro_client.processor.hotspot_metric_result import HotspotMetricResult
+
 
 @entity_name_decorator
 class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
@@ -97,8 +99,16 @@ class ModuleResult(attributes_class_constructor('ModuleResultAttr', ()), Base):
                                       params={'id': repository_id, 'kalibro_module_id': module_result.kalibro_module.id})['module_result_history_of']
         return [kalibro_client.miscellaneous.date_module_result.DateModuleResult(element[0], element[1]) for element in response]
 
-    def metric_results(self):
-        return MetricResult.response_to_objects_array(self.request(
+    def tree_metric_results(self):
+        return TreeMetricResult.response_to_objects_array(self.request(
                                                 action=':id/metric_results',
                                                 params={'id': self.id},
                                                 method='get'))
+
+    def hotspot_metric_results(self):
+        return HotspotMetricResult.response_to_objects_array(self.request(action=':id/hotspot_metric_results',
+                                                                          params={'id': self.id}, method='get'))
+
+    def descendant_hotspot_metric_results(self):
+        return HotspotMetricResult.response_to_objects_array(
+            self.request(action=':id/descendant_hotspot_metric_results', params={'id': self.id}, method='get'))

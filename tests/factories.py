@@ -4,10 +4,11 @@ from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, \
     DateModuleResult, DateMetricResult, HotspotMetric
 from kalibro_client.processor import Project, Repository, Processing,\
     KalibroModule, ProcessTime, MetricCollectorDetails, MetricResult,\
-    ModuleResult
+    ModuleResult, TreeMetricResult
 from kalibro_client.configurations import KalibroConfiguration,\
     MetricConfiguration, ReadingGroup, Reading, RangeSnapshot, \
     KalibroRange
+from kalibro_client.processor.hotspot_metric_result import HotspotMetricResult
 
 
 class ProjectFactory(factory.Factory):
@@ -225,4 +226,20 @@ class MetricResultFactory(factory.Factory):
 
     metric_configuration_id = 1
     value = 10
+
+class TreeMetricResultFactory(factory.Factory):
+    class Meta:
+        model = TreeMetricResult
+
+    metric_configuration_id = 1
+    value = 10
     aggregated_value = 5
+
+class HotspotMetricResultFactory(factory.Factory):
+    class Meta:
+        model = HotspotMetricResult
+
+    metric_configuration_id = 1
+    value = None
+    line_number = 10
+    message = "1) Similar code found in :module (mass = 154)"
