@@ -1,4 +1,5 @@
 import json
+import requests
 from unittest import TestCase
 
 from mock import Mock, patch, create_autospec

@@ -41,8 +41,8 @@ class MetricCollectorDetails(attributes_class_constructor('MetricCollectorDetail
             response = cls.request('find', params={"name": name})
             return cls(**response['metric_collector_details'])
         except KalibroClientRequestError as error:
-            error = error.response.json().get('error', None)
-            raise KalibroClientNotFoundError(error)
+            error_messages = error.response.json().get('error', None)
+            raise KalibroClientNotFoundError(error_messages)
 
     @classmethod
     def all_names(cls):
