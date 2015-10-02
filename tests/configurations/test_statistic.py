@@ -4,6 +4,7 @@ from mock import patch
 from nose.tools import assert_equal, raises
 
 from kalibro_client.configurations.statistic import Statistic
+from kalibro_client.configurations.base import Base
 
 
 class TestStatistic(TestCase):
@@ -20,30 +21,7 @@ class TestStatistic(TestCase):
 
             assert_equal(result, response)
 
-    @raises(NotImplementedError)
-    def test_not_implemented_find(self):
-        Statistic.find(1)
-
-    @raises(NotImplementedError)
-    def test_not_implemented_all(self):
-        Statistic.all()
-
-    @raises(NotImplementedError)
-    def test_not_implemented_exists(self):
-        Statistic.exists(1)
-
-    @raises(NotImplementedError)
-    def test_not_implemented_save(self):
-        self.subject.save()
-
-    @raises(NotImplementedError)
-    def test_not_implemented_update(self):
-        self.subject.update()
-
-    @raises(NotImplementedError)
-    def test_not_implemented_delete(self):
-        self.subject.delete()
-
-
-
-
+    def test_service_address(self):
+        with patch.object(Base, 'service_address', return_value="address") as service_address_mock:
+            Statistic.service_address()
+            service_address_mock.assert_called()
