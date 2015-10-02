@@ -23,6 +23,7 @@ class Derived(attributes_class_constructor('DerivedAttr',
 class DerivedWithEntityName(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), BaseCRUD):
     pass
 
+
 @entity_name_decorator
 class CompositeEntity(BaseCRUD):
     pass
@@ -50,10 +51,6 @@ class TestBase(TestCase):
     @raises(NotImplementedError)
     def test_entity_name(self):
         self.base.entity_name()
-
-    @raises(NotImplementedError)
-    def test_service_address(self):
-        BaseCRUD.service_address()
 
     @patch('requests.request')
     def test_request(self, requests_request):
@@ -140,22 +137,6 @@ class TestBase(TestCase):
     @raises(NotImplementedError)
     def test_endpoint_base(self):
         self.base.endpoint()
-
-    def test_endpoint(self):
-        cases = {
-            'repository': 'repositories',
-            'project': 'projects',
-            'processing': 'processings',
-            'process_time': 'process_times'
-        }
-
-        for (singular, plural) in cases.items():
-            with patch.object(self.base.__class__, 'entity_name',
-                              return_value=singular):
-                assert_equal(self.base.endpoint(), plural)
-
-        assert_equal(CompositeEntity().endpoint(),
-                     "composite_entities")
 
     @not_raises(KalibroClientSaveError)
     def test_successful_save(self):

@@ -19,6 +19,19 @@ class RequestMethods(object):
     def delete_prefix(self):
         return ""
 
+    @classmethod
+    def entity_name(cls):
+        raise NotImplementedError
+
+    @classmethod
+    def endpoint(cls):
+        return inflection.pluralize(cls.entity_name())
+
+    @classmethod
+    def service_address(cls):
+        raise NotImplementedError
+
+
 class Base(object):
     @classmethod
     def _is_valid_field(cls, name):
@@ -35,18 +48,6 @@ class Base(object):
 
 
 class BaseCRUD(Base, RequestMethods):
-    @classmethod
-    def endpoint(cls):
-        return inflection.pluralize(cls.entity_name())
-
-    @classmethod
-    def entity_name(cls):
-        raise NotImplementedError
-
-    @classmethod
-    def service_address(cls):
-        raise NotImplementedError
-
     @classmethod
     def request(cls, action, params=None, method='post', prefix=None):
         url = cls.service_address()
