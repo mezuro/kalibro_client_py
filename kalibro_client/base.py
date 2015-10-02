@@ -31,6 +31,21 @@ class RequestMethods(object):
     def service_address(cls):
         raise NotImplementedError
 
+    @classmethod
+    def request(cls, action, params=None, method='post', prefix=None):
+        url = cls.service_address()
+
+        if prefix:
+            url += "/" + prefix
+        url += "/{}/{}".format(cls.endpoint(), action)
+
+        if params is not None and 'id' in params:
+            url = url.replace(':id', str(params.pop('id')))
+
+        response = requests.request(method, url, data=json.dumps(params),
+                                    headers={'Content-Type': 'application/json'})
+        return response.json()
+
 
 class Base(object):
     @classmethod
@@ -48,21 +63,6 @@ class Base(object):
 
 
 class BaseCRUD(Base, RequestMethods):
-    @classmethod
-    def request(cls, action, params=None, method='post', prefix=None):
-        url = cls.service_address()
-
-        if prefix:
-            url += "/" + prefix
-        url += "/{}/{}".format(cls.endpoint(), action)
-
-        if params is not None and 'id' in params:
-            url = url.replace(':id', str(params.pop('id')))
-
-        response = requests.request(method, url, data=json.dumps(params),
-                                    headers={'Content-Type': 'application/json'})
-        return response.json()
-
     @classmethod
     def find(cls, id):
         response = cls.request(':id', params={'id': id}, method='get')
