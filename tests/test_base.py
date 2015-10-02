@@ -64,16 +64,6 @@ class TestBase(TestCase):
         assert_equal(subject.created_at, date)
         assert_equal(subject.updated_at, date)
 
-    def test_unsuccessful_update_without_id(self):
-        subject = IdentifiedBase(id=None, attribute='test')
-        subject.request = create_autospec(subject.request,
-            side_effect=AssertionError("Request should not be called for update without id"))
-
-        with assert_raises_regexp(KalibroClientSaveError,
-                                  "Cannot update a record that is not saved."):
-            subject.update(attribute='new value')
-
-
     @raises(KalibroClientSaveError)
     def test_unsuccessful_save(self):
         subject = IdentifiedBase(attribute='test')
@@ -85,6 +75,14 @@ class TestBase(TestCase):
 
         subject.request.assert_called_with('', {subject.entity_name() : subject._asdict()})
 
+    def test_unsuccessful_update_without_id(self):
+        subject = IdentifiedBase(id=None, attribute='test')
+        subject.request = create_autospec(subject.request,
+            side_effect=AssertionError("Request should not be called for update without id"))
+
+        with assert_raises_regexp(KalibroClientSaveError,
+                                  "Cannot update a record that is not saved."):
+            subject.update(attribute='new value')
 
     @raises(KalibroClientSaveError)
     def test_unsuccessful_update(self):
