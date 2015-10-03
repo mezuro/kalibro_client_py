@@ -19,29 +19,13 @@ class RequestMethods(object):
     def delete_prefix(self):
         return ""
 
-class Base(object):
-    @classmethod
-    def _is_valid_field(cls, name):
-        return name in cls._fields
-
-    @classmethod
-    def response_to_objects_array(cls, response):
-        array = response[inflection.pluralize(cls.entity_name())]
-        return cls.array_to_objects_array(array)
-
-    @classmethod
-    def array_to_objects_array(cls, array):
-        return [cls(**attributes) for attributes in array]
-
-
-class BaseCRUD(Base, RequestMethods):
-    @classmethod
-    def endpoint(cls):
-        return inflection.pluralize(cls.entity_name())
-
     @classmethod
     def entity_name(cls):
         raise NotImplementedError
+
+    @classmethod
+    def endpoint(cls):
+        return inflection.pluralize(cls.entity_name())
 
     @classmethod
     def service_address(cls):
@@ -62,6 +46,23 @@ class BaseCRUD(Base, RequestMethods):
                                     headers={'Content-Type': 'application/json'})
         return response.json()
 
+
+class Base(object):
+    @classmethod
+    def _is_valid_field(cls, name):
+        return name in cls._fields
+
+    @classmethod
+    def response_to_objects_array(cls, response):
+        array = response[inflection.pluralize(cls.entity_name())]
+        return cls.array_to_objects_array(array)
+
+    @classmethod
+    def array_to_objects_array(cls, array):
+        return [cls(**attributes) for attributes in array]
+
+
+class BaseCRUD(Base, RequestMethods):
     @classmethod
     def find(cls, id):
         response = cls.request(':id', params={'id': id}, method='get')

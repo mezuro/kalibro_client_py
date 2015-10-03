@@ -23,6 +23,7 @@ class Derived(attributes_class_constructor('DerivedAttr',
 class DerivedWithEntityName(attributes_class_constructor('DerivedAttr', ('name', 'description'), identity=False), BaseCRUD):
     pass
 
+
 @entity_name_decorator
 class CompositeEntity(BaseCRUD):
     pass
@@ -39,123 +40,10 @@ class TestBase(TestCase):
         self.attributes = {'name': 'A random Project',
                            'description': 'A real example Project'}
         self.base = Derived(**self.attributes)
-        self.headers = {'Content-Type': 'application/json'}
-        self.nulldata = json.dumps(None)  # request method always calls json.dumps
-        self.json_dumps_attributes = json.dumps(self.attributes)
 
     def test_init(self):
-        assert_equal(self.base.name, 'A random Project')
-        assert_equal(self.base.description, 'A real example Project')
-
-    @raises(NotImplementedError)
-    def test_entity_name(self):
-        self.base.entity_name()
-
-    @raises(NotImplementedError)
-    def test_service_address(self):
-        BaseCRUD.service_address()
-
-    @patch('requests.request')
-    def test_request(self, requests_request):
-        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
-            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
-            response_mock = Mock()
-            response_mock.json = Mock(return_value=self.attributes)
-            requests_request.return_value = response_mock
-
-            assert_equal(self.base.request("find", method='get'), self.attributes)
-            requests_request.assert_called_once_with('get', "http://base:8000/base/find",
-                                                     data=self.nulldata, headers=self.headers)
-            mock_endpoint.assert_called_once()
-            mock_service_address.assert_called_once()
-            response_mock.json.assert_called_with()
-
-    @patch('requests.request')
-    def test_request_with_prefix(self, requests_request):
-        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
-            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
-            response_mock = Mock()
-            response_mock.json = Mock(return_value=self.attributes)
-            requests_request.return_value = response_mock
-
-            assert_equal(self.base.request("find", method='get', prefix='prefix'),
-                         self.attributes)
-            requests_request.assert_called_once_with('get', "http://base:8000/prefix/base/find",
-                                                     data=self.nulldata, headers=self.headers)
-            response_mock.json.assert_called_with()
-            mock_endpoint.assert_called_once()
-            mock_service_address.assert_called_once()
-
-    @patch('requests.request')
-    def test_request_with_default_method(self, requests_request):
-        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
-            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
-
-            response_mock = Mock()
-            response_mock.json = Mock(return_value=self.attributes)
-            requests_request.return_value = response_mock
-
-            assert_equal(self.base.request("create"), self.attributes)
-            requests_request.assert_called_once_with('post', "http://base:8000/base/create",
-                                                     data=self.nulldata, headers=self.headers)
-            response_mock.json.assert_called_with()
-            mock_endpoint.assert_called_once()
-            mock_service_address.assert_called_once()
-
-    @patch('json.dumps')
-    @patch('requests.request')
-    def test_request_with_parameters(self, requests_request, json_dumps):
-        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
-            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
-            response_mock = Mock()
-            response_mock.json = Mock(return_value=self.attributes)
-            requests_request.return_value = response_mock
-            json_dumps.return_value = self.json_dumps_attributes
-
-            assert_equal(self.base.request("create", params=self.attributes), self.attributes)
-            json_dumps.assert_called_once_with(self.attributes)
-            requests_request.assert_called_once_with('post', "http://base:8000/base/create",
-                                                     data=self.json_dumps_attributes, headers=self.headers)
-            response_mock.json.assert_called_with()
-            mock_endpoint.assert_called_once()
-            mock_service_address.assert_called_once()
-
-    @patch('json.dumps')
-    @patch('requests.request')
-    def test_request_with_id_parameter(self, requests_request, json_dumps):
-        with patch.object(type(self.base), 'endpoint', return_value="base") as mock_endpoint, \
-            patch.object(type(self.base), 'service_address', return_value="http://base:8000") as mock_service_address:
-            response_mock = Mock()
-            response_mock.json = Mock(return_value=self.attributes)
-            requests_request.return_value = response_mock
-
-            attributes = {'id': 42}
-            self.base.request(":id/something", params=attributes)
-            json_dumps.assert_called_once_with({})
-            requests_request.assert_called_once_with('post', "http://base:8000/base/42/something",
-                                                     data=json.dumps({}), headers=self.headers)
-            response_mock.json.assert_called_with()
-            mock_endpoint.assert_called_once()
-
-    @raises(NotImplementedError)
-    def test_endpoint_base(self):
-        self.base.endpoint()
-
-    def test_endpoint(self):
-        cases = {
-            'repository': 'repositories',
-            'project': 'projects',
-            'processing': 'processings',
-            'process_time': 'process_times'
-        }
-
-        for (singular, plural) in cases.items():
-            with patch.object(self.base.__class__, 'entity_name',
-                              return_value=singular):
-                assert_equal(self.base.endpoint(), plural)
-
-        assert_equal(CompositeEntity().endpoint(),
-                     "composite_entities")
+        assert_equal(self.base.name, self.attributes['name'])
+        assert_equal(self.base.description, self.attributes['description'])
 
     @not_raises(KalibroClientSaveError)
     def test_successful_save(self):
@@ -176,16 +64,6 @@ class TestBase(TestCase):
         assert_equal(subject.created_at, date)
         assert_equal(subject.updated_at, date)
 
-    def test_unsuccessful_update_without_id(self):
-        subject = IdentifiedBase(id=None, attribute='test')
-        subject.request = create_autospec(subject.request,
-            side_effect=AssertionError("Request should not be called for update without id"))
-
-        with assert_raises_regexp(KalibroClientSaveError,
-                                  "Cannot update a record that is not saved."):
-            subject.update(attribute='new value')
-
-
     @raises(KalibroClientSaveError)
     def test_unsuccessful_save(self):
         subject = IdentifiedBase(attribute='test')
@@ -197,6 +75,14 @@ class TestBase(TestCase):
 
         subject.request.assert_called_with('', {subject.entity_name() : subject._asdict()})
 
+    def test_unsuccessful_update_without_id(self):
+        subject = IdentifiedBase(id=None, attribute='test')
+        subject.request = create_autospec(subject.request,
+            side_effect=AssertionError("Request should not be called for update without id"))
+
+        with assert_raises_regexp(KalibroClientSaveError,
+                                  "Cannot update a record that is not saved."):
+            subject.update(attribute='new value')
 
     @raises(KalibroClientSaveError)
     def test_unsuccessful_update(self):
