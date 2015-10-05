@@ -7,7 +7,7 @@ import dateutil.parser
 import recordtype
 
 from kalibro_client.errors import KalibroClientSaveError, KalibroClientDeleteError, \
-    KalibroClientNotFoundError
+    KalibroClientNotFoundError, KalibroClientRequestError
 
 class RequestMethods(object):
     def save_prefix(self):
@@ -44,6 +44,11 @@ class RequestMethods(object):
 
         response = requests.request(method, url, data=json.dumps(params),
                                     headers={'Content-Type': 'application/json'})
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            raise KalibroClientRequestError(response)
+
         return response.json()
 
 
@@ -65,9 +70,12 @@ class Base(object):
 class BaseCRUD(Base, RequestMethods):
     @classmethod
     def find(cls, id):
-        response = cls.request(':id', params={'id': id}, method='get')
-        if 'errors' in response:
-            raise KalibroClientNotFoundError(response['errors'])
+        try:
+            response = cls.request(':id', params={'id': id}, method='get')
+        except KalibroClientRequestError as error:
+            body = error.response.json()
+            raise KalibroClientNotFoundError(body['errors'])
+
         return cls(**response[cls.entity_name()])
 
     @classmethod
@@ -109,10 +117,11 @@ class BaseCRUD(Base, RequestMethods):
             if self._is_valid_field(attr):
                 setattr(self, attr, value)
 
-        response = self._update_request()
-
-        if 'errors' in response:
-            raise KalibroClientSaveError(response['errors'])
+        try:
+            response = self._update_request()
+        except KalibroClientRequestError as error:
+            body = error.response.json()
+            raise KalibroClientSaveError(body['errors'])
 
         response_body = response[self.entity_name()]
         self.updated_at = response_body['updated_at']
