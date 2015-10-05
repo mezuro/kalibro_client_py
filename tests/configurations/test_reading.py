@@ -39,6 +39,3 @@ class TestReading(TestCase):
 
     def test_delete_prefix(self):
         assert_equal(self.subject.delete_prefix(), "reading_groups/{}".format(self.subject.reading_group_id))
-
-
-

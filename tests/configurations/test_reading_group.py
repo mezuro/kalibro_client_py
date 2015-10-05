@@ -20,5 +20,3 @@ class TestReadingGroup(TestCase):
             self.subject.readings()
             request_mock.assert_called_once_with(":id/readings", {'id': 1}, method='get')
             mock.assert_called_once_with(readings_hash)
-
-
