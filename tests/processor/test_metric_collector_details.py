@@ -1,9 +1,9 @@
 from unittest import TestCase
 from nose.tools import assert_equal, assert_true, raises
-from mock import patch
+from mock import patch, Mock
 
 from kalibro_client.processor import MetricCollectorDetails
-from kalibro_client.errors import KalibroClientNotFoundError
+from kalibro_client.errors import KalibroClientNotFoundError, KalibroClientRequestError
 
 from tests.factories import MetricCollectorDetailsFactory, NativeMetricFactory
 
@@ -51,8 +51,10 @@ class TestMetricCollectorDetails(TestCase):
     @raises(KalibroClientNotFoundError)
     def test_find_by_name_invalid_collector(self):
         error_response = {'error': "Metric Collector '{}' not found.".format(self.subject.name)}
-        with patch.object(MetricCollectorDetails, 'request',
-                          return_value=error_response) as metric_collector_details_request:
+        response = Mock()
+        response.json = Mock(return_value=error_response)
+        with patch.object(MetricCollectorDetails, 'request') as metric_collector_details_request:
+            metric_collector_details_request.side_effect=KalibroClientRequestError(response)
             MetricCollectorDetails.find_by_name(self.subject.name)
             metric_collector_details_request.assert_called_once
 
