@@ -2,7 +2,7 @@ from behave import *
 from nose.tools import assert_true, assert_in, assert_equal, assert_is_instance
 
 from ..tests.factories import MetricConfigurationFactory, \
-    LinesOfCodeMetricFactory
+    LinesOfCodeMetricFactory, HotspotMetricFactory
 
 from kalibro_client.configurations import MetricConfiguration
 
@@ -67,3 +67,33 @@ def step_impl(context):
 @then(u'I should get an empty list of metric configurations')
 def step_impl(context):
     assert_equal(len(context.metric_configurations), 0)
+
+@given(u'I have a hotspot metric configuration within the given kalibro configuration')
+def step_impl(context):
+    context.metric = HotspotMetricFactory.build()
+    context.hotspot_metric_configuration = MetricConfigurationFactory.build(
+        kalibro_configuration_id=context.kalibro_configuration.id,
+        metric=context.metric)
+    context.hotspot_metric_configuration.save()
+
+@given(u'I have a tree metric configuration within the given kalibro configuration')
+def step_impl(context):
+    context.execute_steps(
+        u'Given I have a loc configuration within the given kalibro configuration')
+    context.tree_metric_configuration = context.metric_configuration
+
+@when(u'I request for hotspot_metric_configurations of the given kalibro configuration')
+def step_impl(context):
+    context.hotspot_metric_configurations = context.kalibro_configuration.hotspot_metric_configurations()
+
+@when(u'I request for tree_metric_configurations of the given kalibro configuration')
+def step_impl(context):
+    context.tree_metric_configurations = context.kalibro_configuration.tree_metric_configurations()
+
+@then(u'I should get a list with the given HotspotMetricConfiguration')
+def step_impl(context):
+    assert_in(context.hotspot_metric_configuration, context.hotspot_metric_configurations)
+
+@then(u'I should get a list with the given TreeMetricConfiguration')
+def step_impl(context):
+    assert_in(context.tree_metric_configuration, context.tree_metric_configurations)
