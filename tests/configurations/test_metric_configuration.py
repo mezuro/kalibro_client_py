@@ -4,10 +4,11 @@ from mock import patch
 from nose.tools import assert_equal, assert_true, assert_in, raises
 
 from kalibro_client.configurations import MetricConfiguration
-from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, Metric
+from kalibro_client.miscellaneous import NativeMetric, CompoundMetric, Metric,\
+    HotspotMetric
 
 from tests.factories import MetricConfigurationFactory, NativeMetricFactory, \
-    CompoundMetricFactory
+    CompoundMetricFactory, HotspotMetricFactory
 
 from tests.helpers import not_raises
 
@@ -40,6 +41,12 @@ class TestMetricConfiguration(TestCase):
         metric = NativeMetricFactory.build()
         self.subject.metric = metric._asdict()
         assert_true(isinstance(self.subject.metric, NativeMetric))
+        assert_equal(self.subject.metric, metric)
+
+    def test_metric_setter_with_hotspot_metric(self):
+        metric = HotspotMetricFactory.build()
+        self.subject.metric = metric._asdict()
+        assert_true(isinstance(self.subject.metric, HotspotMetric))
         assert_equal(self.subject.metric, metric)
 
     def test_metric_setter_with_compound_metric(self):

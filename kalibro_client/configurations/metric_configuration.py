@@ -1,7 +1,8 @@
 from kalibro_client.base import attributes_class_constructor,\
     entity_name_decorator
 from kalibro_client.configurations.base import Base
-from kalibro_client.miscellaneous import CompoundMetric, Metric, NativeMetric
+from kalibro_client.miscellaneous import CompoundMetric, Metric, NativeMetric,\
+    HotspotMetric
 
 
 @entity_name_decorator
@@ -62,6 +63,8 @@ class MetricConfiguration(attributes_class_constructor('MetricConfigurationAttr'
         if isinstance(value, dict):
             if value['type'] == "NativeMetricSnapshot":
                 self._metric = NativeMetric(**value)
+            elif value['type'] == "HotspotMetricSnapshot":
+                self._metric = HotspotMetric(**value)
             else:
                 self._metric = CompoundMetric(**value)
         elif isinstance(value, Metric):
