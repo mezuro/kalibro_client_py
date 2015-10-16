@@ -15,6 +15,7 @@ class MetricResult(attributes_class_constructor('MetricResultAttrs',
         super(MetricResult, self).__init__(*init_args, **init_kwargs)
         self.value = value
         self.metric_configuration_id = metric_configuration_id
+        self._module_result = None
 
     @property
     def value(self):
@@ -48,3 +49,9 @@ class MetricResult(attributes_class_constructor('MetricResultAttrs',
 
     def metric_configuration(self):
         return kalibro_client.configurations.metric_configuration.MetricConfiguration.find(self.metric_configuration_id)
+
+    def module_result(self):
+        if self._module_result is None:
+            self._module_result = kalibro_client.processor.module_result.ModuleResult(**MetricResult.request(action=':id/module_result', params={'id': self.id}, method='get')['module_result'])
+            self.module_result_id = self._module_result.id
+        return self._module_result
