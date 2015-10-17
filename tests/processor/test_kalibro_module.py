@@ -33,4 +33,4 @@ class TestKalibroModule(TestCase):
         assert_equal(self.subject.short_name, name[-1])
 
     def test_granularity(self):
-        assert_equal(self.subject.granularity, self.subject.granlrty)
+        assert_equal(self.subject.granularity, self.subject.granularity)

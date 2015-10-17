@@ -122,7 +122,7 @@ class KalibroModuleFactory(factory.Factory):
         model = KalibroModule
 
     id = 1
-    granlrty = None  # TODO add a Granularity instance here
+    granularity = None  # TODO add a Granularity instance here
     long_name = "kalibro_client_py.tests.factories"
     module_result_id = 1
 
