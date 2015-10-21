@@ -9,6 +9,6 @@ Feature: Process
     And I have a sample configuration with MetricFu metrics
     And the given project has the following Repositories:
       |   name    | scm_type |                   address                        |
-      |  Kalibro  |    GIT   | https://github.com/rafamanzo/runge-kutta-vtk.git |
+      |  Kalibro  |    GIT   | https://github.com/mezuro/kalibro_processor.git  |
     When I call the process method for the given repository
     Then I should get success
