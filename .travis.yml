@@ -23,7 +23,7 @@ install:
 
 script:
   - nosetests
-  - behave --no-capture --no-capture-stderr
+  - behave --no-capture-stderr
 
 after_success: coveralls
 

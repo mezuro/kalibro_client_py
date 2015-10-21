@@ -21,10 +21,6 @@ def step_impl(context):
 @given(u'I wait up for a ready processing')
 def step_impl(context):
     while not context.repository.has_ready_processing():
-        processing = context.repository.processing()
-        print(processing.state)
-        if processing.error is not None:
-            print(processing.error_message)
         sleep(10)
 
 @given(u'I have an independent repository')
