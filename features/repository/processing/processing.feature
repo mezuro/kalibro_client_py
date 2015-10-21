@@ -9,7 +9,7 @@ Feature: Processing
     And I have a sample configuration with MetricFu metrics
     And the given project has the following Repositories:
       |   name    | scm_type |                       address                    |
-      |  Kalibro  |    GIT   | https://github.com/rafamanzo/runge-kutta-vtk.git |
+      |  Kalibro  |    GIT   | https://github.com/mezuro/kalibro_processor.git  |
     And I call the process method for the given repository
     And I wait up to 1 seconds
     When I call the processing method for the given repository
@@ -21,7 +21,7 @@ Feature: Processing
     And I have a sample configuration with MetricFu metrics
     And the given project has the following Repositories:
       |   name    | scm_type |                       address                    |
-      |  Kalibro  |    GIT   | https://github.com/rafamanzo/runge-kutta-vtk.git |
+      |  Kalibro  |    GIT   | https://github.com/mezuro/kalibro_processor.git  |
     And I call the process method for the given repository
     And I wait up for a ready processing
     When I call the processing method for the given repository
