@@ -4,7 +4,7 @@ from kalibro_client.processor.base import Base
 
 @entity_name_decorator
 class KalibroModule(attributes_class_constructor('KalibroModuleAttr',
-                                               (('granlrty', None),
+                                               (('granularity', None),
                                                ('long_name', None),
                                                ('module_result_id', None))),
                     Base):
@@ -21,6 +21,3 @@ class KalibroModule(attributes_class_constructor('KalibroModuleAttr',
     def short_name(self):
         return self.name[-1]
 
-    @property
-    def granularity(self):
-        return self.granlrty

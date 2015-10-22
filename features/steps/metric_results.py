@@ -29,6 +29,14 @@ def step_impl(context):
 def step_impl(context):
     context.response = ModuleResult.find(context.response.root_module_result_id).tree_metric_results()
 
+@when(u'I get the first metric result of the given processing')
+def step_impl(context):
+    context.metric_result = ModuleResult.find(context.response.root_module_result_id).tree_metric_results()[0]
+
+@when(u'I ask for the module result of the given metric result')
+def step_impl(context):
+    context.module_result = context.metric_result.module_result()
+
 @then(u'I should get a Float list')
 def step_impl(context):
     assert_is_instance(context.response, list)
@@ -57,3 +65,7 @@ def step_impl(context):
     assert_in(context.hotspot_metric_result, context.related_results)
     for hotspot_metric_result in context.related_results:
         assert_is_instance(hotspot_metric_result, HotspotMetricResult)
+
+@then(u'I should get a module result')
+def step_impl(context):
+    assert_is_instance(context.module_result, ModuleResult)

@@ -3,8 +3,10 @@ from nose.tools import assert_equal, assert_true
 from mock import patch
 
 from kalibro_client.configurations import MetricConfiguration
+from kalibro_client.processor import MetricResult
 
-from tests.factories import MetricResultFactory, MetricConfigurationFactory
+from tests.factories import MetricResultFactory, MetricConfigurationFactory, \
+    ModuleResultFactory
 
 from tests.helpers import not_raises
 
@@ -55,3 +57,18 @@ class TestMetricResult(TestCase):
         with patch.object(MetricConfiguration, 'find', return_value=metric_configuration) as find_mock:
             assert_equal(self.subject.metric_configuration(), metric_configuration)
             find_mock.assert_called_once_with(self.subject.metric_configuration_id)
+
+    def test_module_result_when_module_result_is_none(self):
+        module_result = ModuleResultFactory.build()
+        response = {'module_result': module_result._asdict()}
+        with patch.object(MetricResult, 'request',
+                          return_value=response) as request_mock:
+            assert_equal(self.subject.module_result(), module_result)
+            request_mock.assert_called_once_with(action=':id/module_result',
+                                                 params={'id': self.subject.id},
+                                                 method='get')
+
+    def test_module_result_when_module_result_is_not_none(self):
+        module_result = ModuleResultFactory.build(id=1)
+        self.subject._module_result = module_result
+        assert_equal(self.subject.module_result(), module_result)
