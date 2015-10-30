@@ -5,7 +5,7 @@ from kalibro_client.processor import Processing, ProcessTime
 
 @when(u'I call the processes_times method for the given processing')
 def step_impl(context):
-    context.process_times = context.processing.process_times()
+    context.process_times = context.response.process_times()
 
 @then(u'I should get a list of ProcessTimes')
 def step_impl(context):
