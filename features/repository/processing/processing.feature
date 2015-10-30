@@ -13,7 +13,7 @@ Feature: Processing
     And I call the process method for the given repository
     And I wait up to 1 seconds
     When I call the processing method for the given repository
-    Then I should get a Processing with state "PREPARING"
+    Then I should get a Processing
 
   @kalibro_processor_restart @kalibro_configuration_restart
   Scenario: Processing with one repository just after with ready processing

@@ -13,4 +13,4 @@ Feature: Last processing state
     And I call the process method for the given repository
     And I wait up to 1 seconds
     When I call the last_processing_state method for the given repository
-    Then I should get "PREPARING"
+    Then I should get a valid state
