@@ -41,7 +41,7 @@ def step_impl(context):
 
 @when(u'I call the processing method for the given repository')
 def step_impl(context):
-    context.processing = context.repository.processing()
+    context.response = context.repository.processing()
 
 @when(u'I ask for all the repositories')
 def step_impl(context):
